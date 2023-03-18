@@ -5,3 +5,4 @@ A website for students to create appointments with professors for CSC 190 and CS
 Lam Phan
 Adrian Tandiono
 Derrick Seals-Belton
+Rick Ammann
