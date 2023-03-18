@@ -4,3 +4,4 @@ A website for students to create appointments with professors for CSC 190 and CS
 # Developers
 Lam Phan
 Adrian Tandiono
+Derrick Seals-Belton
