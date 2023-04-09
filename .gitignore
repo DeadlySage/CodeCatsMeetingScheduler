@@ -1,2 +1,5 @@
 # ignore Visual Studio Config files
 .vs/
+
+#ignore node_modules
+node_modules/
