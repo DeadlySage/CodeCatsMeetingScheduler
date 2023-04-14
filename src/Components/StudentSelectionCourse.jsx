@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from 'react-router-dom';
 
-export const Login = (props) => {
+export const StudentSelectionCourse = (props) => {
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
 

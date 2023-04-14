@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import './App.css';
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { Login } from "./Components/Login";
 import { Register } from "./Components/Register";
+import { StudentSelectionCourse } from "./Components/StudentSelectionCourse";
 
 function App() {
   const [currentForm, setCurrentForm] = useState('login');
@@ -12,15 +14,20 @@ function App() {
 
   return (
     <div className="main">
-      <div class="topnav">
-        <a href="#">Login</a>
-        <a href="#">Home</a>
-      </div>
-      <div class = "App">
-        {
-          currentForm === "login" ? <Login onFormSwitch={toggleForm} /> : <Register onFormSwitch={toggleForm} />
-        }
-      </div>
+      <Router>
+        <div className="topnav">
+          <Link to="/register">Signup</Link>
+          <Link to="/login">Login</Link>
+          <Link to="/">Home</Link>
+        </div>
+        <div className="App">
+          <Routes>
+            <Route path="/login" element={<Login onFormSwitch={() => setCurrentForm("register")} />} />
+            <Route path="/register" element={<Register onFormSwitch={() => setCurrentForm("login")} />} />
+            <Route path="/student-selection-course" element={<StudentSelectionCourse />} />
+          </Routes>
+        </div>
+      </Router>
     </div>
   );
 }
