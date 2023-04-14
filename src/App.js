@@ -3,7 +3,7 @@ import './App.css';
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { Login } from "./Components/Login";
 import { Register } from "./Components/Register";
-import { StudentSelectionCourse } from "./Components/StudentSelectionCourse";
+import StudentSelectionCourse from "./Components/StudentSelectionCourse";
 
 function App() {
   const [currentForm, setCurrentForm] = useState('login');
