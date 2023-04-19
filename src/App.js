@@ -5,6 +5,7 @@ import { Login } from "./Components/Login";
 import { Register } from "./Components/Register";
 import StudentSelectionCourse from "./Components/StudentSelectionCourse";
 import Home from "./Components/Home";
+import AppointmentSelection from "./Components/AppointmentSelection";
 
 function App() {
   const [currentForm, setCurrentForm] = useState('login');
@@ -27,6 +28,7 @@ function App() {
             <Route path="/login" element={<Login onFormSwitch={() => setCurrentForm("register")} />} />
             <Route path="/register" element={<Register onFormSwitch={() => setCurrentForm("login")} />} />
             <Route path="/student-selection-course" element={<StudentSelectionCourse />} />
+            <Route path="/appointment-selection" element={<AppointmentSelection />} />
           </Routes>
         </div>
       </Router>
