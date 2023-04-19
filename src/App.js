@@ -23,10 +23,10 @@ function App() {
         </div>
         <div className="App">
           <Routes>
+            <Route path="/home" element={<Home />} />
             <Route path="/login" element={<Login onFormSwitch={() => setCurrentForm("register")} />} />
             <Route path="/register" element={<Register onFormSwitch={() => setCurrentForm("login")} />} />
             <Route path="/student-selection-course" element={<StudentSelectionCourse />} />
-            <Route path="/home" element={<Home />} />
           </Routes>
         </div>
       </Router>
