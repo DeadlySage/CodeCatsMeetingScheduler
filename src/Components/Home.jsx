@@ -26,12 +26,14 @@ const Home = () => {
             alignItems: 'flex-start',
           }}
         >
-          <button className="button" style={{ width: '200px' }}>
-            <p>
-              <MdSchool />
-            </p>
-            <span style={{ fontSize: 18, fontWeight: 'bold' }}>Student</span>
-          </button>
+          <Link to="/student-selection-course">
+            <button className="button" style={{ width: '200px' }}>
+              <p>
+                <MdSchool />
+              </p>
+              <span style={{ fontSize: 18, fontWeight: 'bold' }}>Student</span>
+            </button>
+          </Link>
 
           <Link to="/appointment-selection">
             <button className="button" style={{ width: '200px' }}>
