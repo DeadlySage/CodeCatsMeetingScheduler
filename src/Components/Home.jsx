@@ -27,12 +27,14 @@ const Home = () => {
           }}
         >
           <Link to="/student-selection-course">
+            <Link to="/student-selection-course">
             <button className="button" style={{ width: '200px' }}>
-              <p>
-                <MdSchool />
-              </p>
-              <span style={{ fontSize: 18, fontWeight: 'bold' }}>Student</span>
-            </button>
+               <p>
+                  <MdSchool />
+                </p>
+                <span style={{ fontSize: 18, fontWeight: 'bold' }}>Student</span>
+              </button>
+          </Link>
           </Link>
 
           <Link to="/appointment-selection">

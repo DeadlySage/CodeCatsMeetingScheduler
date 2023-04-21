@@ -56,10 +56,13 @@ button {
   align-items:center;
   top: 0%;
   left: 0%;
+
+  position: fixed;
+  width: 100%;
 }
 
 .topnav a {
-  float: right;
+  float: left;
   color: #f2f2f2;
   text-align: center;
   padding: 14px 16px;
@@ -75,6 +78,10 @@ button {
 }
 
 .topnav a.active {
-  background-color: #04AA6D;
+  background-color: #26D1B7;
   color: white;
+}
+
+.topnav-links {
+  float: right;
 }

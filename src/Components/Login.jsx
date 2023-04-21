@@ -23,9 +23,6 @@ export const Login = (props) => {
             <Link to="/register">
                 <button className="link-btn">Don't have an account? Register here.</button>
             </Link>
-            <Link to="/student-selection-course">
-                <button className="link-btn">Go to Student Selection Course</button>
-            </Link>
         </div>
     )
 }

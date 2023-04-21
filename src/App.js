@@ -18,9 +18,12 @@ function App() {
     <div className="main">
       <Router>
         <div className="topnav">
-          <Link to="/register">Signup</Link>
-          <Link to="/login">Login</Link>
-          <Link to="/home">Home</Link>
+          <a class="active">Code Cats</a>
+          <div className="topnav-links">
+            <Link to="/home">Home</Link>
+            <Link to="/login">Login</Link>
+            <Link to="/register">Sign Up</Link>
+          </div>
         </div>
         <div className="App">
           <Routes>
