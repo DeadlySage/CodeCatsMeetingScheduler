@@ -6,6 +6,7 @@ import { Register } from "./Components/Register";
 import StudentSelectionCourse from "./Components/StudentSelectionCourse";
 import Home from "./Components/Home";
 import AppointmentSelection from "./Components/AppointmentSelection";
+import Calendar from "./Components/Calendar";
 
 function App() {
   const [currentForm, setCurrentForm] = useState('login');
@@ -23,6 +24,7 @@ function App() {
             <Link to="/home">Home</Link>
             <Link to="/login">Login</Link>
             <Link to="/register">Sign Up</Link>
+            <Link to="/calendar">Calendar</Link>
           </div>
         </div>
         <div className="App">
@@ -32,6 +34,7 @@ function App() {
             <Route path="/register" element={<Register onFormSwitch={() => setCurrentForm("login")} />} />
             <Route path="/student-selection-course" element={<StudentSelectionCourse />} />
             <Route path="/appointment-selection" element={<AppointmentSelection />} />
+            <Route path="/calendar" element ={<Calendar />} />
           </Routes>
         </div>
       </Router>
