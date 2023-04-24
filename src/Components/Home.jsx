@@ -12,37 +12,35 @@ const Home = () => {
         style={{
           display: 'flex',
           justifyContent: 'top',
-          padding: '30px 30px',
+          padding: '20px 20px',
         }}
       >
-        <h2>Are you a student or an instructor?</h2>
+        <h2>Are you a Student or an Instructor?</h2>
         <div
           className="button-container"
           style={{
             display: 'flex',
             justifyContent: 'center',
-            gap: '10px',
+            gap: '15px',
             flexDirection: 'row',
             alignItems: 'flex-start',
           }}
         >
           <Link to="/student-selection-course">
-            <Link to="/student-selection-course">
-            <button className="button" style={{ width: '200px' }}>
+            <button className="button" style={{ width: '200px', height: '200px' }}>
                <p>
                   <MdSchool />
                 </p>
-                <span style={{ fontSize: 18, fontWeight: 'bold' }}>Student</span>
+                <span style={{ fontSize: 20, fontWeight: 'bold' }}>Student</span>
               </button>
           </Link>
-          </Link>
 
-          <Link to="/appointment-selection">
-            <button className="button" style={{ width: '200px' }}>
+          <Link to="/login">
+            <button className="button" style={{ width: '200px', height: '200px' }}>
               <p>
                 <FaSchool />
               </p>
-              <span style={{ fontSize: 18, fontWeight: 'bold' }}>Instructor</span>
+              <span style={{ fontSize: 20, fontWeight: 'bold' }}>Instructor</span>
             </button>
           </Link>
         </div>
