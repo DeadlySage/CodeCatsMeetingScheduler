@@ -15,32 +15,33 @@ const Home = () => {
           padding: '20px 20px',
         }}
       >
-        <h2>Are you a Student or an Instructor?</h2>
+        <h3>Are you a Student or an Instructor?</h3>
+        <br></br>
         <div
           className="button-container"
           style={{
             display: 'flex',
             justifyContent: 'center',
-            gap: '15px',
+            gap: '35px',
             flexDirection: 'row',
             alignItems: 'flex-start',
           }}
         >
           <Link to="/student-selection-course">
-            <button className="button" style={{ width: '200px', height: '200px' }}>
+            <button className="button rounded" style={{ width: '200px', height: '200px' }}>
                <p>
                   <MdSchool />
                 </p>
-                <span style={{ fontSize: 20, fontWeight: 'bold' }}>Student</span>
+                <span style={{ fontSize: 20, fontWeight: 'normal' }}>Student</span>
               </button>
           </Link>
 
           <Link to="/login">
-            <button className="button" style={{ width: '200px', height: '200px' }}>
+            <button className="button rounded" style={{ width: '200px', height: '200px' }}>
               <p>
                 <FaSchool />
               </p>
-              <span style={{ fontSize: 20, fontWeight: 'bold' }}>Instructor</span>
+              <span style={{ fontSize: 20, fontWeight: 'normal' }}>Instructor</span>
             </button>
           </Link>
         </div>
