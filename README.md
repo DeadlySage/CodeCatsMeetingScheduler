@@ -3,6 +3,7 @@ A website for students to create appointments with professors for CSC 190 and CS
 
 # Developers
 Lam Phan
+Jonathan Bui
 Adrian Tandiono
 Derrick Seals-Belton
 Rick Ammann
