@@ -11,14 +11,14 @@
 <h4 align="center">A appointment management web application built using <a href="https://react.dev/" target="_blank">React</a>.</h4>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Synopsis--ac67d1?style=for-the-badge&labelColor=2C3E50" href= "#synopsis"> 
-  <img src="https://img.shields.io/badge/Features--ac67d1?style=for-the-badge&labelColor=2C3E50" href= "#features"> 
-  <img src="https://img.shields.io/badge/Testing--ac67d1?style=for-the-badge&labelColor=2C3E50" href= "#testing"> 
-  <img src="https://img.shields.io/badge/Deployment--ac67d1?style=for-the-badge&labelColor=2C3E50" href= "#deployment"> 
-  <img src="https://img.shields.io/badge/How%20To%20Use--ac67d1?style=for-the-badge&labelColor=2C3E50" href= "#how-to-use"> 
-  <img src="https://img.shields.io/badge/Project%20Timeline--ac67d1?style=for-the-badge&labelColor=2C3E50" href= "#project-timeline"> 
-  <img src="https://img.shields.io/badge/Credits--ac67d1?style=for-the-badge&labelColor=2C3E50" href= "#credits"> 
-  <img src="https://img.shields.io/badge/Contributors--ac67d1?style=for-the-badge&labelColor=2C3E50" href= "#contributors"> 
+  <a href= "#synopsis"><img src="https://img.shields.io/badge/Synopsis--ac67d1?style=for-the-badge&labelColor=2C3E50"></a> 
+  <a href= "#features"><img src="https://img.shields.io/badge/Features--ac67d1?style=for-the-badge&labelColor=2C3E50"></a>
+  <a href= "#testing"><img src="https://img.shields.io/badge/Testing--ac67d1?style=for-the-badge&labelColor=2C3E50"></a>
+  <a href= "#deployment"><img src="https://img.shields.io/badge/Deployment--ac67d1?style=for-the-badge&labelColor=2C3E50"></a>
+  <a href= "#how-to-use"><img src="https://img.shields.io/badge/How%20To%20Use--ac67d1?style=for-the-badge&labelColor=2C3E50"></a>
+  <a href= "#project-timeline"><img src="https://img.shields.io/badge/Project%20Timeline--ac67d1?style=for-the-badge&labelColor=2C3E50"></a>
+  <a href= "#credits"><img src="https://img.shields.io/badge/Credits--ac67d1?style=for-the-badge&labelColor=2C3E50"></a>
+  <a href= "#contributors"><img src="https://img.shields.io/badge/Contributors--ac67d1?style=for-the-badge&labelColor=2C3E50"></a>
 </p>
 
 
@@ -93,7 +93,7 @@ Verify the installation: Once you have installed [Node.js](https://nodejs.org/en
 $ npm -v
 
 # verify Node is properly installed
-$ nnode -v
+$ node -v
 
 ```
 
