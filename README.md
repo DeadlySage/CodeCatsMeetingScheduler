@@ -24,7 +24,7 @@
 
 # Synopsis 
 
-The goal of this project is to enable instructors to easily manage appointments with students. Current methods of sending emails to instructors / professors are inefficient and relies on the instructor to see the email and making not of it. With Meeting Scheduler it will be easier for instructors to see how many appointments they have with a quick glance. This will also make it easier for students to set up appointments as they will no longer have to write an email to the instructors. 
+The goal of this project is to enable instructors to easily manage appointments with students. Current methods of exchanging emails are inefficient and relies on the instructor to see the email and making not of it. With Meeting Scheduler it will be easier for instructors to see how many appointments they have with a quick glance. This will also make it easier for students to set up appointments as they will no longer have to write an email to the instructors. 
 
 # Features
 
