@@ -99,7 +99,7 @@ $ node -v
 
 # Project Timeline
 
-
+![](https://github.com/DeadlySage/CodeCatsMeetingScheduler/blob/main/public/Project%20Timeline.jpg)
 
 # Credits
 
