@@ -24,27 +24,27 @@
 
 # Synopsis 
 
-the goal of this project is to enable instructors to easily manage appointments with students. current methods of sending emails to instructors / proffesors are ineficient and relies on the instructor to see the email and making not of it. With Meeting Scheduler it will be easier for instructors to see at a glance how many appointments they have with a quick glance. This will also make it easier for students to set up appointments as they will no longer have to write an email to the instructors. 
+The goal of this project is to enable instructors to easily manage appointments with students. Current methods of sending emails to instructors / professors are inefficient and relies on the instructor to see the email and making not of it. With Meeting Scheduler it will be easier for instructors to see how many appointments they have with a quick glance. This will also make it easier for students to set up appointments as they will no longer have to write an email to the instructors. 
 
 # Features
 
 * Ease of Acess
-  - allow students the ability to reserve appointments using any browser.
-  - enables instructors to easily view / manage appointments through the browser.
+  - Allow students the ability to reserve appointments using any browser.
+  - Enables instructors to easily view / manage appointments through the browser.
 * Set blocks of appointment for instructors
-  - as an instructor you can set blocks of a set duration as appointments available to students.
-  - as an instructor you can make specific blocks unavailable to prevent reservation from students.
-  - prioritize certain groups of students over others.
+  - As an instructor you can set blocks of a set duration as appointments available to students.
+  - As an instructor you can make specific blocks unavailable to prevent reservation from students.
+  - Prioritize certain groups of students over others.
 * Calendar view
-  - allows instructors and students to see at a glance how many appointment blocks are available.
-  - multiple calendar views available (month, week, day).
+  - Allows instructors and students to see at a glance how many appointment blocks are available.
+  - Multiple calendar views available (month, week, day).
 * Database backend for data storage & login system
 * Signup & Login
-  - allows students & instructors to create an account and login.
-  - prevent fraudulent appointments from being made.
-  - peace of mind for instructors as website will only accept student emails provided from university. 
+  - Allows students & instructors to create an account and login.
+  - Prevent fraudulent appointments from being made.
+  - Peace of mind for instructors as the website will only accept student emails provided from university. 
 * Note on appointment blocks
-  - allows instructors to add Zoom meeting links on the appointments for ease of use for both students and instructors.
+  - Allows instructors to add Zoom meeting links on the appointments for ease of use for both students and instructors.
 * Cross platform
   - Windows, macOS and Linux ready.
 
