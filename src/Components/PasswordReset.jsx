@@ -16,7 +16,7 @@ export const PasswordReset = (props) => {
                 <form className="login-form" onSubmit={handleSubmit}>
                     <label htmlFor="email">Enter your email</label>
                     <input value={email} onChange={(e) => setEmail(e.target.value)}type="email" placeholder="youremail@csus.edu" id="email" name="email" />
-                    <button className="button rounded" style={{ width: "335px", marginTop: "15px" }} type="submit">Log In</button>
+                    <button className="button rounded" style={{ width: "335px", marginTop: "15px" }} type="submit">Submit</button>
                 </form>
             </div>
             <Link to="/login">
