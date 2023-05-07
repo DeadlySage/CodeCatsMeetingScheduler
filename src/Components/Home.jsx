@@ -16,7 +16,6 @@ const Home = () => {
         }}
       >
         <h3>Are you a Student or an Instructor?</h3>
-        <br></br>
         <div
           className="button-container"
           style={{
@@ -25,6 +24,7 @@ const Home = () => {
             gap: '35px',
             flexDirection: 'row',
             alignItems: 'flex-start',
+            marginTop: "15px"
           }}
         >
           <Link to="/student-selection-course">
