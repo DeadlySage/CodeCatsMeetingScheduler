@@ -13,7 +13,7 @@ import Kenneth_Elliot from "./Components/advisor_calendar/Kenneth_Elliot";
 import SpongeBob_Squarepants from "./Components/advisor_calendar/SpongeBob_Squarepants";
 import Patrick_Star from "./Components/advisor_calendar/Patrick_Star";
 import Yu_Chen from "./Components/advisor_calendar/Yu_Chen";
-
+import Navbar from "./Components/Navbar";
 
 function App() {
   const [currentForm, setCurrentForm] = useState('login');
@@ -26,13 +26,7 @@ function App() {
     <div className="main">
       <Router>
         <div className="topnav">
-          <a class="active">Code Cats</a>
-          <div className="topnav-links">
-            <Link to="/home">Home</Link>
-            <Link to="/login">Login</Link>
-            <Link to="/register">Sign Up</Link>
-            <Link to="/calendar">Calendar</Link>
-          </div>
+          <Navbar/>
         </div>
         <div className="App">
           <Routes>
@@ -48,7 +42,6 @@ function App() {
             <Route path="/SpongeBob_Squarepants" element ={<SpongeBob_Squarepants />} />
             <Route path="/Yu_Chen" element ={<Yu_Chen/>} />
             <Route path="/Patrick_Star" element ={<Patrick_Star />} />
-
           </Routes>
         </div>
       </Router>
