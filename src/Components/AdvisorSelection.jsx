@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect  } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
@@ -9,6 +9,26 @@ const AdvisorSelection = () => {
         navigate(`/advisor-calendar/${advisorName}`);
     }
 
+    /* still working on showing data from "/api/course" to UI */
+    // const [advisors, setAdvisors] = useState([]);
+    // useEffect(() => {
+    //     // Fetch advisors when the component mounts
+    //     fetch("/api/course")
+    //       .then((response) => {
+    //         if (!response.ok) {
+    //           throw new Error("Network response was not ok");
+    //         }
+    //         console.log(response);
+    //         return response.json();
+    //       })
+    //       .then((data) => setAdvisors(data))
+    //       .catch((error) => {
+    //         console.error("Fetch error:", error);
+    //         // Handle the error, e.g., display an error message to the user
+    //       });
+    //   }, []);
+    /************************************************************/
+      
     return (
         <div className="auth-form-container"
             style={{ display: "flex", justifyContent: "top", padding: " 25px 25px 50px 25px" }}

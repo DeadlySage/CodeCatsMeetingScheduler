@@ -17,6 +17,7 @@
     "jquery": "^3.7.1",
     "moment": "^2.29.4",
     "mongodb": "^6.1.0",
+    "mongoose": "^7.5.2",
     "nanoid": "^4.0.2",
     "react": "^18.2.0",
     "react-bootstrap-daterangepicker": "^8.0.0",
