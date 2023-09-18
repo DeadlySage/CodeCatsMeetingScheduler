@@ -77,3 +77,48 @@ connect();
 app.listen(3000, () => {
     console.log("Listening on port 3000");
 });
+
+// #57 connect full calendar to db - michael lawler - 9.17.23
+
+// use cors, bodyParser
+app.use(cors());
+app.use(bodyParser.json());
+
+// connect to mongodb
+mongoose.connect(uri)
+  .then(() => console.log('MongoDB Connected'))
+  .catch(err => console.log(err));
+
+// fields for calendar
+const eventSchema = new mongoose.Schema({
+  title: String,
+  start: Date,
+  end: Date
+});
+
+// calendar events
+const event = mongoose.model('Event', eventSchema);
+
+// routes
+app.get('/events', async (req, res) => {
+  try {
+    const events = await Event.find();
+    res.json(events);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+// update
+app.post('/events', async (req, res) => {
+  try {
+    const newEvent = new Event(req.body);
+    await newEvent.save();
+    res.json(newEvent);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
