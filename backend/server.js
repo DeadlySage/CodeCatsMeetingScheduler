@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
-const uri = "mongodb+srv://lphan:OqdpVS85l4ivEoQ2@cluster0.lyj1ljm.mongodb.net/Course?retryWrites=true&w=majority"
+const uri = "mongodb+srv://Admin:4321admin@cluster0.lyj1ljm.mongodb.net/Course?retryWrites=true&w=majority"
 
 const courseSchema = new mongoose.Schema({
   courseID: String,
