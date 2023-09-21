@@ -1,0 +1,36 @@
+# This is simply for testing the API endpoints without having to implement code elsewhere
+
+# To use this, install the "REST Client" extension in VS Code and click "Send Request"
+
+GET http://localhost:5000/users
+
+###
+
+GET http://localhost:5000/users/650b70a8a96e747acaa7cf25
+
+###
+
+POST http://localhost:5000/users/
+Content-Type: application/json
+
+{
+    "first_name": "New",
+    "last_name": "User",
+    "email": "firstperson@fakeemail.com",
+    "password": "12345678",
+    "role": "Student"
+}
+
+###
+
+DELETE http://localhost:5000/users/650bcdf89784fd4ac785606e
+
+
+###
+
+PATCH http://localhost:5000/users/6509cf12b98e21a2eb31b741
+Content-Type: application/json
+
+{
+    "name": "New Name"
+}
