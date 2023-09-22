@@ -5,7 +5,7 @@ import { AccountCreatedModal } from "./Modals/AccountCreated";
 
 export const Register = () => {
     const [email, setEmail] = useState('');
-    const [password, setpassword] = useState('');
+    const [password, setPassword] = useState('');
     const [reTypePassword, setReTypePassword] = useState('');
     const [first_name, setfirst_name] = useState('');
     const [last_name, setlast_name] = useState('');
@@ -15,6 +15,7 @@ export const Register = () => {
     const [showUpperError, setShowUpperError] = useState(false);
     const [showLowerError, setShowLowerError] = useState(false);
     const [showDigitError, setShowDigitError] = useState(false);
+    const [validPassword, setValidPassword] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -51,28 +52,43 @@ export const Register = () => {
         return password === reTypePassword;
     }
 
-    const hasLength = (password) => {
+    const isValidPassword = (password) => {
+        setPassword(password);
+        const length = passwordHasLength(password);
+        const upper = passwordHasUppercase(password);
+        const lower = passwordHasLowercase(password);
+        const digit = passwordHasDigit(password);
+        setValidPassword(length && upper && lower && digit);
+        return validPassword;
+    }
+
+    const passwordHasLength = (password) => {
         const result = password.length >= 8;
         setShowLengthError(!result);
         return result;
     }
 
-    const hasUppercase = (password) => {
+    const passwordHasUppercase = (password) => {
         const result = /[A-Z]/.test(password);
         setShowUpperError(!result);
         return result;
     }
 
-    const hasLowercase = (password) => {
+    const passwordHasLowercase = (password) => {
         const result = /[a-z]/.test(password);
         setShowLowerError(!result);
         return result;
     }
 
-    const hasDigit = (password) => {
+    const passwordHasDigit = (password) => {
         const result = /\d/.test(password);
         setShowDigitError(!result);
         return result;
+    }
+
+    const handlePasswordChange = (password) => {
+        setPassword(password);
+        isValidPassword(password);
     }
 
     return (
@@ -93,15 +109,30 @@ export const Register = () => {
                             <label htmlFor="email">Email</label>
                             <input value={email} onChange={(e) => setEmail(e.target.value)}type="email" placeholder="youremail@csus.edu" id="email" name="email" />
                         </div>
+                        {!validPassword && password.length >= 1 && (
+                            <div className="row mt-3">
+                                <div className="error-message">
+                                    {showLengthError && (
+                                        <p><i className="mdi mdi-alert-circle-outline"></i> Password must have at least 8 characters</p>
+                                    )}
+                                    {showUpperError && (
+                                        <p><i className="mdi mdi-alert-circle-outline"></i> Password must have an uppercase character</p>
+                                    )}
+                                    {showLowerError && (
+                                        <p><i className="mdi mdi-alert-circle-outline"></i> Password must have a lowercase character</p>
+                                    )}
+                                    {showDigitError && (
+                                        <p><i className="mdi mdi-alert-circle-outline"></i> Password must have a number</p>
+                                    )}
+                                </div>
+                            </div>
+                        )}
                         <div className="row">
-                            <label htmlFor="password">password</label>
-                            <input value={password} onChange={(e) => setpassword(e.target.value)} type="password" placeholder="********" id="password" name="password" />
+                            <label htmlFor="password">Password</label>
+                            <input value={password} onChange={(e) => handlePasswordChange(e.target.value)} type="password" placeholder="********" id="password" name="password" />
                         </div>
                         <div className="row">
-                            {showLengthError && <p>Password must be longer than 8 characters</p>}
-                        </div>
-                        <div className="row">
-                            <label htmlFor="reTypePassword">re-type password</label>
+                            <label htmlFor="reTypePassword">Re-type password</label>
                             <input value={reTypePassword} onChange={(e) => setReTypePassword(e.target.value)} type="password" placeholder="********" id="reTypePassword" name="reTypePassword" />
                         </div>
                         <div className="row">
@@ -116,11 +147,11 @@ export const Register = () => {
                 )}
                 {openModal && <AccountCreatedModal />}
                 {isLoading && (
-                <div className="loading-overlay">
-                    <div className="loading-spinner">
-                        <div className="spinner"></div>
+                    <div className="loading-overlay">
+                        <div className="loading-spinner">
+                            <div className="spinner"></div>
+                        </div>
                     </div>
-                </div>
                 )}
             </form>
         </div>

@@ -15,6 +15,7 @@ import Patrick_Star from "./Components/advisor_calendar/Patrick_Star";
 import Yu_Chen from "./Components/advisor_calendar/Yu_Chen";
 import Navbar from "./Components/Navbar";
 import { Navigate } from 'react-router-dom';
+import '@mdi/font/css/materialdesignicons.min.css';
 
 function App() {
   const [currentForm, setCurrentForm] = useState('login');
