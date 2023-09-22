@@ -52,25 +52,25 @@ export const Register = () => {
     }
 
     const hasLength = (password) => {
-        result = password.length >= 8;
+        const result = password.length >= 8;
         setShowLengthError(!result);
         return result;
     }
 
     const hasUppercase = (password) => {
-        result = /[A-Z]/.test(password);
+        const result = /[A-Z]/.test(password);
         setShowUpperError(!result);
         return result;
     }
 
     const hasLowercase = (password) => {
-        result = /[a-z]/.test(password);
+        const result = /[a-z]/.test(password);
         setShowLowerError(!result);
         return result;
     }
 
     const hasDigit = (password) => {
-        result = /\d/.test(password);
+        const result = /\d/.test(password);
         setShowDigitError(!result);
         return result;
     }
