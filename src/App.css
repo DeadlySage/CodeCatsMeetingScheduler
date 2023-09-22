@@ -1,9 +1,9 @@
 .App {
-  /* text-align: center; */
-  /* display: flex;
+  text-align: center;
+  display: flex;
   min-height: 100vh;
   align-items: center;
-  justify-content: center; */
+  justify-content: center;
   color: white;
   background-color: white;
 }
@@ -11,7 +11,8 @@
 .auth-form-container, .login-form, .register-form, .modal-container {
   display: flex;
   flex-direction: column;
-  background-color: #2C3E50
+  background-color: #2C3E50;
+  max-width: fit-content;
 }
 
 @media screen and (min-width: 600px) {
@@ -30,7 +31,7 @@ label {
 
 input {
   margin: 0.5rem 0;
-  padding: 1rem;
+  padding: 0.5rem;
   border: none;
   border-radius: 10px;
 }
@@ -38,7 +39,7 @@ input {
 button {
   border: none;
   background-color: #26D1B7;
-  padding: 20px;
+  padding: 10px;
   border-radius: 10px;
   cursor: pointer;
   color: white;

@@ -16,6 +16,7 @@ export const Register = () => {
     const [showLowerError, setShowLowerError] = useState(false);
     const [showDigitError, setShowDigitError] = useState(false);
     const [validPassword, setValidPassword] = useState(false);
+    const [passwordsMatch, setPasswordsMatch] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -49,7 +50,7 @@ export const Register = () => {
     }
 
     const verifyPasswordsMatch = () => {
-        return password === reTypePassword;
+        setPasswordsMatch(password === reTypePassword);
     }
 
     const isValidPassword = (password) => {
@@ -89,6 +90,10 @@ export const Register = () => {
     const handlePasswordChange = (password) => {
         setPassword(password);
         isValidPassword(password);
+    }
+    const handleReTypePasswordChange = (password) => {
+        setReTypePassword(password);
+        verifyPasswordsMatch();
     }
 
     return (
@@ -131,16 +136,23 @@ export const Register = () => {
                             <label htmlFor="password">Password</label>
                             <input value={password} onChange={(e) => handlePasswordChange(e.target.value)} type="password" placeholder="********" id="password" name="password" />
                         </div>
+                        {!passwordsMatch && password.length >= 1 && (
+                            <div className="row mt-3">
+                                <div className="error-message">
+                                    <p>Passwords do not match</p>
+                                </div>
+                            </div>
+                        )}
                         <div className="row">
                             <label htmlFor="reTypePassword">Re-type password</label>
-                            <input value={reTypePassword} onChange={(e) => setReTypePassword(e.target.value)} type="password" placeholder="********" id="reTypePassword" name="reTypePassword" />
+                            <input value={reTypePassword} onChange={(e) => handleReTypePasswordChange(e.target.value)} type="password" placeholder="********" id="reTypePassword" name="reTypePassword" />
                         </div>
-                        <div className="row">
-                            <button className="button rounded" style={{ width: "100%", marginTop: "30px" }} type="submit">Submit</button>
+                        <div className="row" style={{justifyContent: "center"}}>
+                            <button className="button rounded" style={{ width: "50%", marginTop: "30px" }} type="submit">Submit</button>
                         </div>
                         <div className="row">
                             <Link to="/login">
-                                <button className="link-btn">Already have an account? Login here.</button>
+                                <button className="link-btn" style={{ marginTop: "30px" }}>Already have an account? Login here.</button>
                             </Link>
                         </div>
                     </div>
