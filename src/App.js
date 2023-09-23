@@ -16,6 +16,7 @@ import Yu_Chen from "./Components/advisor_calendar/Yu_Chen";
 import Navbar from "./Components/Navbar";
 import { Navigate } from 'react-router-dom';
 import '@mdi/font/css/materialdesignicons.min.css';
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 function App() {
   const [currentForm, setCurrentForm] = useState('login');

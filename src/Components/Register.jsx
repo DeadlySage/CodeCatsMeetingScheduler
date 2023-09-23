@@ -1,8 +1,8 @@
 import axios from "axios";
-import React, { useState } from "react";
-import { Link } from 'react-router-dom';
-import { AccountCreatedModal } from "./Modals/AccountCreated";
+import React, { useState, } from "react";
+import { Link, useNavigate } from 'react-router-dom';
 import "./cssComponents/Register.css";
+import CustomModal from "./CustomModal";
 
 export const Register = () => {
     const [email, setEmail] = useState('');
@@ -11,20 +11,21 @@ export const Register = () => {
     const [first_name, setfirst_name] = useState('');
     const [last_name, setlast_name] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [openModal, setOpenModal] = useState(false);
+    const [successModal, setSuccessModal] = useState(false);
     const [errors, setErrors] = useState([]);
     const [showErrorModal, setShowErrorModal] = useState(false);
+    const navigate = useNavigate();
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Entered handleSubmit");
-        console.log("Errors before clearing = " + errors.toString());
-        setErrors([]);
-        console.log("Cleared errors. Errors = " + errors.toString());
-        handleFormValidation();
-        console.log("Validated form. Errors = " + errors.toString());
+        const formErrors = handleFormValidation();
+        console.log("Finsihed validing. Form Errors = " + formErrors);
+        // useEffect(() => {
+        //     handleFormValidation();
+        // }, [errors]);
 
-        if(errors.length === 0) {
+        if(formErrors.length === 0) {
             try{
                 setIsLoading(true);
     
@@ -35,9 +36,10 @@ export const Register = () => {
                     password: password,
                     role: "student"
                 });
-                
+                console.log(response.status);
                 if (response.status === 201){
-                    setOpenModal(true);
+                    console.log("BLAH");
+                    setSuccessModal(true);
                 }
             } catch (err) {
                 console.log(err);
@@ -47,34 +49,58 @@ export const Register = () => {
                 }, 500); 
             }
         } else {
-            setErrors(errors);
             setShowErrorModal(true);
         }
     }
 
+    const handleCloseErrorModal = () => {
+        setShowErrorModal(false);
+    }
+
+    const handleRedirectToLogin = () => {
+        navigate("/login", {replace: true})
+    }
+
     const handleFormValidation = () => {
-        const regExp = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+        const emailRegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        const result = [];
 
         if(first_name.trim() === "") {
-            setErrors([...errors, "Please enter your first name"]);
+            result.push("Missing First Name");
         }
         if(last_name.trim() === "") {
-            setErrors([...errors, "Please enter your last name"]);
+            result.push("Missing Last Name");
         }
         if(email.trim() === "") {
-            setErrors([...errors, "Please enter your email"]);
+            result.push("Missing Email");
+        } else if (!emailRegExp.test(email.trim())) {
+            result.push("Invalid Email");
         }
-        if(password.trim() === "" || !regExp.test(password.trim())){
-            setErrors([...errors, "Password is invalid"]);
-            setErrors([...errors, "Password must have 8 characters"]);
-            setErrors([...errors, "Password must have an uppercase character"]);
-            setErrors([...errors, "Password must have a lowercase character "]);
-            setErrors([...errors, "Password must have a number"]);
-            setErrors([...errors, "Password must have a special character"]);
+        if(password.trim() === ""){
+            result.push("Missing Password");
+        } else {
+            if (!/^.{9,}$/.test(password.trim())) {
+                result.push("Password must have at least 8 characters");
+            } 
+            if (!/^.*[A-Z]/.test(password.trim())) {
+                result.push("Password must contain an uppercase character");
+            } 
+            if (!/^.*[a-z]/.test(password.trim())) {
+                result.push("Password must contain a lowercase character");
+            }
+            if (!/^.*[0-9]/.test(password.trim())) {
+                result.push("Password must contain a number");
+            }
+            if (!/^.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/.test(password.trim())) {
+                result.push("Password must contain a special character");
+            }
         }
         if(password !== confirmPassword) {
-            setErrors([...errors, "Passwords do not match"]);
+            result.push("Passwords do not match");
         }
+        setErrors(result);
+        console.log("Leaving validation. Result = " + result);
+        return result;
     }
 
     return (
@@ -99,17 +125,32 @@ export const Register = () => {
                 </Link>
             </div>
             {showErrorModal && (
-                <div className="error-modal">
-                    <h3><i className="mdi mdi-alert-circle-outline"></i> Error(s) occurred:</h3>
+                <CustomModal
+                    title= {<div><i class="mdi mdi-alert-circle-outline"></i> Errors Occurred</div>}
+                    isOpen={showErrorModal}
+                    toggle={handleCloseErrorModal}
+                    onCancel={handleCloseErrorModal}
+                    headerBackgroundClass="bg-danger"
+                    cancelText={"Close"}
+                >
                     <ul>
                         {errors.map((error, i) => (
                             <li key={i}>{error}</li>
                         ))}
                     </ul>
-                    <button onClick={() => setShowErrorModal(false)}>Close</button>
-                </div>
+                </CustomModal>
             )}
-            {openModal && <AccountCreatedModal />}
+            {successModal && (
+                <CustomModal
+                title= {<div style={{color: "white"}}><i class="bi bi-check-circle-fill"></i>{" Congrats, " + first_name + "!"}</div>}
+                isOpen={successModal}
+                onSubmit={handleRedirectToLogin}
+                submitText={"Log in"}
+                headerBackgroundClass="bg-success"
+            >
+                <p>Your account was successfully created. You may now proceed to the login page.</p>
+            </CustomModal>
+            )}
             {isLoading && (
                 <div className="loading-overlay">
                     <div className="loading-spinner">

@@ -11,11 +11,12 @@ export default function CustomModal({
     submitText,
     onDelete,
     deleteText,
-    children
+    children,
+    headerBackgroundClass = ""
 }) {
     return(
         <Modal isOpen={isOpen} toggle={toggle}>
-            <ModalHeader toggle={toggle}>{title}</ModalHeader>
+            <ModalHeader className= {headerBackgroundClass} toggle={toggle}>{title}</ModalHeader>
             <ModalBody>{children}</ModalBody>
             <ModalFooter>
                 {

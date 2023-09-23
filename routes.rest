@@ -18,19 +18,20 @@ Content-Type: application/json
     "last_name": "User",
     "email": "firstperson@fakeemail.com",
     "password": "12345678",
-    "role": "Student"
+    "role": "Student",
+    "role_toll": "Student"
 }
 
 ###
 
-DELETE http://localhost:3001/users/650c99e5a91e40dcb15fd004
+DELETE http://localhost:3001/users/650cc8ff10d7a095e0e4589d
 
 
 ###
 
-PATCH http://localhost:3001/users/6509cf12b98e21a2eb31b741
+PATCH http://localhost:3001/users/650eb1ba7181dd9d62ea92d5
 Content-Type: application/json
 
 {
-    "name": "New Name"
+    "first_name": "New"
 }
