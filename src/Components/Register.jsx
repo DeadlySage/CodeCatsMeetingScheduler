@@ -184,7 +184,11 @@ export const Register = () => {
             </div>
             {showErrorModal && (
                 <CustomModal
-                    title= {<div><i class="mdi mdi-alert-circle-outline"></i> Errors Occurred</div>}
+                    title= {
+                            <div style={{color: "white"}}>
+                                <i className="mdi mdi-alert-circle-outline"></i>
+                                {" Error"}
+                            </div>}
                     isOpen={showErrorModal}
                     toggle={handleCloseErrorModal}
                     onCancel={handleCloseErrorModal}
@@ -201,8 +205,9 @@ export const Register = () => {
             {successModal && (
                 <CustomModal
                 title= {
-                        <div style={{color: "white"}}>
-                            <i class="bi bi-check-circle-fill"></i>
+                        <div 
+                            style={{color: "white"}}>
+                            <i className="bi bi-check-circle-fill"></i>
                             {" Congrats, " + first_name + "!"}
                         </div>
                         }
