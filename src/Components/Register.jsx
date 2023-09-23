@@ -14,21 +14,18 @@ export const Register = () => {
     const [successModal, setSuccessModal] = useState(false);
     const [errors, setErrors] = useState([]);
     const [showErrorModal, setShowErrorModal] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const formErrors = handleFormValidation();
-        console.log("Finsihed validing. Form Errors = " + formErrors);
-        // useEffect(() => {
-        //     handleFormValidation();
-        // }, [errors]);
 
         if(formErrors.length === 0) {
             try{
                 setIsLoading(true);
-    
+
                 const response = await axios.post("/users", {
                     first_name: first_name,
                     last_name: last_name,
@@ -36,17 +33,14 @@ export const Register = () => {
                     password: password,
                     role: "student"
                 });
-                console.log(response.status);
+
                 if (response.status === 201){
-                    console.log("BLAH");
                     setSuccessModal(true);
                 }
             } catch (err) {
                 console.log(err);
             } finally {
-                setTimeout(() => {
-                    setIsLoading(false);
-                }, 500); 
+                setIsLoading(false);
             }
         } else {
             setShowErrorModal(true);
@@ -60,6 +54,10 @@ export const Register = () => {
     const handleRedirectToLogin = () => {
         navigate("/login", {replace: true})
     }
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
 
     const handleFormValidation = () => {
         const emailRegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -99,7 +97,6 @@ export const Register = () => {
             result.push("Passwords do not match");
         }
         setErrors(result);
-        console.log("Leaving validation. Result = " + result);
         return result;
     }
 
@@ -108,20 +105,81 @@ export const Register = () => {
             <h2>Sign Up</h2>
             <div>
                 <form className="register-form" onSubmit={handleSubmit}>
-                    <label htmlFor="first_name">First Name</label>
-                    <input value={first_name} name="first_name" onChange={(e) => setfirst_name(e.target.value)} id="first_name" placeholder="First Name" />
-                    <label htmlFor="last_name">Last Name</label>
-                    <input value={last_name} name="last_name" onChange={(e) => setlast_name(e.target.value)} id="last_name" placeholder="Last Name" />
-                    <label htmlFor="email">Email</label>
-                    <input value={email} onChange={(e) => setEmail(e.target.value)}type="email" placeholder="youremail@csus.edu" id="email" name="email" />
-                    <label htmlFor="password">Password</label>
-                    <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="********" id="password" name="password" />
-                    <label htmlFor="confirmPassword">Confirm Password</label>
-                    <input value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} type="password" placeholder="********" id="confirmPassword" name="confirmPassword" />
-                    <button className="button rounded" style={{ width: "100%", marginTop: "30px" }} type="submit">Submit</button>
+                    <label htmlFor="first_name">
+                        First Name
+                    </label>
+                    <input 
+                        value={first_name} 
+                        name="first_name" 
+                        onChange={(e) => setfirst_name(e.target.value)} 
+                        id="first_name" 
+                        placeholder="First Name" 
+                    />
+                    <label htmlFor="last_name">
+                        Last Name
+                    </label>
+                    <input 
+                        value={last_name}  
+                        name="last_name" 
+                        onChange={(e) => setlast_name(e.target.value)} 
+                        id="last_name" placeholder="Last Name" 
+                    />
+                    <label htmlFor="email">
+                        Email
+                    </label>
+                    <input 
+                        value={email} 
+                        onChange={(e) => setEmail(e.target.value)}
+                        type="email" 
+                        placeholder="youremail@csus.edu" 
+                        id="email" 
+                        name="email" />
+                    <label htmlFor="password" className="password-label">
+                        Password
+                        <button
+                            type="button"
+                            onClick={togglePasswordVisibility}
+                            className="password-toggle-button"
+                        >
+                            {showPassword ? 
+                                <i className="bi bi-eye"></i> : 
+                                <i className="bi bi-eye-slash"></i>}
+                        </button>
+                    </label>
+                    <input 
+                    value={password} 
+                    onChange={(e) => setPassword(e.target.value)} 
+                    type={showPassword ? "text" : "password"} 
+                    placeholder="********" 
+                    id="password" 
+                    name="password" 
+                    />
+                    <label htmlFor="confirmPassword">
+                        Confirm Password
+                        </label>
+                    <input 
+                        value={confirmPassword} 
+                        onChange={(e) => setConfirmPassword(e.target.value)} 
+                        type={showPassword ? "text" : "password"} 
+                        placeholder="********" 
+                        id="confirmPassword" 
+                        name="confirmPassword" 
+                    />
+                    <button 
+                        className="button rounded" 
+                        style={{ width: "100%", marginTop: "30px" }} 
+                        type="submit"
+                    >
+                        Submit
+                    </button>
                 </form>
                 <Link to="/login">
-                    <button className="link-btn" style={{ marginTop: "30px" }}>Already have an account? Login here.</button>
+                    <button 
+                        className="link-btn" 
+                        style={{ marginTop: "30px" }}
+                    >
+                        Already have an account? Login here.
+                    </button>
                 </Link>
             </div>
             {showErrorModal && (
@@ -142,14 +200,19 @@ export const Register = () => {
             )}
             {successModal && (
                 <CustomModal
-                title= {<div style={{color: "white"}}><i class="bi bi-check-circle-fill"></i>{" Congrats, " + first_name + "!"}</div>}
+                title= {
+                        <div style={{color: "white"}}>
+                            <i class="bi bi-check-circle-fill"></i>
+                            {" Congrats, " + first_name + "!"}
+                        </div>
+                        }
                 isOpen={successModal}
                 onSubmit={handleRedirectToLogin}
                 submitText={"Log in"}
                 headerBackgroundClass="bg-success"
-            >
-                <p>Your account was successfully created. You may now proceed to the login page.</p>
-            </CustomModal>
+                >
+                    <p>Your account was successfully created. You may now proceed to the login page.</p>
+                </CustomModal>
             )}
             {isLoading && (
                 <div className="loading-overlay">

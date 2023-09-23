@@ -34,71 +34,19 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
-  
-  .error-message {
-    border-radius: 10px;
-    padding: 10px;
-    background-color: #ba2346;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    text-align: left;
-    max-width: 100%;
-    max-height: fit-content;
-    margin-top: 10px;
-  }
-  
-  .error-message p {
-    margin: 0;
-  }
-  
-  .error-row {
-    margin-top: 10px;
-  }
-  
-  
-  
-  .error-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+
+  .password-label {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    justify-content: space-between; 
     align-items: center;
-    z-index: 999; /* Ensure it appears on top of other content */
-    color: #fff; /* Text color */
-    padding: 20px;
   }
   
-  .error-modal h3 {
-    font-size: 24px;
-    margin-bottom: 10px;
-  }
-  
-  .error-modal ul {
-    list-style-type: none;
-    padding: 0;
-    text-align: left;
-  }
-  
-  .error-modal ul li {
-    font-size: 18px;
-    margin-bottom: 10px;
-  }
-  
-  .error-modal button {
-    background-color: #ff0000; /* Red background for the close button */
-    color: #fff;
+  .password-toggle-button {
+    background: none;
     border: none;
-    padding: 10px 20px;
     cursor: pointer;
-    font-size: 16px;
-    margin-top: 20px;
-    border-radius: 5px;
-  }
-  
-  .error-modal button:hover {
-    background-color: #cc0000; /* Darker red on hover */
+    padding: 0;
+    /* margin-left: 5px; <===== replace line 50 with this and remove line 40 to make it left aligned*/
+    margin: 0;
+    align-self: flex-end;
   }
