@@ -13,12 +13,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    meetings: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "meeting"
-        }
-    ],
     blocked_time: [
         {
             start:{

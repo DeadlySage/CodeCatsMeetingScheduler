@@ -12,12 +12,11 @@
   display: flex;
   flex-direction: column;
   background-color: #2C3E50;
-  max-width: fit-content;
 }
 
-@media screen and (min-width: 600px) {
+@media screen and (min-width: 400px) {
   .auth-form-container {
-    padding: 5rem;
+    padding: 35px;
     border: 1px solid white;
     border-radius: 10px;
     margin: 0.5rem;
@@ -126,58 +125,3 @@ span {
   margin-left: 16px;
 }
 
-.loading-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.8); /* Semi-transparent gray background */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999; /* Ensure it's on top of the form */
-}
-
-.loading-spinner {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.spinner {
-  border: 4px solid #f3f3f3; /* Light gray border */
-  border-top: 4px solid #3498db; /* Blue border for spinning effect */
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 2s linear infinite; /* Rotation animation */
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.error-message {
-  border-radius: 10px;
-  padding: 10px;
-  background-color: #ba2346;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  text-align: left;
-  max-width: 100%;
-  max-height: fit-content;
-  margin-top: 10px;
-}
-
-.error-message p {
-  margin: 0;
-}
-
-.error-row {
-  margin-top: 10px;
-}

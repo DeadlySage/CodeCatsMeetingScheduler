@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from 'react-router-dom';
 
-export const PasswordReset = (props) => {
+export const ForgotPassword = (props) => {
     const [email, setEmail] = useState('');
 
     const handleSubmit = (e) => {
@@ -11,7 +11,7 @@ export const PasswordReset = (props) => {
 
     return (
         <div className="auth-form-container">
-            <h2>Reset Password</h2>
+            <h2>Forgot Password?</h2>
             <div style={{ marginTop: "10px" }}>
                 <form className="login-form" onSubmit={handleSubmit}>
                     <label htmlFor="email">Enter your email</label>
@@ -25,3 +25,5 @@ export const PasswordReset = (props) => {
         </div>
     )
 }
+
+export default ForgotPassword;

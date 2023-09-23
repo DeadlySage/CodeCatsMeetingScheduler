@@ -26,7 +26,6 @@ router.post("/", async (req, res) => {
         password: req.body.password,
         role: req.body.role
     });
-    console.log("Trying to post...");
     try {
         const newUser = await user.save();
         res.status(201).json(newUser);
@@ -37,17 +36,23 @@ router.post("/", async (req, res) => {
 
 //Update
 router.patch("/:id", getUser, async (req, res) => {
-    if ( req.body.firstName != null ) {
-        res.user.firstName = req.body.firstName;
+    if ( req.body.first_name != null ) {
+        res.user.first_name = req.body.first_name;
     }
-    if ( req.body.lastName != null ) {
-        res.user.lastName = req.body.lastName;
+    if ( req.body.last_name != null ) {
+        res.user.last_name = req.body.last_name;
     }
     if ( req.body.email != null ) {
         res.user.email = req.body.email;
     }
     if ( req.body.password != null ) {
         res.user.password = req.body.password;
+    }
+    if (req.body.role != null) {
+        res.user.role = req.user.role;
+    }
+    if (req.body.blocked_time != null) {
+        res.user.blocked_time.push(req.user.block_time);
     }
     try {
         const updatedUser = await res.user.save(); 
