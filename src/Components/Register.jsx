@@ -3,17 +3,19 @@ import React, { useState, } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import "./cssComponents/Register.css";
 import CustomModal from "./CustomModal";
+import {UserRole} from "./Constants";
 
 export const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [first_name, setfirst_name] = useState('');
-    const [last_name, setlast_name] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [successModal, setSuccessModal] = useState(false);
     const [errors, setErrors] = useState([]);
     const [showErrorModal, setShowErrorModal] = useState(false);
+    const [showUserExistsModal, setShowUserExistsModal] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
@@ -27,18 +29,20 @@ export const Register = () => {
                 setIsLoading(true);
 
                 const response = await axios.post("/users", {
-                    first_name: first_name,
-                    last_name: last_name,
+                    firstName: firstName,
+                    lastName: lastName,
                     email: email,
                     password: password,
-                    role: "student"
+                    roleId: UserRole.student
                 });
 
-                if (response.status === 201){
-                    setSuccessModal(true);
-                }
+                setSuccessModal(true);
             } catch (err) {
-                console.log(err);
+                if (err.response.status === 300){
+                    setShowUserExistsModal(true);
+                } else {
+                    console.log(err);
+                }
             } finally {
                 setIsLoading(false);
             }
@@ -63,10 +67,10 @@ export const Register = () => {
         const emailRegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         const result = [];
 
-        if(first_name.trim() === "") {
+        if(firstName.trim() === "") {
             result.push("Missing First Name");
         }
-        if(last_name.trim() === "") {
+        if(lastName.trim() === "") {
             result.push("Missing Last Name");
         }
         if(email.trim() === "") {
@@ -105,24 +109,24 @@ export const Register = () => {
             <h2>Sign Up</h2>
             <div>
                 <form className="register-form" onSubmit={handleSubmit}>
-                    <label htmlFor="first_name">
+                    <label htmlFor="firstName">
                         First Name
                     </label>
                     <input 
-                        value={first_name} 
-                        name="first_name" 
-                        onChange={(e) => setfirst_name(e.target.value)} 
-                        id="first_name" 
+                        value={firstName} 
+                        name="firstName" 
+                        onChange={(e) => setFirstName(e.target.value)} 
+                        id="firstName" 
                         placeholder="First Name" 
                     />
-                    <label htmlFor="last_name">
+                    <label htmlFor="lastName">
                         Last Name
                     </label>
                     <input 
-                        value={last_name}  
-                        name="last_name" 
-                        onChange={(e) => setlast_name(e.target.value)} 
-                        id="last_name" placeholder="Last Name" 
+                        value={lastName}  
+                        name="lastName" 
+                        onChange={(e) => setLastName(e.target.value)} 
+                        id="lastName" placeholder="Last Name" 
                     />
                     <label htmlFor="email">
                         Email
@@ -136,24 +140,29 @@ export const Register = () => {
                         name="email" />
                     <label htmlFor="password" className="password-label">
                         Password
-                        <button
-                            type="button"
-                            onClick={togglePasswordVisibility}
-                            className="password-toggle-button"
-                        >
-                            {showPassword ? 
-                                <i className="bi bi-eye"></i> : 
-                                <i className="bi bi-eye-slash"></i>}
-                        </button>
                     </label>
-                    <input 
-                    value={password} 
-                    onChange={(e) => setPassword(e.target.value)} 
-                    type={showPassword ? "text" : "password"} 
-                    placeholder="********" 
-                    id="password" 
-                    name="password" 
-                    />
+                    <div className="container">
+                        <div className="row">
+                            <input 
+                                value={password} 
+                                onChange={(e) => setPassword(e.target.value)} 
+                                type={showPassword ? "text" : "password"} 
+                                placeholder={showPassword ? "Enter password" : "********"} 
+                                id="password" 
+                                name="password" 
+                                className="col-md-10"
+                            />
+                            <button
+                                type="button"
+                                onClick={togglePasswordVisibility}
+                                className="password-toggle-button col-md-2"
+                            >
+                                {showPassword ? 
+                                    <i className="bi bi-eye" id="passwordIcon"></i> : 
+                                    <i className="bi bi-eye-slash" id="passwordIcon"></i>}
+                            </button>
+                        </div>
+                    </div>
                     <label htmlFor="confirmPassword">
                         Confirm Password
                         </label>
@@ -161,8 +170,7 @@ export const Register = () => {
                         value={confirmPassword} 
                         onChange={(e) => setConfirmPassword(e.target.value)} 
                         type={showPassword ? "text" : "password"} 
-                        placeholder="********" 
-                        id="confirmPassword" 
+                        placeholder={showPassword ? "Enter password" : "********"}                        id="confirmPassword" 
                         name="confirmPassword" 
                     />
                     <button 
@@ -191,9 +199,7 @@ export const Register = () => {
                             </div>}
                     isOpen={showErrorModal}
                     toggle={handleCloseErrorModal}
-                    onCancel={handleCloseErrorModal}
                     headerBackgroundClass="bg-danger"
-                    cancelText={"Close"}
                 >
                     <ul>
                         {errors.map((error, i) => (
@@ -204,19 +210,37 @@ export const Register = () => {
             )}
             {successModal && (
                 <CustomModal
-                title= {
-                        <div 
-                            style={{color: "white"}}>
-                            <i className="bi bi-check-circle-fill"></i>
-                            {" Congrats, " + first_name + "!"}
-                        </div>
-                        }
-                isOpen={successModal}
-                onSubmit={handleRedirectToLogin}
-                submitText={"Log in"}
-                headerBackgroundClass="bg-success"
+                    title= {
+                            <div style={{color: "white"}}>
+                                <i className="bi bi-check-circle-fill"></i>
+                                {" Congrats, " + firstName + "!"}
+                            </div>
+                            }
+                    isOpen={successModal}
+                    onSubmit={handleRedirectToLogin}
+                    submitText={"Log in"}
+                    headerBackgroundClass="bg-success"
                 >
-                    <p>Your account was successfully created. You may now proceed to the login page.</p>
+                        <p>Your account was successfully created. You may now proceed to the login page.</p>
+                </CustomModal>
+            )}
+            {showUserExistsModal && (
+                <CustomModal
+                    title= {
+                            <div style={{color: "black"}}>
+                                <i className="bi bi-person-fill"></i>
+                                {" User Already Exists"}
+                            </div>
+                            }
+                    toggle={() => {setShowUserExistsModal(false)}}
+                    isOpen={showUserExistsModal}
+                    headerBackgroundClass="bg-warning"
+                >
+                    <p>
+                        A user with the email <strong>{email}</strong> already exists.
+                        <br/><br/>
+                        <Link to="/login">Go to login page</Link>
+                    </p>
                 </CustomModal>
             )}
             {isLoading && (

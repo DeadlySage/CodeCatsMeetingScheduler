@@ -18,7 +18,8 @@ export default function CustomModal({
         <Modal isOpen={isOpen} toggle={toggle}>
             <ModalHeader className= {headerBackgroundClass} toggle={toggle}>{title}</ModalHeader>
             <ModalBody>{children}</ModalBody>
-            <ModalFooter>
+            {(onCancel || onSubmit || onDelete) && (
+                <ModalFooter>
                 {
                     onCancel &&(
                         <Button color ='secondary' onClick={onCancel}>
@@ -28,7 +29,7 @@ export default function CustomModal({
                 }
                 {
                     onDelete &&(
-                        <Button color = 'primary' onClick={onDelete}>
+                        <Button color = 'danger' onClick={onDelete}>
                             {deleteText || 'Delete'} 
                         </Button>
                     )
@@ -40,7 +41,9 @@ export default function CustomModal({
                         </Button>
                     )
                 }
-            </ModalFooter>
+                </ModalFooter>
+            )}
+            
         </Modal>
     );
 }

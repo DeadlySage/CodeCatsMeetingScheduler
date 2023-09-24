@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
+const { getSearchQuery } = require("../services/users");
+
 
 //Get all
 router.get("/", async (req, res) => {
@@ -19,16 +21,26 @@ router.get("/:id", getUser, (req, res) => {
 
 //Create
 router.post("/", async (req, res) => {
+    console.log(req.body.email);
+    console.log(req.body);
+    const existingUserWithEmail = await getSearchQuery({email: req.body.email});
+    if(existingUserWithEmail.length > 0) {
+        res.status(300).json({ 
+            message: "An account with that email address already exists." 
+        })
+        return;
+    }
+
     const user = new User({
-        first_name : req.body.first_name,
-        last_name : req.body.last_name,
+        first_name : req.body.firstName,
+        last_name : req.body.lastName,
         email: req.body.email,
         password: req.body.password,
-        role: req.body.role
+        role_id: req.body.roleId
     });
     try {
         const newUser = await user.save();
-        res.status(201).json(newUser);
+        res.status(200).json(newUser);
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
@@ -36,11 +48,11 @@ router.post("/", async (req, res) => {
 
 //Update
 router.patch("/:id", getUser, async (req, res) => {
-    if ( req.body.first_name != null ) {
-        res.user.first_name = req.body.first_name;
+    if ( req.body.firstName != null ) {
+        res.user.first_name = req.body.firstName;
     }
-    if ( req.body.last_name != null ) {
-        res.user.last_name = req.body.last_name;
+    if ( req.body.lastName != null ) {
+        res.user.last_name = req.body.lastName;
     }
     if ( req.body.email != null ) {
         res.user.email = req.body.email;
@@ -48,11 +60,8 @@ router.patch("/:id", getUser, async (req, res) => {
     if ( req.body.password != null ) {
         res.user.password = req.body.password;
     }
-    if (req.body.role != null) {
-        res.user.role = req.user.role;
-    }
-    if (req.body.blocked_time != null) {
-        res.user.blocked_time.push(req.user.block_time);
+    if (req.body.roleId != null) {
+        res.user.role_id = req.user.roleId;
     }
     try {
         const updatedUser = await res.user.save(); 

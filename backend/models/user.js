@@ -9,22 +9,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    role: {
-        type: String,
+    role_id: {
+        type: Number,
         required: true
     },
-    blocked_time: [
-        {
-            start:{
-                type: Date,
-                required: true
-            },
-            end:{
-                type: Date,
-                required: true
-            }
-        }
-    ],
     first_name: {
         type: String,
         required: true

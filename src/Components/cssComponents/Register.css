@@ -35,19 +35,27 @@
     100% { transform: rotate(360deg); }
   }
 
-  .password-label {
+  /* .password-label {
     display: flex;
     justify-content: space-between; 
     align-items: center;
-  }
+  } */
   
   .password-toggle-button {
-    color: #26D1B7;
-    background: none;
-    border: none;
+    color: black;
+    background: white;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
     cursor: pointer;
     padding: 0;
-    /* margin-left: 5px; <===== replace line 50 with this and remove line 40 to make it left aligned*/
     margin: 0;
-    align-self: flex-end;
+  }
+
+  #password {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  
+  #passwordIcon {
+    font-size: 20px;
   }
