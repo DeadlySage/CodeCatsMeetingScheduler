@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
 const { getSearchQuery } = require("../services/users");
+const bcrypt = require('bcryptjs');
 
 
 //Get all
@@ -15,14 +16,30 @@ router.get("/", async (req, res) => {
 });
 
 //Get one
-router.get("/:id", getUser, (req, res) => {
-    res.json(res.user);
+router.get("/:id", async (req, res) => {
+    try {
+        const user = res.user; // User object from getUser middleware
+
+        // Check if a password was provided in the request
+        if (!req.body.password) {
+            return res.json(user);
+        }
+
+        // Compare the provided password with the stored hashed password
+        const passwordMatch = await bcrypt.compare(req.body.password, user.password);
+
+        if (!passwordMatch) {
+            return res.status(401).json({ message: 'Invalid password' });
+        }
+
+        res.json(user);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 });
 
 //Create
 router.post("/", async (req, res) => {
-    console.log(req.body.email);
-    console.log(req.body);
     const existingUserWithEmail = await getSearchQuery({email: req.body.email});
     if(existingUserWithEmail.length > 0) {
         res.status(300).json({ 
@@ -31,11 +48,13 @@ router.post("/", async (req, res) => {
         return;
     }
 
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
     const user = new User({
         first_name : req.body.firstName,
         last_name : req.body.lastName,
         email: req.body.email,
-        password: req.body.password,
+        password: hashedPassword,
         role_id: req.body.roleId
     });
     try {
