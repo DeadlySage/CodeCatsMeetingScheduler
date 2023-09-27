@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import "./cssComponents/Register.css";
 import CustomModal from "./CustomModal";
 import {UserRole} from "./Constants";
+import bcrypt from 'bcryptjs';
 
 export const Register = () => {
     const [email, setEmail] = useState('');
@@ -27,12 +28,13 @@ export const Register = () => {
         if(formErrors.length === 0) {
             try{
                 setIsLoading(true);
+                const hashedPassword = await bcrypt.hash(password, 10);
 
                 const response = await axios.post("/users", {
                     firstName: firstName,
                     lastName: lastName,
                     email: email,
-                    password: password,
+                    password: hashedPassword,
                     roleId: UserRole.student
                 });
 

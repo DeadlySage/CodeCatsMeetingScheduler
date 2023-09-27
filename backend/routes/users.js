@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
 const { getSearchQuery } = require("../services/users");
-const bcrypt = require('bcryptjs');
 
 
 //Get all
@@ -48,13 +47,11 @@ router.post("/", async (req, res) => {
         return;
     }
 
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-
     const user = new User({
         first_name : req.body.firstName,
         last_name : req.body.lastName,
         email: req.body.email,
-        password: hashedPassword,
+        password: req.body.password,
         role_id: req.body.roleId
     });
     try {
