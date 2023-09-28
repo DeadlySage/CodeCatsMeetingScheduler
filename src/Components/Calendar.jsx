@@ -7,6 +7,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import { nanoid } from 'nanoid';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-daterangepicker/daterangepicker.css';
+import { Tooltip } from 'bootstrap';
 
 import{
     Row,
@@ -32,6 +33,7 @@ export default function Calendar(){
     const [modal, setModal] = useState(false);
     const [confirmModal, setConfirmModal] = useState(false);
     const calendarRef = useRef(null);
+    const tooltips = {};
 
     const [title, setTitle] = useState('');
     const [start, setStart] = useState(new Date ());
@@ -223,6 +225,24 @@ export default function Calendar(){
                                 }}
                                 eventRemove={(e) => {
                                     console.log('eventRemove', e);
+                                }}
+                                
+                                eventMouseEnter={function(info) {
+                                    var tooltip = new Tooltip(info.el, {
+                                        title: '<h3>' + info.event.title + '</h3>' +
+                                        'Start: ' + info.event.start + '<br>' +
+                                        'End: ' + info.event.end,
+                                        placement: 'top',
+                                        trigger: 'hover',
+                                        container: 'body',
+                                        html: true
+                                    });
+                                    tooltips[info.event.id] = tooltip;
+                                }}
+                                eventMouseLeave={function(info) {
+                                    if (tooltips[info.event.id]) {
+                                        tooltips[info.event.id].dispose();
+                                    }
                                 }}
                                 />
                         </Col>

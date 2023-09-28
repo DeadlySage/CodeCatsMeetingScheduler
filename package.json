@@ -19,7 +19,6 @@
     "bootstrap": "^5.3.2",
     "bootstrap-daterangepicker": "^3.1.0",
     "bootstrap-icons": "^1.11.1",
-    "concurrently": "^8.2.1",
     "cors": "^2.8.5",
     "fullcalendar": "^6.1.6",
     "jquery": "^3.7.1",
@@ -70,6 +69,7 @@
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@babel/preset-react": "^7.22.15",
+    "concurrently": "^8.2.1",
     "eslint": "^8.50.0",
     "eslint-plugin-react": "^7.33.2",
     "web-vitals": "^3.3.1"
