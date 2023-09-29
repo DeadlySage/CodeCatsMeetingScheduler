@@ -125,3 +125,12 @@ span {
   margin-left: 16px;
 }
 
+.Calendar{color:black;}
+
+span.fc-icon-chevron-left{
+  margin-left: 0px;
+}
+
+span.fc-icon-chevron-right{
+  margin-left: 0px;
+}

@@ -156,8 +156,8 @@ export default function Calendar(){
 
     const [departments, setDepartments] = useState([
         {value: '1', label: 'All'},
-        {value: '2', label: 'Csc 190'},
-        {value: '3', label: 'Csc 191'},
+        {value: '2', label: 'CSC 190'},
+        {value: '3', label: 'CSC 191'},
     ]);
 
     function onFilter(element){
@@ -165,17 +165,21 @@ export default function Calendar(){
     }
 
     return (
+        <Container maxWidth = "lg">
             <div className='Calendar'>
                 <h1>Meeting Calendar</h1>
                 <Container>
                     <Row style={{ marginBottom: 20}}>
+
                         <Col
-                            sm={{ size: 3}}
+                            sm={{ size: 6}}
                             md={{ size: 3}}
                             style={{
+                                color : 'black',
                                 paddingLeft: 15
                             }}
                         >
+                            
                             <Select
                                 style={{ float: 'left'}}
                                 defaultValue={departments[0]}
@@ -334,5 +338,6 @@ export default function Calendar(){
                     Do you want to {state.state} this event?
                 </CustomModal>
             </div>
+            </Container>
         );
 }
