@@ -17,6 +17,8 @@ import Navbar from "./Components/Navbar";
 import { Navigate } from 'react-router-dom';
 import '@mdi/font/css/materialdesignicons.min.css';
 import "bootstrap-icons/font/bootstrap-icons.css";
+import ResetPassword from "./Components/ResetPassword";
+import Security from "./Components/Security";
 
 function App() {
   const [currentForm, setCurrentForm] = useState('login');
@@ -40,7 +42,8 @@ function App() {
             <Route path="/student-selection-course" element={<StudentSelectionCourse />} />
             <Route path="/appointment-selection" element={<AppointmentSelection />} />
             <Route path="/advisor-selection" element={<AdvisorSelection />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/password-reset" element={<ForgotPassword />} />
+            <Route path="/security" element={<Security />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/Kenneth_Elliot" element={<Kenneth_Elliot />} />
             <Route path="/SpongeBob_Squarepants" element={<SpongeBob_Squarepants />} />
