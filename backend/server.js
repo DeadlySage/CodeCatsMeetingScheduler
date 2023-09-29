@@ -25,6 +25,10 @@ app.listen(3001, () => {
 const usersRouter = require("./routes/users");
 app.use("/users", usersRouter);
 
+// #task 66 - Adrian Tandiono
+// const meetingRoutes = require('./routes/meetings');
+// app.use('/meetings', meetingRoutes);
+
 // const courseSchema = new mongoose.Schema({
 //   courseID: String,
 //   instructor: [String]
