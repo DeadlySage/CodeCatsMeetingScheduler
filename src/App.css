@@ -180,4 +180,21 @@ span {
 
 #passwordIcon {
   font-size: 20px;
+}.Calendar{color:black;}
+
+span.fc-icon-chevron-left{
+  margin-left: 0px;
 }
+
+span.fc-icon-chevron-right{
+  margin-left: 0px;
+}
+
+.Calendar{color:black;}
+
+span.fc-icon-chevron-left{
+  margin-left: 0px;
+}
+
+span.fc-icon-chevron-right{
+  margin-left: 0px;

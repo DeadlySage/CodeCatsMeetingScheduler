@@ -4,9 +4,11 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import listPlugin from '@fullcalendar/list';
 import { nanoid } from 'nanoid';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-daterangepicker/daterangepicker.css';
+import { Tooltip } from 'bootstrap';
 
 import{
     Row,
@@ -32,10 +34,13 @@ export default function Calendar(){
     const [modal, setModal] = useState(false);
     const [confirmModal, setConfirmModal] = useState(false);
     const calendarRef = useRef(null);
+    const tooltips = {};
 
     const [title, setTitle] = useState('');
     const [start, setStart] = useState(new Date ());
     const [end, setEnd] = useState(new Date());
+    const [url, setUrl] = useState('');
+
 
     const handleCloseModal = () =>{
         handleClose();
@@ -45,7 +50,8 @@ export default function Calendar(){
     function handleDateSelect(selectInfo){
         if(
             selectInfo.view.type === 'timeGridWeek' ||
-            selectInfo.view.type === 'timeGridDay'
+            selectInfo.view.type === 'timeGridDay' ||
+            selectInfo.view.type === 'listYear'
         ){
             selectInfo.view.calendar.unselect();
             setState({ selectInfo, state: 'create' });
@@ -54,7 +60,6 @@ export default function Calendar(){
             console.log('open modal create');
 
             //Console Select Info
-
             setStart(selectInfo.start);
             setEnd(selectInfo.end);
             setModal(true);
@@ -76,16 +81,26 @@ export default function Calendar(){
             </div>
         );
     }
+    
+    
 
-    function handleEventClick(clickInfo){
+    function handleEventClick(clickInfo) {
+        clickInfo.jsEvent.preventDefault(); 
         setState({ clickInfo, state: 'update' });
-
+       
         setTitle(clickInfo.event.title);
         setStart(clickInfo.event.start);
         setEnd(clickInfo.event.end);
+        setUrl(clickInfo.event.url);
 
         setModal(true);
+        
+        if (tooltips[clickInfo.event.id]) {
+            tooltips[clickInfo.event.id].dispose();
+        }
     }
+    
+      
 
     function handleEvents(events){
         setCurrentEvents(events);
@@ -107,16 +122,18 @@ export default function Calendar(){
         state.clickInfo.event.mutate({
             standardProps: {title}
         });
+        state.clickInfo.event.setProp('url', url);
         handleClose();
     }
 
     function handleSubmit(){
         const newEvent = {
             id: nanoid(),
-            title,
+            title, 
             start: state.selectInfo?.startStr || start.toISOString(),
             end: state.selectInfo?.endStr || end.toISOString(),
-            allDay: state.selectInfo?.allDay || false
+            allDay: state.selectInfo?.allDay || false,
+            url
         };
 
         let calendarApi = calendarRef.current.getApi();
@@ -137,12 +154,13 @@ export default function Calendar(){
         setState({});
         setModal(false);
     }
+    
     const [ state, setState] = useState({});
 
     const [departments, setDepartments] = useState([
         {value: '1', label: 'All'},
-        {value: '2', label: 'Csc 190'},
-        {value: '3', label: 'Csc 191'},
+        {value: '2', label: 'CSC 190'},
+        {value: '3', label: 'CSC 191'},
     ]);
 
     function onFilter(element){
@@ -150,17 +168,21 @@ export default function Calendar(){
     }
 
     return (
+        <Container maxWidth = "lg">
             <div className='Calendar'>
                 <h1>Meeting Calendar</h1>
                 <Container>
                     <Row style={{ marginBottom: 20}}>
+
                         <Col
-                            sm={{ size: 3}}
+                            sm={{ size: 6}}
                             md={{ size: 3}}
                             style={{
+                                color : 'black',
                                 paddingLeft: 15
                             }}
                         >
+                            
                             <Select
                                 style={{ float: 'left'}}
                                 defaultValue={departments[0]}
@@ -188,18 +210,18 @@ export default function Calendar(){
                         <Col md={12}>
                             <FullCalendar
                                 ref = {calendarRef}
-                                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
                                 headerToolbar={{
                                     left: 'prev,today,next',
                                     center:'title',
-                                    right:'dayGridMonth, timeGridWeek,timeGridDay'
+                                    right:'dayGridMonth, timeGridWeek, timeGridDay, listYear'
                                 }}
                                 buttonText={{
-                                    today: 'today',
-                                    month: 'month',
-                                    week: 'week',
-                                    day: 'day',
-                                    list: 'list'
+                                    today: 'Today',
+                                    month: 'Month',
+                                    week: 'Week',
+                                    day: 'Day',
+                                    list: 'My Meetings'
                                 }}
                                 initialView='dayGridMonth'
                                 editable={true}
@@ -214,6 +236,7 @@ export default function Calendar(){
                                 eventDrop={handleEventDrop}
                                 eventResize={handleEventResize}
 
+
                                 //dateClick={handleDateClick}
                                 eventAdd={(e) => {
                                     console.log('eventAdd', e);
@@ -224,13 +247,31 @@ export default function Calendar(){
                                 eventRemove={(e) => {
                                     console.log('eventRemove', e);
                                 }}
+                                
+                                eventMouseEnter={function(info) {
+                                    var tooltip = new Tooltip(info.el, {
+                                        title: '<h3>' + info.event.title + '</h3>' +
+                                        'Start: ' + info.event.start + '<br>' +
+                                        'End: ' + info.event.end,
+                                        placement: 'top',
+                                        trigger: 'hover',
+                                        container: 'body',
+                                        html: true
+                                    });
+                                    tooltips[info.event.id] = tooltip;
+                                }}
+                                eventMouseLeave={function(info) {
+                                    if (tooltips[info.event.id]) {
+                                        tooltips[info.event.id].dispose();
+                                    }
+                                }}
                                 />
                         </Col>
                     </Row>
                 </Container>
 
                 <CustomModal
-                    title={state.state === 'update' ? 'Update Event' : 'Add Event'}
+                    title={state.state === 'update' ? 'My Meeting' : 'Add New Meeting'}
                     isOpen={modal}
                     toggle={handleCloseModal}
                     onCancel={handleCloseModal}
@@ -240,17 +281,17 @@ export default function Calendar(){
                     deleteText='Delete'
                 >
                     <FormGroup>
-                        <Label for='email'>Title</Label>
+                        <Label for='email'>Team Name</Label>
                         <Input
                             type='text'
                             name='title'
-                            placeholder='Enter Group Name'
+                            placeholder='Enter Team Name'
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                         />
                     </FormGroup>
                     <FormGroup>
-                        <Label for='email'>Start Date and Time- End Date and Time</Label>
+                        <Label for='email'>Start Date and Time - End Date and Time</Label>
                         <DateRangePicker
                             initialSettings={{
                                 locale: {
@@ -268,6 +309,18 @@ export default function Calendar(){
                             <input className = 'form-control' type='text' />
                         </DateRangePicker>
                     </FormGroup>
+                    <FormGroup>
+                        <Label for='url'>Meeting URL</Label>
+                         <Input
+                            type='text'
+                            name='url'
+                            placeholder='Enter URL'
+                            value={url}
+                            onChange={(e) => setUrl(e.target.value)}
+                        />
+                    </FormGroup>
+           
+
                 </CustomModal>
 
                 <CustomModal
@@ -288,6 +341,6 @@ export default function Calendar(){
                     Do you want to {state.state} this event?
                 </CustomModal>
             </div>
+            </Container>
         );
-
 }
