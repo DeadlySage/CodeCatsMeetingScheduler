@@ -94,7 +94,10 @@ export default function Calendar(){
         setUrl(clickInfo.event.url);
 
         setModal(true);
-    
+        
+        if (tooltips[clickInfo.event.id]) {
+            tooltips[clickInfo.event.id].dispose();
+        }
     }
     
       
