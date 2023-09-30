@@ -1,7 +1,6 @@
 import axios from "axios";
 import React, { useState, } from "react";
 import { Link, useNavigate } from 'react-router-dom';
-import "./cssComponents/Register.css";
 import CustomModal from "./CustomModal";
 import {UserRole} from "./Constants";
 import bcrypt from 'bcryptjs';
@@ -186,7 +185,7 @@ export const Register = () => {
                 <Link to="/login">
                     <button 
                         className="link-btn" 
-                        style={{ marginTop: "30px" }}
+                        style={{ marginTop: "15px" }}
                     >
                         Already have an account? Login here.
                     </button>
@@ -223,7 +222,8 @@ export const Register = () => {
                     submitText={"Log in"}
                     headerBackgroundClass="bg-success"
                 >
-                        <p>Your account was successfully created. You may now proceed to the login page.</p>
+                        <p>Your account was successfully created. 
+                            You may now proceed to the login page.</p>
                 </CustomModal>
             )}
             {showUserExistsModal && (
