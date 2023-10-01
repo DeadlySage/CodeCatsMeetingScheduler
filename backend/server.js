@@ -3,9 +3,57 @@ const cors = require('cors');
 const mongoose = require("mongoose");
 const app = express();
 const uri = "mongodb+srv://Admin:4321admin@cluster0.lyj1ljm.mongodb.net/scheduler?retryWrites=true&w=majority"
-
+//import json webtoken
+const jwt = require("jsonwebtoken");
+//import dotenv
+require ('dotenv').config();
+//import bcrypt
+const bcrypt = require("bcrypt");
 app.use(cors());
 app.use(express.json());
+
+//post for login
+//Authenticates the user email and password from the stored data created in database after register
+app.post('login', async(req, res) =>{
+    const {email,password} = req.body;
+
+    //Finds the user by email
+    const user = await userModel.findOne({email});
+
+    if(!user){
+        //If the user does not exit, return error
+        return res.status(401).send('Invalid email or password');
+
+    }
+
+    //Checks if password is correct
+    const passwordMatch = await bcrypt.compare(req.body.password, user.password);
+
+    if(!passwordMatch){
+        return res.status(401).send("Invalid email or password");
+    }
+
+    //If the email and password are correct, create the JWT token
+    //secret key is in .env file 
+    const mysecretkey = process.env.SECRET_CODE;
+
+    //Generates the JWT with user data 
+    const payload= {
+        first_name: user.firstName,
+        last_name: user.lastName,
+        email: user.email,
+        password: user.password,
+    };
+    
+    //Creates the jsonwebtoken that is set to expire in 1 day
+    const token = jwt.sign(payload, mysecretkey, {expiresIn: '1d'});
+
+    //sends the token back to client
+    res.status(200).json({
+        msg: "User logged in",
+        token: token
+    });
+});
 
 async function connect(){
   try{
