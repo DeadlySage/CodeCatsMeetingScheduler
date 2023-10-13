@@ -27,7 +27,7 @@ const Home = () => {
             marginTop: "15px"
           }}
         >
-          <Link to="/student-selection-course">
+          <Link to="/user-homepage-calendar">
             <button className="button rounded" style={{ width: '200px', height: '200px' }}>
                <p>
                   <MdSchool />
