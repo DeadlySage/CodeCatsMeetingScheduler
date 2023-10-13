@@ -19,9 +19,9 @@ router.get('/', async (req, res) => {
     try {
         const meetings = await Meeting.find();
         res.json(meetings);
-
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error(error);
+        res.status(500).send('Failed to fetch meetings');
     }
 });
 

@@ -14,7 +14,7 @@ app.use(express.json());
 
 //post for login
 //Authenticates the user email and password from the stored data created in database after register
-app.post('login', async(req, res) =>{
+app.post('/login', async(req, res) =>{
     const {email,password} = req.body;
 
     //Finds the user by email
@@ -72,6 +72,8 @@ app.listen(3001, () => {
 
 const usersRouter = require("./routes/users");
 app.use("/users", usersRouter);
+const meetingsRouter = require("./routes/meetings");
+app.use("/meetings", meetingsRouter);
 
 // #task 66 - Adrian Tandiono
 // const meetingRoutes = require('./routes/meetings');

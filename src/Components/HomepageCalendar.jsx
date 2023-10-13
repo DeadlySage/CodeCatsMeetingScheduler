@@ -1,5 +1,5 @@
-import React, {useState, useRef} from 'react';
-import {Link} from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -9,9 +9,8 @@ import { nanoid } from 'nanoid';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-daterangepicker/daterangepicker.css';
 import { Tooltip } from 'bootstrap';
-import { mockUser, mockMeetings } from './mockData';
 
-import{
+import {
     Row,
     Col,
     Button,
@@ -29,35 +28,56 @@ import { useNavigate } from 'react-router-dom';
 let todayStr = new Date().toISOString().replace(/T.*$/, '');
 
 
-export default function HompageCalendar(){
+export default function HompageCalendar() {
     const [weekendsVisible, setWeekendsVisible] = useState(true);
-    //const [currentEvents, setCurrentEvents] = useState([]);
-    const [currentEvents, setCurrentEvents] = useState(mockMeetings); // using mock data
     const [modal, setModal] = useState(false);
     const [confirmModal, setConfirmModal] = useState(false);
     const calendarRef = useRef(null);
     const tooltips = {};
 
     const [title, setTitle] = useState('');
-    const [start, setStart] = useState(new Date ());
+    const [start, setStart] = useState(new Date());
     const [end, setEnd] = useState(new Date());
     const [url, setUrl] = useState('');
 
-    const userMeetings = mockMeetings.filter(meeting => meeting.attendees.includes(mockUser.id));
+    const [meetings, setMeetings] = useState([]);
+
+    const mapMeetingsToEvents = (meetings) => {
+        return meetings.map(meeting => ({
+            id: meeting._id,
+            title: meeting.title,
+            start: meeting.start,
+            end: meeting.end,
+            url: meeting.link,
+        }));
+    }
+
+    useEffect(() => {
+        // Fetch data from /meetings endpoint
+        fetch('/meetings')
+            .then(response => response.json())
+            .then(data => {
+                console.log("Fetched meetings:", data);
+                const events = mapMeetingsToEvents(data);
+                console.log("Converted to events:", events);
+                setMeetings(events);
+            });
+    }, []);
+
 
     const navigate = useNavigate();
 
-    const handleCloseModal = () =>{
+    const handleCloseModal = () => {
         handleClose();
         setModal(false);
     };
-    
-    function handleDateSelect(selectInfo){
-        if(
+
+    function handleDateSelect(selectInfo) {
+        if (
             selectInfo.view.type === 'timeGridWeek' ||
             selectInfo.view.type === 'timeGridDay' ||
             selectInfo.view.type === 'listYear'
-        ){
+        ) {
             selectInfo.view.calendar.unselect();
             setState({ selectInfo, state: 'create' });
 
@@ -71,8 +91,8 @@ export default function HompageCalendar(){
         }
     }
 
-    function renderEventContent(eventInfo){
-        return(
+    function renderEventContent(eventInfo) {
+        return (
             <div>
                 <i
                     style={{
@@ -86,59 +106,53 @@ export default function HompageCalendar(){
             </div>
         );
     }
-    
-    
+
+
 
     function handleEventClick(clickInfo) {
-        clickInfo.jsEvent.preventDefault(); 
+        clickInfo.jsEvent.preventDefault();
         setState({ clickInfo, state: 'update' });
-       
+
         setTitle(clickInfo.event.title);
         setStart(clickInfo.event.start);
         setEnd(clickInfo.event.end);
         setUrl(clickInfo.event.url);
 
         setModal(true);
-        
+
         if (tooltips[clickInfo.event.id]) {
             tooltips[clickInfo.event.id].dispose();
         }
     }
-    
-      
 
-    // function handleEvents(events){
-    //     setCurrentEvents(events);
-    // }
-    // using mock data
-    function handleEvents(userMeetings){
-        setCurrentEvents(userMeetings);
+    function handleEvents(meetings) {
+        setMeetings(meetings);
     }
 
-    function handleEventDrop(checkInfo){
+    function handleEventDrop(checkInfo) {
         setState({ checkInfo, state: 'drop' });
         setConfirmModal(true);
     }
 
-    function handleEventResize(checkInfo){
+    function handleEventResize(checkInfo) {
         setState({ checkInfo, state: 'resize' });
         setConfirmModal(true);
     }
 
-    function handleEdit(){
+    function handleEdit() {
         state.clickInfo.event.setStart(start);
         state.clickInfo.event.setEnd(end);
         state.clickInfo.event.mutate({
-            standardProps: {title}
+            standardProps: { title }
         });
         state.clickInfo.event.setProp('url', url);
         handleClose();
     }
 
-    function handleSubmit(){
+    function handleSubmit() {
         const newEvent = {
             id: nanoid(),
-            title, 
+            title,
             start: state.selectInfo?.startStr || start.toISOString(),
             end: state.selectInfo?.endStr || end.toISOString(),
             allDay: state.selectInfo?.allDay || false,
@@ -151,63 +165,63 @@ export default function HompageCalendar(){
         handleClose();
     }
 
-    function handleDelete(){
+    function handleDelete() {
         state.clickInfo.event.remove();
         handleClose();
     }
 
-    function handleClose(){
+    function handleClose() {
         setTitle('');
         setStart(new Date());
         setEnd(new Date());
         setState({});
         setModal(false);
     }
-    
-    const [ state, setState] = useState({});
+
+    const [state, setState] = useState({});
 
     const [departments, setDepartments] = useState([
-        {value: '1', label: 'All'},
-        {value: '2', label: 'CSC 190'},
-        {value: '3', label: 'CSC 191'},
+        { value: '1', label: 'All' },
+        { value: '2', label: 'CSC 190' },
+        { value: '3', label: 'CSC 191' },
     ]);
 
-    function onFilter(element){
+    function onFilter(element) {
         console.log(element.value);
     }
 
     return (
-        <Container maxWidth = "lg">
+        <Container maxWidth="lg">
             <div className='Calendar'>
                 <h1>Meeting Calendar</h1>
                 <Container>
-                    <Row style={{ marginBottom: 20}}>
+                    <Row style={{ marginBottom: 20 }}>
 
                         <Col
-                            sm={{ size: 6}}
-                            md={{ size: 3}}
+                            sm={{ size: 6 }}
+                            md={{ size: 3 }}
                             style={{
-                                color : 'black',
+                                color: 'black',
                                 paddingLeft: 15
                             }}
                         >
-                            
+
                             <Select
-                                style={{ float: 'left'}}
+                                style={{ float: 'left' }}
                                 defaultValue={departments[0]}
                                 options={departments}
                                 onChange={(element) => onFilter(element)}
                             />
                         </Col>
                         <Col
-                            sm={{ size: 3, offset: 6}}
-                            md={{ size: 3, offset: 6}}
+                            sm={{ size: 3, offset: 6 }}
+                            md={{ size: 3, offset: 6 }}
                             style={{
                                 paddingRight: 15
                             }}
                         >
                             <Button
-                                style={{ float: 'right'}}
+                                style={{ float: 'right' }}
                                 color='success'
                                 onClick={() => navigate('/advisor-selection')}
                             >
@@ -218,12 +232,12 @@ export default function HompageCalendar(){
                     <Row>
                         <Col md={12}>
                             <FullCalendar
-                                ref = {calendarRef}
+                                ref={calendarRef}
                                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
                                 headerToolbar={{
                                     left: 'prev,today,next',
-                                    center:'title',
-                                    right:'dayGridMonth, timeGridWeek, timeGridDay, listYear'
+                                    center: 'title',
+                                    right: 'dayGridMonth, timeGridWeek, timeGridDay, listYear'
                                 }}
                                 buttonText={{
                                     today: 'Today',
@@ -238,10 +252,9 @@ export default function HompageCalendar(){
                                 selectMirror={true}
                                 dayMaxEvents={true}
                                 weekends={weekendsVisible}
-                                select = {handleDateSelect}
+                                select={handleDateSelect}
                                 eventContent={renderEventContent}
-                                //eventsSet={() => handleEvents(events)}
-                                events={userMeetings}    // mock data
+                                events={meetings}
                                 eventClick={handleEventClick}
                                 eventDrop={handleEventDrop}
                                 eventResize={handleEventResize}
@@ -257,12 +270,12 @@ export default function HompageCalendar(){
                                 eventRemove={(e) => {
                                     console.log('eventRemove', e);
                                 }}
-                                
-                                eventMouseEnter={function(info) {
+
+                                eventMouseEnter={function (info) {
                                     var tooltip = new Tooltip(info.el, {
                                         title: '<h3>' + info.event.title + '</h3>' +
-                                        'Start: ' + info.event.start + '<br>' +
-                                        'End: ' + info.event.end,
+                                            'Start: ' + info.event.start + '<br>' +
+                                            'End: ' + info.event.end,
                                         placement: 'top',
                                         trigger: 'hover',
                                         container: 'body',
@@ -270,12 +283,12 @@ export default function HompageCalendar(){
                                     });
                                     tooltips[info.event.id] = tooltip;
                                 }}
-                                eventMouseLeave={function(info) {
+                                eventMouseLeave={function (info) {
                                     if (tooltips[info.event.id]) {
                                         tooltips[info.event.id].dispose();
                                     }
                                 }}
-                                />
+                            />
                         </Col>
                     </Row>
                 </Container>
@@ -285,7 +298,7 @@ export default function HompageCalendar(){
                     isOpen={modal}
                     toggle={handleCloseModal}
                     onCancel={handleCloseModal}
-                    onSubmit={state.clickInfo ? handleEdit: handleSubmit}
+                    onSubmit={state.clickInfo ? handleEdit : handleSubmit}
                     submitText={state.clickInfo ? 'Update' : 'Save'}
                     onDelete={state.clickInfo && handleDelete}
                     deleteText='Delete'
@@ -311,17 +324,17 @@ export default function HompageCalendar(){
                                 endDate: end,
                                 timePicker: true
                             }}
-                            onApply={(event, picker) =>{
+                            onApply={(event, picker) => {
                                 setStart(new Date(picker.startDate));
                                 setEnd(new Date(picker.endDate));
                             }}
                         >
-                            <input className = 'form-control' type='text' />
+                            <input className='form-control' type='text' />
                         </DateRangePicker>
                     </FormGroup>
                     <FormGroup>
                         <Label for='url'>Meeting URL</Label>
-                         <Input
+                        <Input
                             type='text'
                             name='url'
                             placeholder='Enter URL'
@@ -329,7 +342,7 @@ export default function HompageCalendar(){
                             onChange={(e) => setUrl(e.target.value)}
                         />
                     </FormGroup>
-           
+
 
                 </CustomModal>
 
@@ -351,6 +364,6 @@ export default function HompageCalendar(){
                     Do you want to {state.state} this event?
                 </CustomModal>
             </div>
-            </Container>
-        );
+        </Container>
+    );
 }
