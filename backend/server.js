@@ -74,6 +74,8 @@ const usersRouter = require("./routes/users");
 app.use("/users", usersRouter);
 const meetingsRouter = require("./routes/meetings");
 app.use("/meetings", meetingsRouter);
+const sessionsRoutes = require('./routes/sessions');
+app.use('/sessions', sessionsRoutes);
 
 // #task 66 - Adrian Tandiono
 // const meetingRoutes = require('./routes/meetings');

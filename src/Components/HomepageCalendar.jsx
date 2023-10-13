@@ -64,6 +64,29 @@ export default function HompageCalendar() {
             });
     }, []);
 
+    /** Should work when current session id available
+    useEffect(() => {
+        // Fetch the current user's ID
+        fetch('/sessions/current-user-id')
+            .then(response => response.json())
+            .then(data => {
+                const userId = data.user_id;
+                fetchMeetingsForUser(userId);
+                console.log("userId:", userId);
+            });
+    }, []);
+    
+    const fetchMeetingsForUser = (userId) => {
+        fetch(`/meetings?user_id=${userId}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log("Fetched meetings:", data);
+                const events = mapMeetingsToEvents(data);
+                console.log("Converted to events:", events);
+                setMeetings(events);
+            });
+    };
+    **/
 
     const navigate = useNavigate();
 
