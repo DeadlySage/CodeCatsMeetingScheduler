@@ -52,12 +52,14 @@ router.post("/", async (req, res) => {
         last_name : req.body.lastName,
         email: req.body.email,
         password: req.body.password,
-        role_id: req.body.roleId
+        role_id: req.body.roleId,
+        status_id: req.body.statusId
     });
     try {
         const newUser = await user.save();
         res.status(200).json(newUser);
     } catch (err) {
+        console.log('An error was caught')
         res.status(400).json({ message: err.message });
     }
 });
@@ -78,6 +80,9 @@ router.patch("/:id", getUser, async (req, res) => {
     }
     if (req.body.roleId != null) {
         res.user.role_id = req.user.roleId;
+    }
+    if (req.body.statusId != null) {
+        res.user.status_id = req.user.statusId;
     }
     try {
         const updatedUser = await res.user.save(); 

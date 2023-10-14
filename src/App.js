@@ -3,8 +3,6 @@ import './App.css';
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { Login } from "./Components/Login";
 import { Register } from "./Components/Register";
-import StudentSelectionCourse from "./Components/StudentSelectionCourse";
-import Home from "./Components/Home";
 import AppointmentSelection from "./Components/AppointmentSelection";
 import AdvisorSelection from "./Components/AdvisorSelection";
 import Calendar from "./Components/Calendar";
@@ -36,12 +34,10 @@ function App() {
         </div>
         <div className="App">
           <Routes>
-            <Route path="/home" element={<Home />} />
-            <Route path="/" element={<Navigate replace to="/home" />} />
+            <Route path="/" element={<Navigate replace to="/login" />} />
             <Route path="/login" element={<Login onFormSwitch={() => setCurrentForm("register")} />} />
             <Route path="/register" element={<Register onFormSwitch={() => setCurrentForm("login")} />} />
             <Route path="/user-homepage-calendar" element={<HompageCalendar />} />
-            <Route path="/student-selection-course" element={<StudentSelectionCourse />} />
             <Route path="/appointment-selection" element={<AppointmentSelection />} />
             <Route path="/advisor-selection" element={<AdvisorSelection />} />
             <Route path="/password-reset" element={<ForgotPassword />} />

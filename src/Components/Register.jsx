@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState, } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import CustomModal from "./CustomModal";
-import {UserRole} from "./Constants";
+import {UserRole, UserStatus} from "./Constants";
 import bcrypt from 'bcryptjs';
 
 export const Register = () => {
@@ -17,6 +17,8 @@ export const Register = () => {
     const [showErrorModal, setShowErrorModal] = useState(false);
     const [showUserExistsModal, setShowUserExistsModal] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const [accountType, setAccountType] = useState(UserRole.student);
+    const [status, setStatus] = useState(UserStatus.pending);
     const navigate = useNavigate();
 
 
@@ -34,7 +36,8 @@ export const Register = () => {
                     lastName: lastName,
                     email: email,
                     password: hashedPassword,
-                    roleId: UserRole.student
+                    roleId: accountType,
+                    status: status
                 });
 
                 setSuccessModal(true);
@@ -63,6 +66,16 @@ export const Register = () => {
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
+
+    const handleAccountTypeChange = (e) => {
+        setAccountType(e.target.value);
+        if (e.target.value === UserRole.student) {
+            setStatus(UserStatus.approved);
+        } else {
+            setStatus(UserStatus.pending);
+        }
+        // alert(e.target.value)
+    };      
 
     const handleFormValidation = () => {
         const emailRegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -109,6 +122,28 @@ export const Register = () => {
         <div className="auth-form-container">
             <h2>Sign Up</h2>
             <div>
+                <div style={{textAlign: 'left'}}>
+                    <label>Account Type</label>
+                </div>
+                <div onChange={handleAccountTypeChange} style={{textAlign: 'center'}}>
+                    <div className="row">
+                        <div className="col">
+                            <input 
+                                type="radio" 
+                                name="accountType"
+                                value={UserRole.student}  
+                                defaultChecked
+                            /> Student
+                        </div>
+                        <div className="col">
+                            <input 
+                                type="radio" 
+                                name="accountType" 
+                                value={UserRole.instructor} 
+                            /> Instructor
+                        </div>
+                    </div>
+                </div>
                 <form className="register-form" onSubmit={handleSubmit}>
                     <label htmlFor="firstName">
                         First Name
