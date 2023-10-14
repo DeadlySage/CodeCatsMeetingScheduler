@@ -14,14 +14,25 @@ router.post('/', async (req, res) => {
     }
 });
 
-// GET all meetings
+// GET all current user's meetings
 router.get('/', async (req, res) => {
-    try {
-        const meetings = await Meeting.find();
-        res.json(meetings);
+    const userId = req.query.user_id;
 
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+    if (userId) {
+        try {
+            const userMeetings = await Meeting.find({ user_id: userId });
+            res.json(userMeetings);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to fetch meetings for user" });
+        }
+    } else {
+        // You can either send back all meetings or send an error depending on your requirements
+        try {
+            const allMeetings = await Meeting.find();
+            res.json(allMeetings);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to fetch meetings" });
+        }
     }
 });
 

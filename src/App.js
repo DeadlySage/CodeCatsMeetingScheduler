@@ -19,6 +19,7 @@ import '@mdi/font/css/materialdesignicons.min.css';
 import "bootstrap-icons/font/bootstrap-icons.css";
 import ResetPassword from "./Components/ResetPassword";
 import Security from "./Components/Security";
+import HompageCalendar from "./Components/HomepageCalendar";
 
 function App() {
   const [currentForm, setCurrentForm] = useState('login');
@@ -39,6 +40,7 @@ function App() {
             <Route path="/" element={<Navigate replace to="/home" />} />
             <Route path="/login" element={<Login onFormSwitch={() => setCurrentForm("register")} />} />
             <Route path="/register" element={<Register onFormSwitch={() => setCurrentForm("login")} />} />
+            <Route path="/user-homepage-calendar" element={<HompageCalendar />} />
             <Route path="/student-selection-course" element={<StudentSelectionCourse />} />
             <Route path="/appointment-selection" element={<AppointmentSelection />} />
             <Route path="/advisor-selection" element={<AdvisorSelection />} />
