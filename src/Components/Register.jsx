@@ -37,7 +37,7 @@ export const Register = () => {
                     email: email,
                     password: hashedPassword,
                     roleId: accountType,
-                    status: status
+                    statusId: status
                 });
 
                 setSuccessModal(true);

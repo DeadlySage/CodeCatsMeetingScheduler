@@ -15,10 +15,10 @@ router.get("/", async (req, res) => {
 });
 
 //Get one
-router.get("/:id", async (req, res) => {
+router.get("/:id", getUser, async (req, res) => {
     try {
         const user = res.user; // User object from getUser middleware
-
+        
         // Check if a password was provided in the request
         if (!req.body.password) {
             return res.json(user);

@@ -6,7 +6,7 @@ GET http://localhost:3001/users
 
 ###
 
-GET http://localhost:3001/users/650b70a8a96e747acaa7cf25
+GET http://localhost:3001/users/652b3f604faa28af881c609a
 
 ###
 
@@ -14,24 +14,24 @@ POST http://localhost:3001/users/
 Content-Type: application/json
 
 {
-    "first_name": "New",
-    "last_name": "User",
-    "email": "firstperson@fakeemail.com",
-    "password": "12345678",
-    "role": "Student",
-    "role_toll": "Student"
+    "firstName": "test",
+    "lastName": "Te",
+    "email": "aaa@test.com",
+    "password": "Boburger1!",
+    "roleId": 1,
+    "statusId": 1
 }
 
 ###
 
-DELETE http://localhost:3001/users/650ffd4b4d1579b83870c55d
+DELETE http://localhost:3001/users/6521ddfc920d19c62b60b3c1
 
 
 ###
 
-PATCH http://localhost:3001/users/650eb1ba7181dd9d62ea92d5
+PATCH http://localhost:3001/users/652b3f604faa28af881c609a
 Content-Type: application/json
 
 {
-    "first_name": "New"
+    "firstName": "New"
 }
