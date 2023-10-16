@@ -141,7 +141,7 @@ export const Login = () => {
                         <button className="link-btn" style={{ marginTop: "15px" }}>Sign Up</button>
                     </Link>
                     <br/>
-                    <Link to="/password-reset">
+                    <Link to="/reset-password">
                         <button className="link-btn">Forgot Password</button>
                     </Link>
                 </div>
