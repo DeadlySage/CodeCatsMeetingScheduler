@@ -38,3 +38,4 @@ async function getSearchQuery(params) {
 }
 
 module.exports = {getSearchQuery};
+
