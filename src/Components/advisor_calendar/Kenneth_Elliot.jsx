@@ -7,7 +7,9 @@ const Kenneth_Elliot = () => {
     return(
         <Container maxwidth = "lg">
             <div>
-                <h1></h1>
+                <h1>
+                    Kenneth Elliot's Calendar
+                </h1>
                 <Calendar />
             </div>
         </Container>

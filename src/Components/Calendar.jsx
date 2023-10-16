@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {Link} from 'react-router-dom';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -9,6 +9,8 @@ import { nanoid } from 'nanoid';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-daterangepicker/daterangepicker.css';
 import { Tooltip } from 'bootstrap';
+import axios from 'axios'
+
 
 import{
     Row,
@@ -27,6 +29,7 @@ import CustomModal from './CustomModal';
 let todayStr = new Date().toISOString().replace(/T.*$/, '');
 
 
+
 export default function Calendar(){
 
     const [weekendsVisible, setWeekendsVisible] = useState(true);
@@ -40,13 +43,15 @@ export default function Calendar(){
     const [start, setStart] = useState(new Date ());
     const [end, setEnd] = useState(new Date());
     const [url, setUrl] = useState('');
+    const [selectedInstructor, setSelectedInstructor] = useState('null');
 
 
     const handleCloseModal = () =>{
         handleClose();
         setModal(false);
     };
-    
+
+
     function handleDateSelect(selectInfo){
         if(
             selectInfo.view.type === 'timeGridWeek' ||
@@ -77,6 +82,7 @@ export default function Calendar(){
                     }}
                 >
                     {eventInfo.event.title}
+                    {eventInfo.event.extentedProps.status === 'pending' && ( <>Meeting is Pending</>)}
                 </i>
             </div>
         );
@@ -126,25 +132,56 @@ export default function Calendar(){
         handleClose();
     }
 
+    const [meetingStatus, setMeetingStatus] = useState('pending');
+    const handleInstructorSelect = (instructor) => {
+        setSelectedInstructor(instructor);
+      };
+
     function handleSubmit(){
+
+        //setMeetingStatus('pending');
+
         const newEvent = {
             id: nanoid(),
             title, 
             start: state.selectInfo?.startStr || start.toISOString(),
             end: state.selectInfo?.endStr || end.toISOString(),
             allDay: state.selectInfo?.allDay || false,
-            url
+            url,
+            instructorID : selectedInstructor ? selectedInstructor.value : null,
+            status: 'pending',
         };
 
-        let calendarApi = calendarRef.current.getApi();
+        axios
+            .post(`/routes/meetings`, newEvent)
+            .then((response) => {
+                console.log('Meeting created successfully', response.data);
+                let calendarApi = calendarRef.current.getApi();
 
-        calendarApi.addEvent(newEvent);
-        handleClose();
+                calendarApi.addEvent(newEvent);
+                handleClose();
+            })
+            .catch((error) => {
+                console.error('Error creating meeting:',error);
+            });
+
+
     }
 
     function handleDelete(){
-        state.clickInfo.event.remove();
-        handleClose();
+        const meetingID = state.clickInfo.event.id;
+
+        axios
+            .delete(`/routes/meetings/%(meetingID`)
+            .then(() => {
+                console.log('Meeting deleted successfully');
+                state.clickInfo.event.remove();
+                handleClose();
+            })
+            .catch((error) => {
+                console.error('Error deleting meeting :', error);
+            });
+
     }
 
     function handleClose(){
@@ -162,17 +199,36 @@ export default function Calendar(){
         {value: '2', label: 'CSC 190'},
         {value: '3', label: 'CSC 191'},
     ]);
+    
+    const [users, setUsers] = useState([]);
+
+    useEffect(() => {
+        axios.get('/users/')
+            .then((response) => {
+                setUsers(response.data);
+            })
+            .catch((error) => {
+                console.error('Error fetching users:', error);
+        });
+    }, []);
+
+    const instructors = users.filter((user) => user.role_id === 2).map((instructor) => `${instructor.first_name} ${instructor.last_name}`);
+
 
     function onFilter(element){
         console.log(element.value);
     }
 
+    
     return (
         <Container maxWidth = "lg">
             <div className='Calendar'>
-                <h1>Meeting Calendar</h1>
+                
                 <Container>
+                <h1>Your Calendar</h1>
                     <Row style={{ marginBottom: 20}}>
+
+                        <div className = 'dropdowns'>
 
                         <Col
                             sm={{ size: 6}}
@@ -189,7 +245,34 @@ export default function Calendar(){
                                 options={departments}
                                 onChange={(element) => onFilter(element)}
                             />
+                    
                         </Col>
+
+                        <Col
+                            sm={{ size: 6}}
+                            md={{ size: 3}}
+                            style={{
+                                color : 'black',
+                                paddingLeft: 15
+                            }}
+                        >
+
+                            <Select
+                                value={selectedInstructor}
+                                onChange={handleInstructorSelect}
+                                options={[
+                                    { value: '', label: 'All Instructors' },
+                                    ...instructors.map((instructor) => ({
+                                        value: instructor,
+                                        label: instructor,
+                                    }))
+                                ]}
+                            />
+                            
+                        </Col>
+
+                        </div>
+                        
                         <Col
                             sm={{ size: 3, offset: 6}}
                             md={{ size: 3, offset: 6}}

@@ -7,7 +7,9 @@ const Yu_Chen = () => {
     return(
         <Container maxWidth = "lg">
             <div>
-                <h1></h1>
+                <h1>
+                    Yu Chen's Calendar
+                </h1>
                 <Calendar />
             </div>
         </Container>

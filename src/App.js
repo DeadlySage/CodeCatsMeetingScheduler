@@ -41,7 +41,7 @@ function App() {
             <Route path="/user-homepage-calendar" element={<HompageCalendar />} />
             <Route path="/appointment-selection" element={<AppointmentSelection />} />
             <Route path="/advisor-selection" element={<AdvisorSelection />} />
-            <Route path="/password-reset" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ForgotPassword />} />
             <Route path="/security" element={<Security />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/Kenneth_Elliot" element={<Kenneth_Elliot />} />

@@ -79,6 +79,7 @@ button {
   top: 0;
   left: -100%;
   transition: 850ms;
+  z-index: 100;
 }
 
 .nav-menu.active {
@@ -193,6 +194,12 @@ span.fc-icon-chevron-right{
 }
 
 .Calendar{color:black;}
+
+.Kenneth_Elliot{color:black;}
+
+.dropdowns{
+ z-index: 20;
+}
 
 span.fc-icon-chevron-left{
   margin-left: 0px;

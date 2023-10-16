@@ -7,7 +7,9 @@ const SpongeBob_Squarepants = () => {
     return(
         <Container maxWidth = "lg">
             <div>
-                <h1></h1>
+                <h1>
+                    Spongebob Squarepant's Calendar
+                </h1>
                 <Calendar />
             </div>
         </Container>

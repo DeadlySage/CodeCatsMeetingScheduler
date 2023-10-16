@@ -7,7 +7,9 @@ const Patrick_Star = () => {
     return(
         <Container maxWidth = "lg">
             <div>
-                <h1></h1>
+                <h1>
+                    Patrick Star's Calendar
+                </h1>
                 <Calendar />
             </div>
         </Container>
