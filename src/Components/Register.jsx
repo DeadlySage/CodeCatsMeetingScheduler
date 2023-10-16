@@ -26,7 +26,6 @@ export const Register = () => {
     const [status, setStatus] = useState(UserStatus.approved);
     const navigate = useNavigate();
 
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         const formErrors = handleFormValidation();
@@ -154,7 +153,7 @@ export const Register = () => {
     }
 
     return (
-        <div className="auth-form-container col-md-9 mx-auto">
+        <div className="auth-form-container col-md-8 mx-auto">
             <div className="row" style={{textAlign: "center"}}>
                 <h2>Sign Up</h2>
             </div>
