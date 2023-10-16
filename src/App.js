@@ -17,6 +17,7 @@ import '@mdi/font/css/materialdesignicons.min.css';
 import "bootstrap-icons/font/bootstrap-icons.css";
 import ResetPassword from "./Components/ResetPassword";
 import Security from "./Components/Security";
+import AdminDashboard from "./Components/AdminDashboard";
 import HompageCalendar from "./Components/HomepageCalendar";
 
 function App() {
@@ -47,11 +48,13 @@ function App() {
             <Route path="/SpongeBob_Squarepants" element={<SpongeBob_Squarepants />} />
             <Route path="/Yu_Chen" element={<Yu_Chen />} />
             <Route path="/Patrick_Star" element={<Patrick_Star />} />
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
           </Routes>
         </div>
       </Router>
     </div>
   );
+
 }
 
 export default App;

@@ -68,25 +68,25 @@ router.post("/", async (req, res) => {
     }
 });
 
-//Update
+// Update
 router.patch("/:id", getUser, async (req, res) => {
-    if ( req.body.firstName != null ) {
+    if (req.body.firstName != null) {
         res.user.first_name = req.body.firstName;
     }
-    if ( req.body.lastName != null ) {
+    if (req.body.lastName != null) {
         res.user.last_name = req.body.lastName;
     }
-    if ( req.body.email != null ) {
+    if (req.body.email != null) {
         res.user.email = req.body.email;
     }
-    if ( req.body.password != null ) {
+    if (req.body.password != null) {
         res.user.password = req.body.password;
     }
     if (req.body.roleId != null) {
-        res.user.role_id = req.user.roleId;
+        res.user.role_id = req.body.roleId; // Use req.body.roleId
     }
     if (req.body.statusId != null) {
-        res.user.status_id = req.user.statusId;
+        res.user.status_id = req.body.statusId; // Use req.body.statusId
     }
     if (req.body.firstQuestion != null) {
         res.user.first_question = req.user.firstQuestion;
@@ -101,12 +101,13 @@ router.patch("/:id", getUser, async (req, res) => {
         res.user.second_answer = req.user.secondAnswer;
     }
     try {
-        const updatedUser = await res.user.save(); 
+        const updatedUser = await res.user.save();
         res.json(updatedUser);
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
 });
+
 
 //Delete
 router.delete("/:id", getUser, async (req, res) => {
@@ -119,11 +120,11 @@ router.delete("/:id", getUser, async (req, res) => {
 });
 
 async function getUser(req, res, next) {
-    let user
+    let user;
     try {
-        user = await User.findById(req.params.id);
-        if ( user == null ){
-            return res.status(404).json({ message: "Cannot find user "});
+        user = await User.findById(req.params.id); 
+        if (user == null) {
+            return res.status(404).json({ message: "Cannot find user" });
         }
     } catch (err) {
         return res.status(500).json({ message: err.message });
@@ -132,5 +133,6 @@ async function getUser(req, res, next) {
     res.user = user;
     next();
 }
+
 
 module.exports = router;
