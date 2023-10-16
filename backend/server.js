@@ -55,6 +55,32 @@ app.use(express.json());
 //     });
 // });
 
+//Task 82. Protected route blocks unauthorized users and only allows access to users saved in database after login
+/*app.get('/protected', async(req,res) =>{
+    //Gets token from Authorization header
+    const token = req.headers.authorization.split(' ')[1];
+    const mysecretkey = process.env.SECRET_CODE;
+
+    try{
+        //Verifies the assigned token and decodes the payload
+        const decoded = jwt.verify(token, mysecretkey);
+
+        //Gets the user email from payload
+        const userEmail = decoded.email;
+
+        //Finds user by email in the database
+        const user = await userModel.findOne({ email: userEmail});
+
+        if (user){
+            res.json({ message: `Welcome ${user.firstName}! This is a protected route.` });
+        }else{
+            res.status(401).json({ error: 'Invalid token'});
+        }
+    } catch (error){
+        res.status(401).json({ error: 'Invalid token'});
+    }
+}); */
+
 async function connect(){
   try{
       await mongoose.connect(uri);
