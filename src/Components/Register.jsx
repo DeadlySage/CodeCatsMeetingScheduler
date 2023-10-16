@@ -11,14 +11,19 @@ export const Register = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
+    const [firstQuestion, setFirstQuestion] = useState('');
+    const [secondQuestion, setSecondQuestion] = useState('');
+    const [firstAnswer, setFirstAnswer] = useState('');
+    const [secondAnswer, setSecondAnswer] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [successModal, setSuccessModal] = useState(false);
     const [errors, setErrors] = useState([]);
     const [showErrorModal, setShowErrorModal] = useState(false);
+    const [pendingModal, setPendingModal] = useState(false);
     const [showUserExistsModal, setShowUserExistsModal] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [accountType, setAccountType] = useState(UserRole.student);
-    const [status, setStatus] = useState(UserStatus.pending);
+    const [status, setStatus] = useState(UserStatus.approved);
     const navigate = useNavigate();
 
 
@@ -37,10 +42,19 @@ export const Register = () => {
                     email: email,
                     password: hashedPassword,
                     roleId: accountType,
-                    statusId: status
+                    statusId: status,
+                    firstQuestion: firstQuestion,
+                    secondQuestion: secondQuestion,
+                    firstAnswer: firstAnswer,
+                    secondAnswer: secondAnswer
                 });
 
-                setSuccessModal(true);
+                if (status == UserStatus.pending){
+                    setPendingModal(true)
+                } else {
+                    setSuccessModal(true);
+                }
+
             } catch (err) {
                 if (err.response.status === 300){
                     setShowUserExistsModal(true);
@@ -59,6 +73,10 @@ export const Register = () => {
         setShowErrorModal(false);
     }
 
+    const handleClosePendingModal = () => {
+        setPendingModal(false);
+    }
+
     const handleRedirectToLogin = () => {
         navigate("/login", {replace: true})
     }
@@ -69,16 +87,18 @@ export const Register = () => {
 
     const handleAccountTypeChange = (e) => {
         setAccountType(e.target.value);
-        if (e.target.value === UserRole.student) {
+        console.log(e.target.value)
+        if (e.target.value === UserRole.student.toString()) {
+            console.log('Setting status to approved')
             setStatus(UserStatus.approved);
         } else {
+            console.log('Setting status to pending')
             setStatus(UserStatus.pending);
         }
-        // alert(e.target.value)
     };      
 
     const handleFormValidation = () => {
-        const emailRegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        const emailRegExp = /^[a-zA-Z0-9._%+-]+@csus\.edu$/;
         const result = [];
 
         if(firstName.trim() === "") {
@@ -90,7 +110,7 @@ export const Register = () => {
         if(email.trim() === "") {
             result.push("Missing Email");
         } else if (!emailRegExp.test(email.trim())) {
-            result.push("Invalid Email");
+            result.push("Invalid CSUS Email");
         }
         if(password.trim() === ""){
             result.push("Missing Password");
@@ -114,117 +134,286 @@ export const Register = () => {
         if(password !== confirmPassword) {
             result.push("Passwords do not match");
         }
+        if(firstQuestion.trim() === "") {
+            result.push("Missing First Security Question");
+        }
+        if(secondQuestion.trim() === "") {
+            result.push("Missing Second Security Question");
+        }
+        if(firstAnswer.trim() === "") {
+            result.push("Missing Answer to First Security Question");
+        }
+        if(secondAnswer.trim() === "") {
+            result.push("Missing Asnwer to Second Security Question");
+        }
+        if(firstQuestion.trim().toLowerCase() === secondQuestion.trim().toLowerCase()) {
+            result.push("Security Questions Must Be Different");
+        }
         setErrors(result);
         return result;
     }
 
     return (
-        <div className="auth-form-container">
-            <h2>Sign Up</h2>
+        <div className="auth-form-container col-md-9 mx-auto">
+            <div className="row" style={{textAlign: "center"}}>
+                <h2>Sign Up</h2>
+            </div>
             <div>
-                <div style={{textAlign: 'left'}}>
-                    <label>Account Type</label>
-                </div>
-                <div onChange={handleAccountTypeChange} style={{textAlign: 'center'}}>
+                <form className="register-form" onSubmit={handleSubmit}>
+                    <div className="row">
+                        <div className="col-md-6">
+                            <div className="row" style={{textAlign: "left"}}>
+                                <div className="col">
+                                    <label htmlFor="firstName">
+                                        First Name
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col">
+                                    <input 
+                                        value={firstName} 
+                                        name="firstName" 
+                                        onChange={(e) => setFirstName(e.target.value)} 
+                                        id="firstName" 
+                                        placeholder="First Name" 
+                                    />
+                                </div>
+                            </div>
+                            <div className="row" style={{textAlign: "left"}}>
+                                <div className="col">
+                                    <label htmlFor="lastName">
+                                        Last Name
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col">
+                                    <input 
+                                        value={lastName}  
+                                        name="lastName" 
+                                        onChange={(e) => setLastName(e.target.value)} 
+                                        id="lastName" 
+                                        placeholder="Last Name" 
+                                        className=""
+                                    />
+                                </div>
+                            </div>
+                            <div className="row" style={{textAlign: "left"}}>
+                                <div className="col">
+                                    <label htmlFor="email">
+                                        Email
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col">
+                                    <input 
+                                        value={email} 
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        type="email" 
+                                        placeholder="youremail@csus.edu" 
+                                        id="email" 
+                                        name="email" 
+                                    />
+                                </div>
+                            </div>
+                            <div className="row" style={{textAlign: "left"}}>
+                                <div className="col">
+                                    <label htmlFor="password" className="password-label">
+                                        Password
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col">
+                                    <div className="container">
+                                        <div className="row">
+                                            <input 
+                                                value={password} 
+                                                onChange={(e) => setPassword(e.target.value)} 
+                                                type={showPassword ? "text" : "password"} 
+                                                placeholder={showPassword ? "Enter password" : "********"} 
+                                                id="password" 
+                                                name="password" 
+                                                className="col-md-10"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={togglePasswordVisibility}
+                                                className="password-toggle-button col-md-2"
+                                            >
+                                            {showPassword ? 
+                                                <i className="bi bi-eye" id="passwordIcon"></i> : 
+                                                <i className="bi bi-eye-slash" id="passwordIcon"></i>}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="row" style={{textAlign: "left"}}>
+                                <div className="col">
+                                    <label htmlFor="confirmPassword">
+                                        Confirm Password
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col">
+                                    <input 
+                                        value={confirmPassword} 
+                                        onChange={(e) => setConfirmPassword(e.target.value)} 
+                                        type={showPassword ? "text" : "password"} 
+                                        placeholder={showPassword ? "Enter password" : "********"}
+                                        id="confirmPassword" 
+                                        name="confirmPassword" 
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-md-6">
+                            <div className="row">
+                                <div style={{textAlign: 'left'}}>
+                                    <label>Account Type</label>
+                                </div>
+                                <div style={{textAlign: 'center'}}>
+                                    <div className="row" style={{marginBottom: "16.25px"}}>
+                                        <div className="col-md-3" style={{display: "flex", justifyContent: "flex-end"}}>Student</div>
+                                        <div className="col-md-3" style={{display: "flex", justifyContent: "flex-start"}}>
+                                            <input 
+                                                type="radio" 
+                                                name="accountType"
+                                                value={UserRole.student}  
+                                                onChange={handleAccountTypeChange}
+                                                style={{ marginLeft: "0px", marginRight: "70px" }}
+                                                defaultChecked
+                                            />
+                                        </div>
+                                        <div className="col-md-3" style={{display: "flex", justifyContent: "flex-end"}}>Instructor</div>
+                                        <div className="col-md-3" style={{display: "flex", justifyContent: "flex-start"}}>
+                                            <input 
+                                                type="radio" 
+                                                name="accountType" 
+                                                value={UserRole.instructor} 
+                                                onChange={handleAccountTypeChange}
+                                                style={{ marginLeft: "0px", marginRight: "70px" }}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="row" style={{textAlign: "left"}}>
+                                <div className="col">
+                                    <label htmlFor="firstQuestion">
+                                        Security Question 1
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col">
+                                    <input 
+                                        value={firstQuestion} 
+                                        onChange={(e) => setFirstQuestion(e.target.value)} 
+                                        type="text"
+                                        placeholder="Type your own question"
+                                        id="firstQuestion" 
+                                        name="firstQuestion" 
+                                    />
+                                </div>
+                            </div>
+                            <div className="row" style={{textAlign: "left"}}>
+                                <div className="col">
+                                    <label htmlFor="firstAnswer">
+                                        Answer
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col">
+                                    <input 
+                                        value={firstAnswer} 
+                                        onChange={(e) => setFirstAnswer(e.target.value)} 
+                                        type="text"
+                                        placeholder="Enter your answer"
+                                        id="firstAnswer" 
+                                        name="firstAnswer" 
+                                    />
+                                </div>
+                            </div>
+                            <div className="row" style={{textAlign: "left"}}>
+                                <div className="col">
+                                    <label htmlFor="secondQuestion">
+                                        Security Question 2
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col">
+                                    <input 
+                                        value={secondQuestion} 
+                                        onChange={(e) => setSecondQuestion(e.target.value)} 
+                                        type="text"
+                                        placeholder="Type your own question"
+                                        id="secondQuestion" 
+                                        name="secondQuestion" 
+                                    />
+                                </div>
+                            </div>
+                            <div className="row" style={{textAlign: "left"}}>
+                                <div className="col">
+                                    <label htmlFor="secondAnswer">
+                                        Answer
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col">
+                                    <input 
+                                        value={secondAnswer} 
+                                        onChange={(e) => setSecondAnswer(e.target.value)} 
+                                        type="text"
+                                        placeholder="Enter your answer"
+                                        id="secondAnswer" 
+                                        name="secondAnswer" 
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div className="row">
                         <div className="col">
-                            <input 
-                                type="radio" 
-                                name="accountType"
-                                value={UserRole.student}  
-                                defaultChecked
-                            /> Student
+                            <div style={{ display: "flex", justifyContent: "flex-start" }}>
+                                <div className="row">
+                                    <div className="col">
+                                        <Link to="/login">
+                                            <button 
+                                                className="link-btn" 
+                                                style={{ marginTop: "30px" }}
+                                            >
+                                                Already have an account? Login here.
+                                            </button>
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div className="col">
-                            <input 
-                                type="radio" 
-                                name="accountType" 
-                                value={UserRole.instructor} 
-                            /> Instructor
+                            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                                <div className="row">
+                                    <div className="col">
+                                        <button 
+                                            className="button rounded" 
+                                            style={{ width: "100%", marginTop: "30px", paddingLeft: "50px", paddingRight: "50px" }} 
+                                            type="submit"
+                                        >
+                                            Submit
+                                        </button> 
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <form className="register-form" onSubmit={handleSubmit}>
-                    <label htmlFor="firstName">
-                        First Name
-                    </label>
-                    <input 
-                        value={firstName} 
-                        name="firstName" 
-                        onChange={(e) => setFirstName(e.target.value)} 
-                        id="firstName" 
-                        placeholder="First Name" 
-                    />
-                    <label htmlFor="lastName">
-                        Last Name
-                    </label>
-                    <input 
-                        value={lastName}  
-                        name="lastName" 
-                        onChange={(e) => setLastName(e.target.value)} 
-                        id="lastName" placeholder="Last Name" 
-                    />
-                    <label htmlFor="email">
-                        Email
-                    </label>
-                    <input 
-                        value={email} 
-                        onChange={(e) => setEmail(e.target.value)}
-                        type="email" 
-                        placeholder="youremail@csus.edu" 
-                        id="email" 
-                        name="email" />
-                    <label htmlFor="password" className="password-label">
-                        Password
-                    </label>
-                    <div className="container">
-                        <div className="row">
-                            <input 
-                                value={password} 
-                                onChange={(e) => setPassword(e.target.value)} 
-                                type={showPassword ? "text" : "password"} 
-                                placeholder={showPassword ? "Enter password" : "********"} 
-                                id="password" 
-                                name="password" 
-                                className="col-md-10"
-                            />
-                            <button
-                                type="button"
-                                onClick={togglePasswordVisibility}
-                                className="password-toggle-button col-md-2"
-                            >
-                                {showPassword ? 
-                                    <i className="bi bi-eye" id="passwordIcon"></i> : 
-                                    <i className="bi bi-eye-slash" id="passwordIcon"></i>}
-                            </button>
-                        </div>
-                    </div>
-                    <label htmlFor="confirmPassword">
-                        Confirm Password
-                        </label>
-                    <input 
-                        value={confirmPassword} 
-                        onChange={(e) => setConfirmPassword(e.target.value)} 
-                        type={showPassword ? "text" : "password"} 
-                        placeholder={showPassword ? "Enter password" : "********"}                        id="confirmPassword" 
-                        name="confirmPassword" 
-                    />
-                    <button 
-                        className="button rounded" 
-                        style={{ width: "100%", marginTop: "30px" }} 
-                        type="submit"
-                    >
-                        Submit
-                    </button>
                 </form>
-                <Link to="/login">
-                    <button 
-                        className="link-btn" 
-                        style={{ marginTop: "15px" }}
-                    >
-                        Already have an account? Login here.
-                    </button>
-                </Link>
             </div>
             {showErrorModal && (
                 <CustomModal
@@ -259,6 +448,22 @@ export const Register = () => {
                 >
                         <p>Your account was successfully created. 
                             You may now proceed to the login page.</p>
+                </CustomModal>
+            )}
+            {pendingModal && (
+                <CustomModal
+                    title= {
+                            <div style={{color: "white"}}>
+                                <i className="bi bi-check-circle-fill"></i>
+                                {" Congrats, " + firstName + "!"}
+                            </div>
+                            }
+                    isOpen={pendingModal}
+                    toggle={handleClosePendingModal}
+                    headerBackgroundClass="bg-success"
+                >
+                        <p>Your ew instructor request was successfully submitted. You will be 
+                            notified by an admin once they have reviewed your information.</p>
                 </CustomModal>
             )}
             {showUserExistsModal && (

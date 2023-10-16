@@ -53,7 +53,11 @@ router.post("/", async (req, res) => {
         email: req.body.email,
         password: req.body.password,
         role_id: req.body.roleId,
-        status_id: req.body.statusId
+        status_id: req.body.statusId,
+        first_question: req.body.firstQuestion,
+        second_question: req.body.secondQuestion,
+        first_answer: req.body.firstAnswer,
+        second_answer: req.body.secondAnswer
     });
     try {
         const newUser = await user.save();
@@ -83,6 +87,18 @@ router.patch("/:id", getUser, async (req, res) => {
     }
     if (req.body.statusId != null) {
         res.user.status_id = req.user.statusId;
+    }
+    if (req.body.firstQuestion != null) {
+        res.user.first_question = req.user.firstQuestion;
+    }
+    if (req.body.secondQuestion != null) {
+        res.user.second_question = req.user.secondQuestion;
+    }
+    if (req.body.firstAnswer != null) {
+        res.user.first_answer = req.user.firstAnswer;
+    }
+    if (req.body.secondAnswer != null) {
+        res.user.second_answer = req.user.secondAnswer;
     }
     try {
         const updatedUser = await res.user.save(); 

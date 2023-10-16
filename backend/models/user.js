@@ -25,6 +25,22 @@ const userSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    first_question: {
+        type: String,
+        required: true
+    },
+    second_question: {
+        type: String,
+        required: true
+    },
+    first_answer: {
+        type: String,
+        required: true
+    },
+    second_answer: {
+        type: String,
+        required: true
+    }
 });
 
 module.exports = mongoose.model("User", userSchema);
