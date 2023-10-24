@@ -1,9 +1,7 @@
-import axios from "axios";
 import React, { useState, } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import CustomModal from "./CustomModal";
-import {UserStatus} from "./Constants";
-import bcrypt from 'bcryptjs';
+import {login} from '../AuthService';
 
 export const Login = () => {
     const [email, setEmail] = useState('');
@@ -12,33 +10,20 @@ export const Login = () => {
     const [errors, setErrors] = useState([]);
     const navigate = useNavigate();
     const [showErrorModal, setShowErrorModal] = useState(false);
+    const [showAccountPendingModal, setShowAccountPendingModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const formErrors = handleFormValidation();
-        if(formErrors.length === 0) {
+        if (formErrors.length === 0) {
             try{
                 setIsLoading(true);
-                const response = await axios.get("/users")
-                const userList = response.data
-                const targetUser = userList.find(user => user.email === email);
-                
-                if(targetUser === undefined) {
-                    setErrors(["Invalid Email or Password"]);
-                    setShowErrorModal(true);
-                } else { 
-                    const isPasswordValid = await bcrypt.compare(password, targetUser.password);
-                    if (isPasswordValid) {
-                        //Set new session with targetUser
-                        handleRedirectToCalendar();
-                    } else {
-                        setErrors(["Invalid Email or Password"]);
-                        setShowErrorModal(true);
-                    }
-                }
+                const response = await login(email, password);
+                handleRedirectToCalendar();
             } catch (err) {
-                console.log(err)
+                setErrors([err.response.data.message]);
+                setShowErrorModal(true);
             } finally { 
                 setIsLoading(false);
             }
@@ -49,6 +34,10 @@ export const Login = () => {
 
     const handleCloseErrorModal = () => {
         setShowErrorModal(false);
+    }
+
+    const handleCloseAccountPendingModal = () => {
+        setShowAccountPendingModal(false);
     }
 
     const handleRedirectToCalendar = () => {
@@ -162,6 +151,20 @@ export const Login = () => {
                             <li key={i}>{error}</li>
                         ))}
                     </ul>
+                </CustomModal>
+            )}
+            {showAccountPendingModal && (
+                <CustomModal
+                    title= {
+                            <div style={{color: "white"}}>
+                                <i className="mdi mdi-alert-circle-outline"></i>
+                                {" Account Still Pending"}
+                            </div>}
+                    isOpen={showAccountPendingModal}
+                    toggle={handleCloseAccountPendingModal}
+                    headerBackgroundClass="bg-warning"
+                >
+                    <p>Your account is still under review, please try again later.</p>
                 </CustomModal>
             )}
             {isLoading && (

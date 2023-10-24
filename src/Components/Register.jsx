@@ -461,7 +461,7 @@ export const Register = () => {
                     toggle={handleClosePendingModal}
                     headerBackgroundClass="bg-success"
                 >
-                        <p>Your ew instructor request was successfully submitted. You will be 
+                        <p>Your new instructor request was successfully submitted. You will be 
                             notified by an admin once they have reviewed your information.</p>
                 </CustomModal>
             )}

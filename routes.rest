@@ -35,3 +35,7 @@ Content-Type: application/json
 {
     "firstName": "New"
 }
+
+###
+
+GET http://localhost:3001/users/login?email=testboddbby%40csus.edu&password=sdfdsfd

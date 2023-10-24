@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
 const { getSearchQuery } = require("../services/users");
-
+const bcrypt = require('bcryptjs');
 
 //Get all
 router.get("/", async (req, res) => {
@@ -107,7 +107,6 @@ router.patch("/:id", getUser, async (req, res) => {
         res.status(400).json({ message: err.message });
     }
 });
-
 
 //Delete
 router.delete("/:id", getUser, async (req, res) => {

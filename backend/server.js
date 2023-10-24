@@ -3,166 +3,71 @@ const cors = require('cors');
 const mongoose = require("mongoose");
 const app = express();
 const uri = "mongodb+srv://Admin:4321admin@cluster0.lyj1ljm.mongodb.net/scheduler?retryWrites=true&w=majority"
-//import json webtoken
-// const jwt = require("jsonwebtoken");
-//import dotenv
-require ('dotenv').config();
-//import bcrypt
 const bcrypt = require("bcrypt");
+const User = require("./models/user");
+const UserStatus = {
+    pending: 1,
+    approved: 2,
+    declined: 3
+}
+
 app.use(cors());
 app.use(express.json());
 
-//post for login
-//Authenticates the user email and password from the stored data created in database after register
-// app.post('login', async(req, res) =>{
-//     const {email,password} = req.body;
-
-//     //Finds the user by email
-//     const user = await userModel.findOne({email});
-
-//     if(!user){
-//         //If the user does not exit, return error
-//         return res.status(401).send('Invalid email or password');
-
-//     }
-
-//     //Checks if password is correct
-//     const passwordMatch = await bcrypt.compare(req.body.password, user.password);
-
-//     if(!passwordMatch){
-//         return res.status(401).send("Invalid email or password");
-//     }
-
-//     //If the email and password are correct, create the JWT token
-//     //secret key is in .env file 
-//     const mysecretkey = process.env.SECRET_CODE;
-
-//     //Generates the JWT with user data 
-//     const payload= {
-//         first_name: user.firstName,
-//         last_name: user.lastName,
-//         email: user.email,
-//         password: user.password,
-//     };
-    
-//     //Creates the jsonwebtoken that is set to expire in 1 day
-//     const token = jwt.sign(payload, mysecretkey, {expiresIn: '1d'});
-
-//     //sends the token back to client
-//     res.status(200).json({
-//         msg: "User logged in",
-//         token: token
-//     });
-// });
-
-//Task 82. Protected route blocks unauthorized users and only allows access to users saved in database after login
-/*app.get('/protected', async(req,res) =>{
-    //Gets token from Authorization header
-    const token = req.headers.authorization.split(' ')[1];
-    const mysecretkey = process.env.SECRET_CODE;
-
-    try{
-        //Verifies the assigned token and decodes the payload
-        const decoded = jwt.verify(token, mysecretkey);
-
-        //Gets the user email from payload
-        const userEmail = decoded.email;
-
-        //Finds user by email in the database
-        const user = await userModel.findOne({ email: userEmail});
-
-        if (user){
-            res.json({ message: `Welcome ${user.firstName}! This is a protected route.` });
-        }else{
-            res.status(401).json({ error: 'Invalid token'});
-        }
-    } catch (error){
-        res.status(401).json({ error: 'Invalid token'});
-    }
-}); */
-
 async function connect(){
-  try{
-      await mongoose.connect(uri);
-      console.log("Connected to MongoDB");
-  }catch (error){
-      console.error(error);
-  }
+    try{
+        await mongoose.connect(uri);
+        console.log("Connected to MongoDB");
+    }catch (error){
+        console.error(error);
+    }
 }
-
+  
 connect();
+
+const usersRouter = require("./routes/users");
+app.use("/users", usersRouter);
+
+const meetingRouter = require('./routes/meetings');
+app.use('/meetings', meetingRouter);
 
 app.listen(3001, () => {
     console.log("Listening on port 3001");
 });
 
-const usersRouter = require("./routes/users");
-app.use("/users", usersRouter);
+//Login Route
+app.get('/login', async (req, res) => {
+    const email = decodeURIComponent(req.query.email);
+    const password = decodeURIComponent(req.query.password);
+    try {
+        // Find the user by email
+        const user = await User.findOne({ email: email });
 
-// #task 66 - Adrian Tandiono
-// const meetingRoutes = require('./routes/meetings');
-// app.use('/meetings', meetingRoutes);
+        if (!user) {
+            return res.status(401).json({ message: 'Invalid email or password' });
+        }
 
-// const courseSchema = new mongoose.Schema({
-//   courseID: String,
-//   instructor: [String]
-// });
+        // Check the password using bcrypt
+        const passwordMatch = await bcrypt.compare(password, user.password);
 
-// const Course = mongoose.model("Course", courseSchema);
+        if (!passwordMatch) {
+            return res.status(401).json({ message: 'Invalid email or password' });
+        }
 
-// app.get("/api/course", async (req, res) => {
-//   try {
-//     // Add a new course
-//     // const newCourse = new Course({ courseID: "test", instructor: ["test"] });
-//     // await newCourse.save();
+        // Verify User Status
+        if (user.status_id === UserStatus.pending) {
+            return res.status(401).json({ message: 'Account is still awaiting approval' })
+        } else if (user.status_id === UserStatus.declined) {
+            return res.status(401).json({ message: 'Your account has been declined' })
+        }
 
-//     // Fetch all courses
-//     const course = await Course.find();
-//     console.log("Courses:", course);
-//     res.json(course);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: "Failed to fetch course" });
-//   }
-// });
-
-// // fields for calendar
-// const eventSchema = new mongoose.Schema({
-//   title: String,
-//   start: Date,
-//   end: Date
-// });
-
-// // calendar events
-// const event = mongoose.model('Event', eventSchema);
-
-// // routes
-// app.get('/events', async (req, res) => {
-//   try {
-//     const events = await Event.find();
-//     res.json(events);
-//   } catch (err) {
-//     res.status(500).send(err);
-//   }
-// });
-
-// // update
-// app.post('/events', async (req, res) => {
-//   try {
-//     const newEvent = new Event(req.body);
-//     await newEvent.save();
-//     res.json(newEvent);
-//   } catch (err) {
-//     res.status(500).send(err);
-//   }
-// });
-
-// #57 connect full calendar to db - michael lawler - 9.17.23
-
-// connect to mongodb
-// mongoose.connect(uri)
-//   .then(() => console.log('MongoDB Connected'))
-//   .catch(err => console.log(err));
+        // Successful login
+        res.status(200).json({ loggedInUserId: user.id });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+    }
+})
 
 // const PORT = process.env.PORT || 3000;
 // app.listen(PORT, () => console.log(`Listening on port ${PORT}`));

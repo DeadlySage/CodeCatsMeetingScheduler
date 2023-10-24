@@ -1,24 +1,28 @@
 import React, { useState } from "react";
 import './App.css';
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link, Navigate } from "react-router-dom";
 import { Login } from "./Components/Login";
 import { Register } from "./Components/Register";
 import AppointmentSelection from "./Components/AppointmentSelection";
 import AdvisorSelection from "./Components/AdvisorSelection";
 import Calendar from "./Components/Calendar";
 import { ForgotPassword } from "./Components/ForgotPassword";
-import Kenneth_Elliot from "./Components/advisor_calendar/Kenneth_Elliot";
-import SpongeBob_Squarepants from "./Components/advisor_calendar/SpongeBob_Squarepants";
-import Patrick_Star from "./Components/advisor_calendar/Patrick_Star";
-import Yu_Chen from "./Components/advisor_calendar/Yu_Chen";
 import Navbar from "./Components/Navbar";
-import { Navigate } from 'react-router-dom';
 import '@mdi/font/css/materialdesignicons.min.css';
 import "bootstrap-icons/font/bootstrap-icons.css";
 import ResetPassword from "./Components/ResetPassword";
 import Security from "./Components/Security";
 import AdminDashboard from "./Components/AdminDashboard";
 import HompageCalendar from "./Components/HomepageCalendar";
+import {isUserLoggedIn} from './AuthService';
+
+const RequireAuth = ({children}) => {
+  const userIsLoggedIn = isUserLoggedIn();
+  if (!userIsLoggedIn) {
+    return <Navigate to='/login' />;
+  }
+  return children;
+}
 
 function App() {
   const [currentForm, setCurrentForm] = useState('login');
@@ -36,19 +40,15 @@ function App() {
         <div className="App">
           <Routes>
             <Route path="/" element={<Navigate replace to="/login" />} />
-            <Route path="/login" element={<Login onFormSwitch={() => setCurrentForm("register")} />} />
-            <Route path="/register" element={<Register onFormSwitch={() => setCurrentForm("login")} />} />
-            <Route path="/user-homepage-calendar" element={<HompageCalendar />} />
-            <Route path="/appointment-selection" element={<AppointmentSelection />} />
-            <Route path="/advisor-selection" element={<AdvisorSelection />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/user-homepage-calendar" element={<RequireAuth><HompageCalendar /></RequireAuth>} />
+            <Route path="/appointment-selection" element={<RequireAuth><AppointmentSelection /></RequireAuth>} />
+            <Route path="/advisor-selection" element={<RequireAuth><AdvisorSelection /></RequireAuth>} />
             <Route path="/reset-password" element={<ForgotPassword />} />
-            <Route path="/security" element={<Security />} />
-            <Route path="/calendar" element={<Calendar />} />
-            <Route path="/Kenneth_Elliot" element={<Kenneth_Elliot />} />
-            <Route path="/SpongeBob_Squarepants" element={<SpongeBob_Squarepants />} />
-            <Route path="/Yu_Chen" element={<Yu_Chen />} />
-            <Route path="/Patrick_Star" element={<Patrick_Star />} />
-            <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            <Route path="/security" element={<RequireAuth><Security /></RequireAuth>} />
+            <Route path="/calendar" element={<RequireAuth><Calendar /></RequireAuth>} />
+            <Route path="/admin-dashboard" element={<RequireAuth><AdminDashboard /></RequireAuth>} />
           </Routes>
         </div>
       </Router>
