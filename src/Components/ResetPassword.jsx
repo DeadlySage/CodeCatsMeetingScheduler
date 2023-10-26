@@ -28,7 +28,7 @@ export const ResetPassword = (props) => {
     }
 
     return (
-        <div className="auth-form-container">
+        <div className="auth-form-container col-xl-3 col-md-5 col-10 mx-auto">
             <h2>Reset Password</h2>
             <form onSubmit={handleSubmit}>
                 <label htmlFor="email">Email:</label>

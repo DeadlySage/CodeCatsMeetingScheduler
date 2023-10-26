@@ -1,7 +1,7 @@
 import React, { useState, } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import CustomModal from "./CustomModal";
-import {login} from '../AuthService';
+import { login } from '../AuthService';
 
 export const Login = () => {
     const [email, setEmail] = useState('');
@@ -17,14 +17,14 @@ export const Login = () => {
         e.preventDefault();
         const formErrors = handleFormValidation();
         if (formErrors.length === 0) {
-            try{
+            try {
                 setIsLoading(true);
                 const response = await login(email, password);
                 handleRedirectToCalendar();
             } catch (err) {
                 setErrors([err.response.data.message]);
                 setShowErrorModal(true);
-            } finally { 
+            } finally {
                 setIsLoading(false);
             }
         } else {
@@ -41,7 +41,7 @@ export const Login = () => {
     }
 
     const handleRedirectToCalendar = () => {
-        navigate("/calendar", {replace: true})
+        navigate("/calendar", { replace: true })
     }
 
     const togglePasswordVisibility = () => {
@@ -52,12 +52,12 @@ export const Login = () => {
         const emailRegExp = /^[a-zA-Z0-9._%+-]+@csus\.edu$/;
         const result = [];
 
-        if(email.trim() === "") {
+        if (email.trim() === "") {
             result.push("Missing Email");
         } else if (!emailRegExp.test(email.trim())) {
             result.push("Invalid CSUS Email")
         }
-        if(password.trim() === "") {
+        if (password.trim() === "") {
             result.push("Missing Password");
         }
         setErrors(result);
@@ -65,9 +65,9 @@ export const Login = () => {
     };
 
     return (
-        <div className="auth-form-container col-md-3 mx-auto">
-            <div className="row" style={{textAlign: "center"}}>
-                <h2>Welcome Back</h2>
+        <div className="auth-form-container col-xl-3 col-md-5 col-10 mx-auto">
+            <div className="row" style={{ textAlign: "center" }}>
+                <h2 className="welcome-header">Welcome Back</h2>
             </div>
             <form className="login-form" onSubmit={handleSubmit}>
                 <div className="row">
@@ -77,13 +77,13 @@ export const Login = () => {
                 </div>
                 <div className="row">
                     <div className="col">
-                        <input 
-                            value={email} 
+                        <input
+                            value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            type="email" 
-                            placeholder="youremail@csus.edu" 
-                            id="email" 
-                            name="email" 
+                            type="email"
+                            placeholder="youremail@csus.edu"
+                            id="email"
+                            name="email"
                         />
                     </div>
                 </div>
@@ -98,22 +98,22 @@ export const Login = () => {
                     <div className="col">
                         <div className="container">
                             <div className="row">
-                                <input 
-                                    value={password} 
-                                    onChange={(e) => setPassword(e.target.value)} 
-                                    type={showPassword ? "text" : "password"} 
-                                    placeholder={showPassword ? "Enter password" : "********"} 
-                                    id="password" 
-                                    name="password" 
-                                    className="col-md-10"
+                                <input
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder={showPassword ? "Enter password" : "********"}
+                                    id="password"
+                                    name="password"
+                                    className="col-md-10 col-10"
                                 />
                                 <button
                                     type="button"
                                     onClick={togglePasswordVisibility}
-                                    className="password-toggle-button col-md-2"
+                                    className="password-toggle-button col-md-2 col-2"
                                 >
-                                    {showPassword ? 
-                                        <i className="bi bi-eye" id="passwordIcon"></i> : 
+                                    {showPassword ?
+                                        <i className="bi bi-eye" id="passwordIcon"></i> :
                                         <i className="bi bi-eye-slash" id="passwordIcon"></i>}
                                 </button>
                             </div>
@@ -125,11 +125,11 @@ export const Login = () => {
                         <button className="button rounded" style={{ width: "100%", marginTop: "25px" }} type="submit">Log In</button>
                     </div>
                 </div>
-                <div style={{textAlign: "left", marginTop: "15px"}}>
+                <div style={{ textAlign: "left", marginTop: "15px" }}>
                     <Link to="/register">
                         <button className="link-btn" style={{ marginTop: "15px" }}>Sign Up</button>
                     </Link>
-                    <br/>
+                    <br />
                     <Link to="/reset-password">
                         <button className="link-btn">Forgot Password</button>
                     </Link>
@@ -137,11 +137,11 @@ export const Login = () => {
             </form>
             {showErrorModal && (
                 <CustomModal
-                    title= {
-                            <div style={{color: "white"}}>
-                                <i className="mdi mdi-alert-circle-outline"></i>
-                                {" Error"}
-                            </div>}
+                    title={
+                        <div style={{ color: "white" }}>
+                            <i className="mdi mdi-alert-circle-outline"></i>
+                            {" Error"}
+                        </div>}
                     isOpen={showErrorModal}
                     toggle={handleCloseErrorModal}
                     headerBackgroundClass="bg-danger"
@@ -155,11 +155,11 @@ export const Login = () => {
             )}
             {showAccountPendingModal && (
                 <CustomModal
-                    title= {
-                            <div style={{color: "white"}}>
-                                <i className="mdi mdi-alert-circle-outline"></i>
-                                {" Account Still Pending"}
-                            </div>}
+                    title={
+                        <div style={{ color: "white" }}>
+                            <i className="mdi mdi-alert-circle-outline"></i>
+                            {" Account Still Pending"}
+                        </div>}
                     isOpen={showAccountPendingModal}
                     toggle={handleCloseAccountPendingModal}
                     headerBackgroundClass="bg-warning"

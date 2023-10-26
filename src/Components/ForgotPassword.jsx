@@ -10,13 +10,13 @@ export const ForgotPassword = (props) => {
     }
 
     return (
-        <div className="auth-form-container">
+        <div className="auth-form-container col-xl-3 col-md-5 col-10 mx-auto">
             <h2>Forgot Password?</h2>
             <div style={{ marginTop: "10px" }}>
                 <form className="login-form" onSubmit={handleSubmit}>
                     <label htmlFor="email">Enter your email</label>
                     <input value={email} onChange={(e) => setEmail(e.target.value)}type="email" placeholder="youremail@csus.edu" id="email" name="email" />
-                    <button className="button rounded" style={{ width: "335px", marginTop: "15px" }} type="submit">Submit</button>
+                    <button className="button rounded" style={{ width: "100%", marginTop: "15px" }} type="submit">Submit</button>
                 </form>
             </div>
             <Link to="/login">

@@ -153,7 +153,7 @@ export const Register = () => {
     }
 
     return (
-        <div className="auth-form-container col-md-8 mx-auto">
+        <div className="auth-form-container col-xl-8 col-md-10 col-10 mx-auto">
             <div className="row" style={{textAlign: "center"}}>
                 <h2>Sign Up</h2>
             </div>
@@ -235,12 +235,12 @@ export const Register = () => {
                                                 placeholder={showPassword ? "Enter password" : "********"} 
                                                 id="password" 
                                                 name="password" 
-                                                className="col-md-10"
+                                                className="col-md-10 col-10"
                                             />
                                             <button
                                                 type="button"
                                                 onClick={togglePasswordVisibility}
-                                                className="password-toggle-button col-md-2"
+                                                className="password-toggle-button col-md-2 col-2"
                                             >
                                             {showPassword ? 
                                                 <i className="bi bi-eye" id="passwordIcon"></i> : 
@@ -277,8 +277,8 @@ export const Register = () => {
                                 </div>
                                 <div style={{textAlign: 'center'}}>
                                     <div className="row" style={{marginBottom: "16.25px"}}>
-                                        <div className="col-md-3" style={{display: "flex", justifyContent: "flex-end"}}>Student</div>
-                                        <div className="col-md-3" style={{display: "flex", justifyContent: "flex-start"}}>
+                                        <div className="col-md-3 col-3" style={{display: "flex", justifyContent: "flex-end"}}>Student</div>
+                                        <div className="col-md-3 col-3" style={{display: "flex", justifyContent: "flex-start"}}>
                                             <input 
                                                 type="radio" 
                                                 name="accountType"
@@ -288,8 +288,8 @@ export const Register = () => {
                                                 defaultChecked
                                             />
                                         </div>
-                                        <div className="col-md-3" style={{display: "flex", justifyContent: "flex-end"}}>Instructor</div>
-                                        <div className="col-md-3" style={{display: "flex", justifyContent: "flex-start"}}>
+                                        <div className="col-md-3 col-3" style={{display: "flex", justifyContent: "flex-end"}}>Instructor</div>
+                                        <div className="col-md-3 col-3" style={{display: "flex", justifyContent: "flex-start"}}>
                                             <input 
                                                 type="radio" 
                                                 name="accountType" 
