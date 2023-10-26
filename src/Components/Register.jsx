@@ -154,7 +154,7 @@ export const Register = () => {
 
     return (
         <div className="auth-form-container col-xl-8 col-md-10 col-10 mx-auto">
-            <div className="row" style={{textAlign: "center"}}>
+            <div className="row" style={{textAlign: "center", marginTop: 20}}>
                 <h2>Sign Up</h2>
             </div>
             <div>

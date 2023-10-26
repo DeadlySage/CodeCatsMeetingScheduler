@@ -66,8 +66,8 @@ export const Login = () => {
 
     return (
         <div className="auth-form-container col-xl-3 col-md-5 col-10 mx-auto">
-            <div className="row" style={{ textAlign: "center" }}>
-                <h2 className="welcome-header">Welcome Back</h2>
+            <div className="row" style={{textAlign: "center", marginTop: 20}}>
+                <h2>Welcome Back</h2>
             </div>
             <form className="login-form" onSubmit={handleSubmit}>
                 <div className="row">

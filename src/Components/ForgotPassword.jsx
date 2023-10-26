@@ -11,8 +11,10 @@ export const ForgotPassword = (props) => {
 
     return (
         <div className="auth-form-container col-xl-3 col-md-5 col-10 mx-auto">
-            <h2>Forgot Password?</h2>
-            <div style={{ marginTop: "10px" }}>
+            <div className="row" style={{textAlign: "center", marginTop: 20}}>
+                <h2>Forgot Password?</h2>
+            </div>
+            <div>
                 <form className="login-form" onSubmit={handleSubmit}>
                     <label htmlFor="email">Enter your email</label>
                     <input value={email} onChange={(e) => setEmail(e.target.value)}type="email" placeholder="youremail@csus.edu" id="email" name="email" />
