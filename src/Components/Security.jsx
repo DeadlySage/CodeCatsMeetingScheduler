@@ -9,7 +9,7 @@ export const Security = (props) => {
 
     return (
         <body>
-            <h1>Security Questions</h1>
+            <h1>Security Questions.</h1>
             <form action="process_security_questions.php" method="post">
                 <div class="question">
                     <label for="question1">Question 1:</label>
