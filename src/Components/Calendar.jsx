@@ -10,6 +10,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-daterangepicker/daterangepicker.css';
 import { Tooltip } from 'bootstrap';
 import axios from 'axios'
+import {UserRole} from "./Constants";
 
 
 import{
@@ -203,7 +204,7 @@ export default function Calendar(){
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
-        axios.get('/users/')
+        axios.get('/users')
             .then((response) => {
                 setUsers(response.data);
             })
@@ -212,8 +213,9 @@ export default function Calendar(){
         });
     }, []);
 
-    const instructors = users.filter((user) => user.role_id === 2).map((instructor) => `${instructor.first_name} ${instructor.last_name}`);
-
+    const instructors = users.filter((user) => user.role_id === UserRole.instructor || 
+    user.role_id === UserRole.admin).map((instructor) => `${instructor.first_name} 
+    ${instructor.last_name}`);
 
     function onFilter(element){
         console.log(element.value);

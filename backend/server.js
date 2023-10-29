@@ -31,9 +31,8 @@ app.use("/users", usersRouter);
 const meetingRouter = require('./routes/meetings');
 app.use('/meetings', meetingRouter);
 
-app.listen(3001, () => {
-    console.log("Listening on port 3001");
-});
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 //Login Route
 app.get('/login', async (req, res) => {
@@ -68,6 +67,3 @@ app.get('/login', async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 })
-
-// const PORT = process.env.PORT || 3000;
-// app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
