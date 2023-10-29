@@ -27,3 +27,10 @@ export function isUserLoggedIn() {
     const loggedInUserId = cookies.get('LoggedInUserId');
     return !!loggedInUserId;
 }
+
+export async function getLoggedInUser() {
+    if(isUserLoggedIn()) {
+        const loggedInUser = await axios.get('/users' + cookies.get('LoggedInUserId'));
+        return loggedInUser;
+    }
+}

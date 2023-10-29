@@ -10,10 +10,10 @@ import { ForgotPassword } from "./Components/ForgotPassword";
 import Navbar from "./Components/Navbar";
 import '@mdi/font/css/materialdesignicons.min.css';
 import "bootstrap-icons/font/bootstrap-icons.css";
-import ResetPassword from "./Components/ResetPassword";
 import Security from "./Components/Security";
 import AdminDashboard from "./Components/AdminDashboard";
 import HompageCalendar from "./Components/HomepageCalendar";
+import {UserSettings} from "./Components/UserSettings";
 import {isUserLoggedIn} from './AuthService';
 
 const RequireAuth = ({children}) => {
@@ -49,6 +49,7 @@ function App() {
             <Route path="/security" element={<RequireAuth><Security /></RequireAuth>} />
             <Route path="/calendar" element={<RequireAuth><Calendar /></RequireAuth>} />
             <Route path="/admin-dashboard" element={<RequireAuth><AdminDashboard /></RequireAuth>} />
+            <Route path="/user-settings" element={<RequireAuth><UserSettings /></RequireAuth>} />
           </Routes>
         </div>
       </Router>

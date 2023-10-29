@@ -22,7 +22,7 @@ export const NavbarData = [
     },
     {
         title: 'Settings',
-        path: '/',
+        path: '/user-settings',
         icon: <AiIcons.AiFillSetting />,
         className: 'nav-text',
     },
