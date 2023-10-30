@@ -38,4 +38,4 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:3001/users/login?email=testboddbby%40csus.edu&password=sdfdsfd
+GET http://localhost:3001/login?email=testbobby%2540csus.edu&password=Bobburger1!

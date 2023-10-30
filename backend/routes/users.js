@@ -83,22 +83,22 @@ router.patch("/:id", getUser, async (req, res) => {
         res.user.password = req.body.password;
     }
     if (req.body.roleId != null) {
-        res.user.role_id = req.body.roleId; // Use req.body.roleId
+        res.user.role_id = req.body.roleId;
     }
     if (req.body.statusId != null) {
-        res.user.status_id = req.body.statusId; // Use req.body.statusId
+        res.user.status_id = req.body.statusId;
     }
     if (req.body.firstQuestion != null) {
-        res.user.first_question = req.user.firstQuestion;
+        res.user.first_question = req.body.firstQuestion;
     }
     if (req.body.secondQuestion != null) {
-        res.user.second_question = req.user.secondQuestion;
+        res.user.second_question = req.body.secondQuestion;
     }
     if (req.body.firstAnswer != null) {
-        res.user.first_answer = req.user.firstAnswer;
+        res.user.first_answer = req.body.firstAnswer;
     }
     if (req.body.secondAnswer != null) {
-        res.user.second_answer = req.user.secondAnswer;
+        res.user.second_answer = req.body.secondAnswer;
     }
     try {
         const updatedUser = await res.user.save();

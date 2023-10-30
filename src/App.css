@@ -9,6 +9,7 @@
 }
 
 .auth-form-container,
+.user-settings-form,
 .login-form,
 .register-form,
 .modal-container,
@@ -21,6 +22,7 @@
 
 @media screen and (min-width: 400px) {
   .auth-form-container,
+  .user-settings-form,
   .login-form,
   .register-form {
     padding: 5px;
@@ -36,6 +38,7 @@
 @media only screen and (max-width: 600px) {
 
   .auth-form-container,
+  .user-settings-form,
   .login-form,
   .register-form {
     padding: 5px;
@@ -67,7 +70,7 @@ button {
   padding: 10px;
   border-radius: 5px;
   cursor: pointer;
-  color: white;
+  color: black;
 }
 
 .link-btn {

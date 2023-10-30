@@ -29,8 +29,6 @@ import CustomModal from './CustomModal';
 
 let todayStr = new Date().toISOString().replace(/T.*$/, '');
 
-
-
 export default function Calendar(){
 
     const [weekendsVisible, setWeekendsVisible] = useState(true);

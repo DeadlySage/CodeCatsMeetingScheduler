@@ -13,6 +13,7 @@ const UserStatus = {
 
 app.use(cors());
 app.use(express.json());
+app.disable('etag');
 
 async function connect(){
     try{

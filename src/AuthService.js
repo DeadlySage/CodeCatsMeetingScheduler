@@ -13,7 +13,7 @@ export async function login(email, password) {
     if (response.status === 200) {
         const expirationDate = new Date();
         expirationDate.setDate(expirationDate.getDate() + 200); // Expires in 200 days
-        cookies.set('LoggedInUserId', response.loggedInUserId, { path: '/', expires: expirationDate });
+        cookies.set('LoggedInUserId', response.data.loggedInUserId, { path: '/', expires: expirationDate });
     } else {
         throw new Error(response.message);
     }
@@ -24,13 +24,17 @@ export function logout() {
 }
 
 export function isUserLoggedIn() {
-    const loggedInUserId = cookies.get('LoggedInUserId');
-    return !!loggedInUserId;
+    return getLoggedInUserId() !== undefined;
 }
 
 export async function getLoggedInUser() {
     if(isUserLoggedIn()) {
-        const loggedInUser = await axios.get('/users' + cookies.get('LoggedInUserId'));
-        return loggedInUser;
+        const loggedInUser = await axios.get('/users/' + getLoggedInUserId());
+        return loggedInUser.data;
     }
+}
+
+export function getLoggedInUserId() {
+    const userId = cookies.get('LoggedInUserId');
+    return userId;
 }
