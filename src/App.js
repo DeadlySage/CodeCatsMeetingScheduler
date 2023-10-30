@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import './App.css';
-import { BrowserRouter as Router, Routes, Route, Link, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link, Navigate, useNavigate  } from "react-router-dom";
 import { Login } from "./Components/Login";
 import { Register } from "./Components/Register";
 import AppointmentSelection from "./Components/AppointmentSelection";
@@ -14,7 +14,8 @@ import Security from "./Components/Security";
 import AdminDashboard from "./Components/AdminDashboard";
 import HompageCalendar from "./Components/HomepageCalendar";
 import {UserSettings} from "./Components/UserSettings";
-import {isUserLoggedIn} from './AuthService';
+import {isUserLoggedIn, getLoggedInUserId, getLoggedInUserRole} from './AuthService';
+
 
 const RequireAuth = ({children}) => {
   const userIsLoggedIn = isUserLoggedIn();
@@ -23,6 +24,24 @@ const RequireAuth = ({children}) => {
   }
   return children;
 }
+
+const RequireAdmin = ({ children }) => {
+  const navigate = useNavigate(); 
+  const checkRole = async () => {
+    const role = await getLoggedInUserRole();
+    console.log(role);
+
+    if (role !== 3) {
+      navigate('/user-settings');
+    }
+  };
+
+  useEffect(() => {
+    checkRole();
+  }, []);
+
+  return children;
+};
 
 function App() {
   const [currentForm, setCurrentForm] = useState('login');
@@ -35,7 +54,7 @@ function App() {
     <div className="main">
       <Router>
         <div className="topnav">
-          <Navbar />
+          <Navbar/>
         </div>
         <div className="App">
           <Routes>
@@ -48,7 +67,7 @@ function App() {
             <Route path="/reset-password" element={<ForgotPassword />} />
             <Route path="/security" element={<RequireAuth><Security /></RequireAuth>} />
             <Route path="/calendar" element={<RequireAuth><Calendar /></RequireAuth>} />
-            <Route path="/admin-dashboard" element={<RequireAuth><AdminDashboard /></RequireAuth>} />
+            <Route path="/admin-dashboard" element={<RequireAuth><RequireAdmin><AdminDashboard /></RequireAdmin></RequireAuth>} />
             <Route path="/user-settings" element={<RequireAuth><UserSettings /></RequireAuth>} />
           </Routes>
         </div>

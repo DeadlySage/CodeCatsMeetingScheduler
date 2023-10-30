@@ -1,0 +1,82 @@
+/* Admin-Dashboard CSS */
+
+.admin-header{
+    background-color: #2C3E50;
+    text-align: center;
+    color:white;
+}
+
+.user-table {
+    width: 70%;
+    font-size: 1em;
+    border-collapse: collapse;
+}
+  
+.user-table th,
+.user-table td {
+    border: 1px solid #000000;
+    padding: 8px;
+    text-align: center;
+    background-color: #2C3E50;
+    color: white;
+}
+  
+.user-searchbar{
+    margin: 0.5rem 0;
+    padding: 8px; 
+    border: none;
+    border-radius: 5px;
+    width: 50%; 
+    font-size: 1em; 
+}
+
+.table-container {
+    background-color: #2C3E50;
+    color: white;
+    width: 70%;
+    max-width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: center;
+    padding-bottom: 30px;
+}
+  
+.sort-button{
+    color: white;
+}
+
+.authorize-button,
+.decline-button {
+    width: 80px;
+    background-color: green;
+    color: white;
+    border: none;
+    padding: 8px;
+    margin-right: 10px;
+    text-align: center; 
+    border-radius: 5px;
+}
+  
+.decline-button {
+    background-color: red; 
+}
+  
+
+@media screen and (max-width: 900px) {
+.table-container {
+    width: 95%; /* Reduce the width for smaller screens */
+    padding: 1rem; 
+}
+  
+.user-table {
+  font-size: 0.6em; /* Reduce the font size for smaller screens */
+}
+  
+.user-table th,
+.user-table td {
+      padding: 0.2em; 
+    }
+  }

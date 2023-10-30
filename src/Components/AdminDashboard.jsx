@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import CustomModal from './CustomModal'; // For the confirmation modal
+import CustomModal from './CustomModal'; 
+import './AdminDashboard.css';
+import { IconContext } from 'react-icons';
+import { FaTrash } from 'react-icons/fa';
 
 const userRoleType = {
     1: 'Student',
@@ -20,10 +23,10 @@ const AdminDashboard = () => {
     const [sortOrder, setSortOrder] = useState('asc');
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [showDeclineConfirmation, setShowDeclineConfirmation] = useState(false);
+    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
     const [selectedUserId, setSelectedUserId] = useState(null);
     const [selectedUserFirstName, setSelectedUserFirstName] = useState('');
     const [selectedUserLastName, setSelectedUserLastName] = useState('');
-
 
     // Get user data from the server
     useEffect(() => {
@@ -58,19 +61,19 @@ const AdminDashboard = () => {
         setUsers(sortedUsers);
     };
 
-    const handleInstructorAuthorization = (userId, firstName, lastName) => {
+    const handleInstructorAction = (userId, firstName, lastName, action) => {
         setSelectedUserId(userId);
-        setSelectedUserFirstName(firstName); 
-        setSelectedUserLastName(lastName); 
-        setShowConfirmation(true);
-    };
-
-    const handleInstructorDecline = (userId, firstName, lastName) => {
-        setSelectedUserId(userId);
-        setSelectedUserFirstName(firstName); 
-        setSelectedUserLastName(lastName); 
-        setShowDeclineConfirmation(true);
-    };
+        setSelectedUserFirstName(firstName);
+        setSelectedUserLastName(lastName);
+        
+        if (action === 'approve') {
+            setShowConfirmation(true);
+        } else if (action === 'decline') {
+            setShowDeclineConfirmation(true);
+        } else if (action === 'delete') {
+            setShowDeleteConfirmation(true);
+        }
+      };
 
     const confirmAuthorization = () => {
         if (selectedUserId) {
@@ -81,6 +84,9 @@ const AdminDashboard = () => {
                         if (user._id === selectedUserId) {
                             console.log('Patch Successful');
                             return { ...user, status_id: 2 };
+                        }
+                        else{
+                            console.error('Error approving user:', response.data);
                         }
                         return user;
                     });
@@ -103,9 +109,12 @@ const AdminDashboard = () => {
                     const updatedUsers = users.map((user) => {
                         if (user._id === selectedUserId) {
                             console.log('Patch Successful');
-                            return { ...user, status_id: 3 }; // Update status to "Declined"
+                            return { ...user, status_id: 3 }; 
                         }
-                    return user;
+                        else{
+                            console.error('Error declining user:', response.data);
+                        }
+                        return user;
                 });
                 setUsers(updatedUsers);
             })
@@ -116,28 +125,43 @@ const AdminDashboard = () => {
          // Close the modal
          setShowDeclineConfirmation(false);
     };
-    
+
+    const confirmUserDeletion = () => {
+        if (selectedUserId) {
+            console.log('Selected User ID:', selectedUserId); // Log the selected user's ID
+          // Make an API request to delete the user
+          axios.delete(`/users/${selectedUserId}`)
+            .then((response) => {
+              // Update list after deletion
+              const updatedUsers = users.filter((user) => user._id !== selectedUserId);
+              setUsers(updatedUsers);
+              setShowDeleteConfirmation(false);
+              console.log('User delete success');
+            })
+            .catch((error) => {
+              console.error('Error deleting user', error);
+              setShowDeleteConfirmation(false);
+            });
+        }
+      };
+      
 
     const cancelAction = () => {
         // Close the modal
         setShowConfirmation(false);
         setShowDeclineConfirmation(false);
+        setShowDeleteConfirmation(false);
 
     };
 
 return (
     <div>
-        <header
-            style={{
-            backgroundColor: '#2C3E50',
-            textAlign: 'center',
-            borderRadius: '15px',
-            }}
-        >
-        <h1>Admin Dashboard</h1>
+        <header className="admin-header">
+            <h1>Admin Dashboard</h1>
         </header>
         
         <div style={{ margin: '75px' }}></div>
+
         <div className="table-container" 
         style={{ overflow: 'auto', maxHeight: '500px', borderRadius: '15px' }} >
         <h1>Pending Instructors</h1>
@@ -148,6 +172,7 @@ return (
                 <th>Last Name</th>
                 <th>Email</th>
                 <th>Status</th>
+                <th>Authorize</th>
             </tr>
           </thead>
           <tbody>
@@ -162,19 +187,23 @@ return (
                         <div>
                             <button 
                                 className="authorize-button"
-                                onClick={() => handleInstructorAuthorization(
+                                onClick={() => handleInstructorAction(
                                 user._id,
                                 user.first_name,
-                                user.last_name)}
-                                >Approve
+                                user.last_name,
+                                'approve')}
+                            >
+                                Approve
                             </button>
                             <button 
                                 className="decline-button"
-                                onClick={() => handleInstructorDecline(
-                                    user._id,
-                                    user.first_name,
-                                    user.last_name)}
-                                >Decline
+                                onClick={() => handleInstructorAction(
+                                user._id,
+                                user.first_name,
+                                user.last_name,
+                                'decline')}
+                            >
+                                Decline
                             </button>
                         </div>
                         )}
@@ -185,7 +214,7 @@ return (
         </table>
     </div>
         
-    <div style={{ margin: '30px' }}></div>
+    <div style={{ margin: '30px' }}></div> {/* Add gap between tables */}
 
     {showConfirmation && (
         <CustomModal
@@ -217,19 +246,33 @@ return (
         </CustomModal>
     )}
 
+    {showDeleteConfirmation && (
+        <CustomModal
+          title="Delete User"
+         isOpen={showDeleteConfirmation}
+            toggle={cancelAction}
+            onCancel={cancelAction}
+            onSubmit={confirmUserDeletion}
+            submitText="Delete User"
+        >
+        <p>Are you sure you want to delete the user: {' '}
+            <strong>{selectedUserFirstName} {selectedUserLastName}</strong>?</p>
+        </CustomModal>
+    )}
 
 
     <div className="table-container" 
-        style={{ overflow: 'auto', maxHeight: '500px', borderRadius: '15px' }}>
+        style={{ overflow: 'auto', maxHeight: '1000px', borderRadius: '15px' }}>
         <h1>All Users</h1>    
-        <input
+        <input className="user-searchbar"
             type="text"
             placeholder="Search by name/email"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            style={{ marginRight: '40px'}}
+            
         />
         <button 
+            className ="sort-button"
             onClick={sortUsers}
             style={{borderRadius: '5px'}}>
             Sort by User Role {sortOrder === 'asc' ? '▲' : '▼'}
@@ -255,11 +298,25 @@ return (
                     <td>{user.email}</td>
                     <td>{userRoleType[user.role_id]}</td>
                     <td>{userStatus[user.status_id]}</td>
+                    <td>
+                        <IconContext.Provider value={{color: 'white'}}>
+                        <button 
+                            onClick={() => handleInstructorAction(
+                            user._id,
+                            user.first_name,
+                            user.last_name,
+                            'delete')}
+                        >
+                            <FaTrash/>
+                        </button>
+                        </IconContext.Provider>
+                    </td>
                 </tr>
                 ))}
             </tbody>
         </table>
     </div>  
+    <div style={{ margin: '30px' }}></div> {/* Add gap table and page bottom*/}
     </div>
   );
 }

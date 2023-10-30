@@ -38,3 +38,9 @@ export function getLoggedInUserId() {
     const userId = cookies.get('LoggedInUserId');
     return userId;
 }
+
+export async function getLoggedInUserRole() {
+    const user = await getLoggedInUser();
+    return user ? user.role_id : null;
+}
+
