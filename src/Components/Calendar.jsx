@@ -455,3 +455,6 @@ export default function Calendar(){
             </Container>
         );
 }
+
+// CP-98
+// update meeting view on mobile
