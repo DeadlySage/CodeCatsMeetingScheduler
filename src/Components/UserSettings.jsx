@@ -195,10 +195,8 @@ export const UserSettings = () => {
                         <h2>User Settings</h2>
                     </div>
                     <form className="user-settings-form">
-                        <button className="button rounded" onClick={handleResetClick}>Reset Password</button>
-                        <br />
-                        <button className="button rounded" onClick={(handleChangeClick)}>Change Security Questions</button>
-                        <br />
+                        <button className="button rounded" onClick={handleResetClick} style={{marginBottom: "15px"}}>Reset Password</button>
+                        <button className="button rounded" onClick={(handleChangeClick)} style={{marginBottom: "15px"}}>Change Security Questions</button>
                         <div className="col">
                                 <button 
                                     className="button rounded" 
