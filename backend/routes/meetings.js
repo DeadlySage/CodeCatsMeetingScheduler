@@ -5,7 +5,8 @@ const Meeting = require('../models/meeting');
 // CREATE a new meeting
 router.post('/', async (req, res) => {
     try {
-        const meeting = new Meeting(req.body);
+        const meeting = new Meeting(req.body); 
+        console.log(meeting);
         await meeting.save();
         res.status(201).json(meeting);
 

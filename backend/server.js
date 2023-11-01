@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require('cors');
 const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
 const app = express();
 const uri = "mongodb+srv://Admin:4321admin@cluster0.lyj1ljm.mongodb.net/scheduler?retryWrites=true&w=majority"
 const bcrypt = require("bcrypt");
@@ -15,9 +16,13 @@ app.use(cors());
 app.use(express.json());
 app.disable('etag');
 
+
+require("dotenv").config();
+app.use(bodyParser.json());
+
 async function connect(){
     try{
-        await mongoose.connect(uri);
+        await mongoose.connect(uri ,{useUnifiedTopology: true, useNewUrlParser: true});
         console.log("Connected to MongoDB");
     }catch (error){
         console.error(error);

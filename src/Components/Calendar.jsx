@@ -43,6 +43,9 @@ export default function Calendar(){
     const [end, setEnd] = useState(new Date());
     const [url, setUrl] = useState('');
     const [selectedInstructor, setSelectedInstructor] = useState('null');
+    const [notes, setNote] = useState('');
+    const [type_id, setType_id] = useState();
+    const [attendees, setAttendees] = useState([]);
 
 
     const handleCloseModal = () =>{
@@ -97,7 +100,7 @@ export default function Calendar(){
         setStart(clickInfo.event.start);
         setEnd(clickInfo.event.end);
         setUrl(clickInfo.event.url);
-
+        setNote(clickInfo.event.note);
         setModal(true);
         
         if (tooltips[clickInfo.event.id]) {
@@ -132,6 +135,7 @@ export default function Calendar(){
     }
 
     const [meetingStatus, setMeetingStatus] = useState('pending');
+
     const handleInstructorSelect = (instructor) => {
         setSelectedInstructor(instructor);
       };
@@ -140,24 +144,25 @@ export default function Calendar(){
 
         //setMeetingStatus('pending');
 
-        const newEvent = {
-            id: nanoid(),
-            title, 
-            start: state.selectInfo?.startStr || start.toISOString(),
-            end: state.selectInfo?.endStr || end.toISOString(),
-            allDay: state.selectInfo?.allDay || false,
-            url,
-            instructorID : selectedInstructor ? selectedInstructor.value : null,
-            status: 'pending',
-        };
 
         axios
-            .post(`/routes/meetings`, newEvent)
+            .post("/meetings", {
+                title: '', 
+                start: state.selectInfo?.startStr || start.toISOString(),
+                end: state.selectInfo?.endStr || end.toISOString(),
+                url: '',
+                instructor_id : selectedInstructor ? selectedInstructor.valueOf : null,
+                status: 'pending',
+                notes: '',
+                type_id: 1,
+                attendees: []
+            })
             .then((response) => {
                 console.log('Meeting created successfully', response.data);
-                let calendarApi = calendarRef.current.getApi();
+                
+                // let calendarApi = calendarRef.current.getApi();
+                // calendarApi.addEvent(newEvent);
 
-                calendarApi.addEvent(newEvent);
                 handleClose();
             })
             .catch((error) => {
@@ -189,6 +194,9 @@ export default function Calendar(){
         setEnd(new Date());
         setState({});
         setModal(false);
+        setNote('');
+        setType_id('1');
+        setAttendees([]);
     }
     
     const [ state, setState] = useState({});
@@ -211,9 +219,16 @@ export default function Calendar(){
         });
     }, []);
 
+
     const instructors = users.filter((user) => user.role_id === UserRole.instructor || 
     user.role_id === UserRole.admin).map((instructor) => `${instructor.first_name} 
     ${instructor.last_name}`);
+    const instructorMap = new Map();
+    // for (let i = 0; i < users.length; i++) {
+    //     if (users[i].role_id == 2) {
+    //         instructorMap.set(users[i].id, users[i].first_name.concat(users[i].last_name))
+    //     } 
+    // }
 
     function onFilter(element){
         console.log(element.value);
@@ -402,6 +417,19 @@ export default function Calendar(){
                             onChange={(e) => setUrl(e.target.value)}
                         />
                     </FormGroup>
+
+                    <FormGroup>
+                        <Label for = 'notes'>Notes</Label>
+                        <Input
+                            type='text'
+                            name='note'
+                            placeholder='Notes'
+                            value={notes}
+                            onChange={(e) => setNote(e.target.value)}
+                        />
+                    </FormGroup>
+                    
+        
            
 
                 </CustomModal>
