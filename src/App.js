@@ -14,7 +14,7 @@ import Security from "./Components/Security";
 import AdminDashboard from "./Components/AdminDashboard";
 import HompageCalendar from "./Components/HomepageCalendar";
 import {UserSettings} from "./Components/UserSettings";
-import {isUserLoggedIn, getLoggedInUserId, getLoggedInUserRole} from './AuthService';
+import {isUserLoggedIn, isUserAdmin} from './AuthService';
 
 
 const RequireAuth = ({children}) => {
@@ -26,22 +26,31 @@ const RequireAuth = ({children}) => {
 }
 
 const RequireAdmin = ({ children }) => {
-  const navigate = useNavigate(); 
-  const checkRole = async () => {
-    const role = await getLoggedInUserRole();
-    console.log(role);
-
-    if (role !== 3) {
-      navigate('/user-settings');
-    }
-  };
+  const [isAdmin, setIsAdmin] = useState(null);
 
   useEffect(() => {
-    checkRole();
+    const checkAdminRole = async () => {
+      const admin = await isUserAdmin();
+      setIsAdmin(admin);
+    };
+
+    checkAdminRole();
   }, []);
+
+  if (isAdmin === null) {
+    // The isAdmin value is still pending (not yet resolved).
+    return <div>Loading...</div>;
+  }
+
+  if (!isAdmin) {
+    console.log('Redirecting to /login');
+    return <Navigate to='/login' />;
+  }
 
   return children;
 };
+
+
 
 function App() {
   const [currentForm, setCurrentForm] = useState('login');
@@ -74,7 +83,6 @@ function App() {
       </Router>
     </div>
   );
-
 }
 
 export default App;

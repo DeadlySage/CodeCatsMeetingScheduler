@@ -44,3 +44,8 @@ export async function getLoggedInUserRole() {
     return user ? user.role_id : null;
 }
 
+export async function isUserAdmin() {
+    const user = await getLoggedInUser();
+    console.log(user && user.role_id === 3);
+    return user && user.role_id === 3; // Check if user is defined and has the admin role
+  }
