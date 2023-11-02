@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import CustomModal from "./CustomModal";
 import bcrypt from 'bcryptjs';
+import {UserRole} from "./Constants";
 
 export const ForgotPassword = (props) => {
     const [email, setEmail] = useState('');
@@ -23,6 +24,8 @@ export const ForgotPassword = (props) => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [showContactAdminModal, setShowContactAdminModal] = useState(false);
+    const [admins, setAdmins] = useState([]);
     const navigate = useNavigate();
 
     const handleMainSubmit = (e) => {
@@ -51,7 +54,6 @@ export const ForgotPassword = (props) => {
                 setShowErrorModal(true);
             });
         }
-        
     }
 
     useEffect(() => {
@@ -171,6 +173,10 @@ export const ForgotPassword = (props) => {
         setShowErrorModal(false);
     }
 
+    const handleCloseContactAdminModal = () => {
+        setShowContactAdminModal(false);
+    }
+
     const handleQuestionsCancel = () => {
         setShowQuestionsForm(false);
         clearInputs();
@@ -195,6 +201,37 @@ export const ForgotPassword = (props) => {
     const handleRedirectToLogin = () => {
         navigate("/login", {replace: true})
     }
+
+    const handleShowContactAdminModal = () => {
+        axios.get('/users', {
+            params: {
+                roleId: UserRole.admin
+            }
+        })
+        .then(function (response) {
+            if (response.data && Object.keys(response.data).length > 0) {
+                // Admin found
+                console.log(response.data);
+                setAdmins(response.data);
+            } else {
+                // No admin found
+                setErrors(['No admin found']);
+                setShowErrorModal(true);
+            }
+        })
+        .catch(function (error) {
+            const returnedError = error.response;
+            console.log(error)
+            setErrors([returnedError]);
+            setShowErrorModal(true);
+        });
+
+        setShowContactAdminModal(true);
+    }
+
+    useEffect(() => {
+        if (admins) {}
+    }, [admins]);
 
     const clearInputs = () => {
         setFirstResponse('');
@@ -288,6 +325,9 @@ export const ForgotPassword = (props) => {
                             </div>
                         </div>
                     </form>
+                    <div style={{textAlign: 'center'}}>
+                        <button className="link-btn" style={{ marginTop: '5px', marginBottom: '15px' }} onClick={handleShowContactAdminModal}>Can't remember answers</button>
+                    </div>
                 </div>
             )}
             {showPasswordForm && (
@@ -403,6 +443,24 @@ export const ForgotPassword = (props) => {
                     headerBackgroundClass="bg-success"
                 >
                         <p>Your password was successfully reset.</p>
+                </CustomModal>
+            )}
+            {showContactAdminModal && (
+                <CustomModal
+                    title={
+                        <div>
+                            <i className="mdi mdi-account"></i>
+                            {" Contact Admin"}
+                        </div>}
+                    isOpen={showContactAdminModal}
+                    toggle={handleCloseContactAdminModal}
+                >
+                    <p>Email one of the admin listed below for help resetting your password:</p>
+                    <ul>
+                        {admins.map((admin, i) => (
+                            <li key={i}>{admin.email}</li>
+                        ))}
+                    </ul>
                 </CustomModal>
             )}
             {isLoading && (

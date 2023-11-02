@@ -7,11 +7,19 @@ const bcrypt = require('bcryptjs');
 //Get all 
 router.get("/", async (req, res) => {
     const email = req.query.email;
+    const roleId = req.query.roleId
 
     if (email) {
         try {
             const user = await User.findOne({ email: email });
             res.json(user);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to fetch user" });
+        }
+    } else if(roleId) {
+        try {
+            const users = await User.find({ role_id: roleId });
+            res.json(users);
         } catch (error) {
             res.status(500).json({ error: "Failed to fetch user" });
         }
