@@ -14,3 +14,9 @@ export const MeetingType = {
     standard: 1,
     block: 2
 }
+
+export const MeetingStatus = {
+    pending: 1,
+    approved: 2,
+    declined: 3
+}
