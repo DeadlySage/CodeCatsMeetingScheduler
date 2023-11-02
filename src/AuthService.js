@@ -3,7 +3,7 @@ import axios from 'axios';
 const cookies = new Cookies();
 
 export async function login(email, password) {
-    logout()
+    logout();
     const response = await axios.get('/login', {
         params: {
             email: encodeURIComponent(email),
@@ -25,26 +25,31 @@ export function logout() {
 
 export function isUserLoggedIn() {
     const loggedInUserId = getLoggedInUserId();
-    console.log('Logged In User Id: ' + loggedInUserId)
     return loggedInUserId !== 0;
 }
 
 export async function getLoggedInUser() {
     const userLoggedIn = isUserLoggedIn();
+    const loggedInUserId = getLoggedInUserId();
     if(userLoggedIn) {
-        await axios.get('/users/' + getLoggedInUserId())
+        let loggedInUser = null;
+        await axios.get('/users/' + loggedInUserId)
         .then((response) =>  { 
-            return response.data; 
+            // console.log(response.data);
+            loggedInUser = response.data; 
         })
         .catch((error) => { 
             console.error(error);
         });
+        return loggedInUser;
     }
+    return null;
+    
 }
 
 export function getLoggedInUserId() {
     const userId = cookies.get('LoggedInUserId');
-    if( !!userId ){
+    if( userId === undefined ){
         return 0;
     } else {
         return userId;
@@ -53,11 +58,10 @@ export function getLoggedInUserId() {
 
 export async function getLoggedInUserRole() {
     const user = await getLoggedInUser();
-    return user ? user.role_id : null;
+    return !!user ? user.role_id : 0;
 }
 
 export async function isUserAdmin() {
     const user = await getLoggedInUser();
-    console.log(user && user.role_id === 3);
     return user && user.role_id === 3; // Check if user is defined and has the admin role
   }

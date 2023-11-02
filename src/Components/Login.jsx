@@ -19,7 +19,7 @@ export const Login = () => {
         if (formErrors.length === 0) {
             try {
                 setIsLoading(true);
-                const response = await login(email, password);
+                await login(email, password);
                 handleRedirectToCalendar();
             } catch (err) {
                 setErrors([err.response.data.message]);

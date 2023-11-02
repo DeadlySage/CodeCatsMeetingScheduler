@@ -2,12 +2,6 @@ import React from 'react'
 import * as AiIcons from "react-icons/ai";
 
 export const NavbarData = [
-    // {
-    //     title: 'Home',
-    //     path: '/home',
-    //     icon: <AiIcons.AiFillHome />,
-    //     className: 'nav-text',
-    // },
     {
         title: 'Login',
         path: '/login',
@@ -24,12 +18,6 @@ export const NavbarData = [
         title: 'Settings',
         path: '/user-settings',
         icon: <AiIcons.AiFillSetting />,
-        className: 'nav-text',
-    },
-    {
-        title: 'Logout',
-        path: '/',
-        icon: <AiIcons.AiOutlineLogout />,
         className: 'nav-text',
     }
 ]
