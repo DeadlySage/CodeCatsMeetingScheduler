@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
-const { getSearchQuery } = require("../services/users");
 const bcrypt = require('bcryptjs');
 
 //Get all 
@@ -58,8 +57,8 @@ router.get("/:id", getUser, async (req, res) => {
 
 //Create
 router.post("/", async (req, res) => {
-    const existingUserWithEmail = await getSearchQuery({email: req.body.email});
-    if(existingUserWithEmail.length > 0) {
+    const existingUserWithEmail = await User.findOne({ email: req.body.email })
+    if (existingUserWithEmail) {
         res.status(300).json({ 
             message: "An account with that email address already exists." 
         })
