@@ -4,13 +4,24 @@ const User = require("../models/user");
 const { getSearchQuery } = require("../services/users");
 const bcrypt = require('bcryptjs');
 
-//Get all
+//Get all 
 router.get("/", async (req, res) => {
-    try{
-        const users = await User.find();
-        res.json(users);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
+    const email = req.query.email;
+
+    if (email) {
+        try {
+            const user = await User.findOne({ email: email });
+            res.json(user);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to fetch user" });
+        }
+    } else {
+        try{
+            const users = await User.find();
+            res.json(users);
+        } catch (err) {
+            res.status(500).json({ message: err.message });
+        }
     }
 });
 

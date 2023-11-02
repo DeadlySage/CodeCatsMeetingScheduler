@@ -65,7 +65,7 @@ export const Login = () => {
     };
 
     return (
-        <div className="auth-form-container col-xl-3 col-md-5 col-10 mx-auto">
+        <div className="auth-form-container col-xl-3 col-md-5 col-10 mx-auto" style={{ maxWidth: "400px" }}>
             <div className="row" style={{textAlign: "center", marginTop: 20}}>
                 <h2>Welcome Back</h2>
             </div>
@@ -125,13 +125,12 @@ export const Login = () => {
                         <button className="button rounded" style={{ width: "100%", marginTop: "25px" }} type="submit">Log In</button>
                     </div>
                 </div>
-                <div style={{ textAlign: "left", marginTop: "15px" }}>
-                    <Link to="/register">
-                        <button className="link-btn" style={{ marginTop: "15px" }}>Sign Up</button>
-                    </Link>
-                    <br />
+                <div style={{ position: "relative", marginTop: "30px", marginBottom: "20px" }}>
                     <Link to="/reset-password">
-                        <button className="link-btn">Forgot Password</button>
+                        <button className="link-btn" style={{ position: "absolute", left: 0 }}>Forgot Password</button>
+                    </Link>
+                    <Link to="/register">
+                        <button className="link-btn" style={{ position: "absolute", right: 0 }}>Sign Up</button>
                     </Link>
                 </div>
             </form>

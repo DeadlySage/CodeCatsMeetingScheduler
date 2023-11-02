@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import './App.css';
-import { BrowserRouter as Router, Routes, Route, Link, Navigate, useNavigate  } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { Login } from "./Components/Login";
 import { Register } from "./Components/Register";
 import AppointmentSelection from "./Components/AppointmentSelection";
@@ -10,7 +10,6 @@ import { ForgotPassword } from "./Components/ForgotPassword";
 import Navbar from "./Components/Navbar";
 import '@mdi/font/css/materialdesignicons.min.css';
 import "bootstrap-icons/font/bootstrap-icons.css";
-import Security from "./Components/Security";
 import AdminDashboard from "./Components/AdminDashboard";
 import HompageCalendar from "./Components/HomepageCalendar";
 import {UserSettings} from "./Components/UserSettings";
@@ -53,12 +52,6 @@ const RequireAdmin = ({ children }) => {
 
 
 function App() {
-  const [currentForm, setCurrentForm] = useState('login');
-
-  const toggleForm = (formName) => {
-    setCurrentForm(formName);
-  }
-
   return (
     <div className="main">
       <Router>
@@ -74,7 +67,6 @@ function App() {
             <Route path="/appointment-selection" element={<RequireAuth><AppointmentSelection /></RequireAuth>} />
             <Route path="/advisor-selection" element={<RequireAuth><AdvisorSelection /></RequireAuth>} />
             <Route path="/reset-password" element={<ForgotPassword />} />
-            <Route path="/security" element={<RequireAuth><Security /></RequireAuth>} />
             <Route path="/calendar" element={<RequireAuth><Calendar /></RequireAuth>} />
             <Route path="/admin-dashboard" element={<RequireAuth><RequireAdmin><AdminDashboard /></RequireAdmin></RequireAuth>} />
             <Route path="/user-settings" element={<RequireAuth><UserSettings /></RequireAuth>} />

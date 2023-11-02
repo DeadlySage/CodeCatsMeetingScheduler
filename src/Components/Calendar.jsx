@@ -236,7 +236,7 @@ export default function Calendar(){
 
     
     return (
-        <Container maxWidth = "lg">
+        <Container maxwidth = "lg">
             <div className='Calendar'>
                 
                 <Container>

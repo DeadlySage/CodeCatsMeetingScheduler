@@ -35,7 +35,7 @@ export const Register = () => {
                 setIsLoading(true);
                 const hashedPassword = await bcrypt.hash(password, 10);
 
-                const response = await axios.post("/users", {
+                await axios.post("/users", {
                     firstName: firstName,
                     lastName: lastName,
                     email: email,
@@ -48,7 +48,7 @@ export const Register = () => {
                     secondAnswer: secondAnswer
                 });
 
-                if (status == UserStatus.pending){
+                if (status === UserStatus.pending){
                     setPendingModal(true)
                 } else {
                     setSuccessModal(true);
@@ -389,7 +389,7 @@ export const Register = () => {
                                                 className="link-btn" 
                                                 style={{ marginTop: "30px" }}
                                             >
-                                                Already have an account? Login here.
+                                                Log in
                                             </button>
                                         </Link>
                                     </div>
