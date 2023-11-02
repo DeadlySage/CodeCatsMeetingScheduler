@@ -24,6 +24,14 @@ const RequireAuth = ({children}) => {
   return children;
 }
 
+const CheckAuth = ({children}) => {
+  const userIsLoggedIn = isUserLoggedIn();
+  if (userIsLoggedIn) {
+    return <Navigate to='/calendar' />;
+  }
+  return children;
+}
+
 const RequireAdmin = ({ children }) => {
   const [isAdmin, setIsAdmin] = useState(null);
 
@@ -61,12 +69,12 @@ function App() {
         <div className="App">
           <Routes>
             <Route path="/" element={<Navigate replace to="/login" />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<CheckAuth><Login /></CheckAuth>} />
+            <Route path="/register" element={<CheckAuth><Register /></CheckAuth>} />
             <Route path="/user-homepage-calendar" element={<RequireAuth><HompageCalendar /></RequireAuth>} />
             <Route path="/appointment-selection" element={<RequireAuth><AppointmentSelection /></RequireAuth>} />
             <Route path="/advisor-selection" element={<RequireAuth><AdvisorSelection /></RequireAuth>} />
-            <Route path="/reset-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<CheckAuth><ForgotPassword /></CheckAuth>} />
             <Route path="/calendar" element={<RequireAuth><Calendar /></RequireAuth>} />
             <Route path="/admin-dashboard" element={<RequireAuth><RequireAdmin><AdminDashboard /></RequireAdmin></RequireAuth>} />
             <Route path="/user-settings" element={<RequireAuth><UserSettings /></RequireAuth>} />
