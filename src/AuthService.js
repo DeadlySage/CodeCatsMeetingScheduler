@@ -24,19 +24,31 @@ export function logout() {
 }
 
 export function isUserLoggedIn() {
-    return getLoggedInUserId() !== undefined;
+    const loggedInUserId = getLoggedInUserId();
+    console.log('Logged In User Id: ' + loggedInUserId)
+    return loggedInUserId !== 0;
 }
 
 export async function getLoggedInUser() {
-    if(isUserLoggedIn()) {
-        const loggedInUser = await axios.get('/users/' + getLoggedInUserId());
-        return loggedInUser.data;
+    const userLoggedIn = isUserLoggedIn();
+    if(userLoggedIn) {
+        await axios.get('/users/' + getLoggedInUserId())
+        .then((response) =>  { 
+            return response.data; 
+        })
+        .catch((error) => { 
+            console.error(error);
+        });
     }
 }
 
 export function getLoggedInUserId() {
     const userId = cookies.get('LoggedInUserId');
-    return userId;
+    if( !!userId ){
+        return 0;
+    } else {
+        return userId;
+    }
 }
 
 export async function getLoggedInUserRole() {
