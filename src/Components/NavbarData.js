@@ -3,12 +3,6 @@ import * as AiIcons from "react-icons/ai";
 
 export const NavbarData = [
     {
-        title: 'Login',
-        path: '/login',
-        icon: <AiIcons.AiOutlineLogin />,
-        className: 'nav-text',
-    },
-    {
         title: 'Calendar',
         path: '/calendar',
         icon: <AiIcons.AiFillCalendar />,

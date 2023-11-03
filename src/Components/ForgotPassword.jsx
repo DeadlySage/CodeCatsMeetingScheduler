@@ -178,8 +178,8 @@ export const ForgotPassword = (props) => {
     }
 
     const handleQuestionsCancel = () => {
-        setShowQuestionsForm(false);
         clearInputs();
+        setShowQuestionsForm(false);
         setShowMainForm(true);
     }
 
@@ -188,8 +188,8 @@ export const ForgotPassword = (props) => {
     };
     
     const handlePasswordCancel = () => {
-        setShowPasswordForm(false);
         clearInputs();
+        setShowPasswordForm(false);
         setShowMainForm(true);
     }
 

@@ -6,7 +6,7 @@ GET http://localhost:3001/users
 
 ###
 
-GET http://localhost:3001/users/652b3f604faa28af881c609a
+GET http://localhost:3001/users/652cd8dc7ea563b05aafd984
 
 ###
 
@@ -24,7 +24,7 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3001/users/6521ddfc920d19c62b60b3c1
+DELETE http://localhost:3001/users/652cd8dc7ea563b05aafd984
 
 
 ###
@@ -39,3 +39,38 @@ Content-Type: application/json
 ###
 
 GET http://localhost:3001/login?email=testbobby%2540csus.edu&password=Bobburger1!
+
+###
+
+GET http://localhost:3001/meetings/
+
+###
+
+GET http://localhost:3001/meetings/?instructorId=652cd8dc7ea563b05aafd984
+
+###
+
+GET http://localhost:3001/meetings/?meetingId=652927f92d44d19f60f65c8c
+
+###
+
+POST http://localhost:3001/meetings/
+Content-Type: application/json
+
+{
+    "instructor_id": "652cd8dc7ea563b05aafd984",
+    "attendees": [
+        "650b7ba7c0d2c23aed28e286",
+        "651387e6eb42079f16a273b9",
+        "652d6e2245a69c7758ad15b0"
+    ]
+}
+
+###
+
+PATCH http://localhost:3001/meetings/652927f92d44d19f60f65c8c
+Content-Type: application/json
+
+{
+    "newAttendee": "652927f92d44d19f60f65c8c"
+}
