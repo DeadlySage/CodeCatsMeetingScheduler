@@ -17,11 +17,21 @@ router.post('/', async (req, res) => {
 
 // GET all current user's meetings
 router.get('/', async (req, res) => {
-    const userId = req.query.user_id;
+    const userId = req.query.userId;
+    const instructorId = req.query.instructorId;
 
+    // Use this when getting meetings for a student
     if (userId) {
         try {
-            const userMeetings = await Meeting.find({ user_id: userId });
+            const userMeetings = await Meeting.find({ attendees: { $in: [userId] } });
+            res.json(userMeetings);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to fetch meetings for user" });
+        }
+    // Use this when gettings meetings for an instructor or admin
+    } else if (instructorId) {
+        try {
+            const userMeetings = await Meeting.find({ instructor_id: instructorId });
             res.json(userMeetings);
         } catch (error) {
             res.status(500).json({ error: "Failed to fetch meetings for user" });

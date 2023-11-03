@@ -64,7 +64,10 @@ export default function HompageCalendar() {
             });
     }, []);
 
+    // ↓↓↓↓ BACKEND CODE HAS BEEN UPDATED. VERIFY THIS LOGIC STILL WORKS BEFORE IMPLEMENTING ↓↓↓↓
+    
     /** Should work when current session id available
+    
     useEffect(() => {
         // Fetch the current user's ID
         fetch('/sessions/current-user-id')
