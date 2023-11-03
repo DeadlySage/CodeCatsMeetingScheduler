@@ -8,8 +8,7 @@ const bcrypt = require("bcrypt");
 const User = require("./models/user");
 const UserStatus = {
     pending: 1,
-    approved: 2,
-    declined: 3
+    approved: 2
 }
 
 app.use(cors());
@@ -62,8 +61,6 @@ app.get('/login', async (req, res) => {
         // Verify User Status
         if (user.status_id === UserStatus.pending) {
             return res.status(401).json({ message: 'Account is still awaiting approval' })
-        } else if (user.status_id === UserStatus.declined) {
-            return res.status(401).json({ message: 'Your account has been declined' })
         }
 
         // Successful login

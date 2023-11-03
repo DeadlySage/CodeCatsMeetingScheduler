@@ -3,7 +3,9 @@ import axios from 'axios';
 import CustomModal from './CustomModal'; 
 import './AdminDashboard.css';
 import { IconContext } from 'react-icons';
-import { FaTrash } from 'react-icons/fa';
+import { FaTrash, FaRegEdit } from 'react-icons/fa';
+import { getLoggedInUserId } from '../AuthService';
+import AdminUserUpdateModal from './AdminUserUpdateModal';
 
 const userRoleType = {
     1: 'Student',
@@ -13,8 +15,7 @@ const userRoleType = {
 
 const userStatus = {
     1: 'Pending',
-    2: 'Approved',
-    3: 'Declined'
+    2: 'Approved'
 };
 
 const AdminDashboard = () => {
@@ -23,10 +24,13 @@ const AdminDashboard = () => {
     const [sortOrder, setSortOrder] = useState('asc');
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [showDeclineConfirmation, setShowDeclineConfirmation] = useState(false);
+    const [showEditConfirmation, setShowEditConfirmation] = useState(false);
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
     const [selectedUserId, setSelectedUserId] = useState(null);
+    const [selectedUser, setSelectedUser] = useState(null);
     const [selectedUserFirstName, setSelectedUserFirstName] = useState('');
     const [selectedUserLastName, setSelectedUserLastName] = useState('');
+    const [showSuccessBanner, setShowSuccessBanner] = useState(false);
 
     // Get user data from the server
     useEffect(() => {
@@ -73,7 +77,12 @@ const AdminDashboard = () => {
         } else if (action === 'delete') {
             setShowDeleteConfirmation(true);
         }
-      };
+    };
+
+    const handleUserEdit = (user) => {
+        setSelectedUser(user);
+        setShowEditConfirmation(true);
+    };
 
     const confirmAuthorization = () => {
         if (selectedUserId) {
@@ -100,31 +109,16 @@ const AdminDashboard = () => {
         // Close the modal
         setShowConfirmation(false);
     };
-    
-    const declineAuthorization = () => {
-        if (selectedUserId) {
-            console.log('Selected User ID:', selectedUserId); // Log the selected user's ID
-            axios.patch(`/users/${selectedUserId}`, { statusId: 3 }) // Set statusId to 3 for "Declined"
-                .then((response) => {
-                    const updatedUsers = users.map((user) => {
-                        if (user._id === selectedUserId) {
-                            console.log('Patch Successful');
-                            return { ...user, status_id: 3 }; 
-                        }
-                        else{
-                            console.error('Error declining user:', response.data);
-                        }
-                        return user;
-                });
-                setUsers(updatedUsers);
-            })
-            .catch((error) => {
-                console.error('Error declining', error);
-            });
-        }
-         // Close the modal
-         setShowDeclineConfirmation(false);
-    };
+
+    const handleEditConfimation = () => {
+        axios.get('/users/')
+        .then((response) => {
+            setUsers(response.data); 
+            setShowEditConfirmation(false);
+            setShowSuccessBanner(true);
+        })
+        .catch((error) => {console.error('Error fetching users:', error);});
+    }
 
     const confirmUserDeletion = () => {
         if (selectedUserId) {
@@ -151,7 +145,7 @@ const AdminDashboard = () => {
         setShowConfirmation(false);
         setShowDeclineConfirmation(false);
         setShowDeleteConfirmation(false);
-
+        setShowEditConfirmation(false);
     };
 
 return (
@@ -159,67 +153,81 @@ return (
         <header className="admin-header">
             <h1>Admin Dashboard</h1>
         </header>
-        
-        <div style={{ margin: '75px' }}></div>
 
-        <div className="table-container" 
-            style={{ 
-                overflow: 'auto',
-                maxHeight: '500px',
-                borderRadius: '15px'
-            }} 
-        >
-            <h2>Pending Instructors</h2>
-            <table className="user-table">
-                <thead>
-                    <tr>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Email</th>
-                        <th>Status</th>
-                        <th>Authorize</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {pendingUsers.map((user) => (
-                        <tr key={user._id}>
-                            <td>{user.first_name}</td>
-                            <td>{user.last_name}</td>
-                            <td>{user.email}</td>
-                            <td>{userStatus[user.status_id]}</td>
-                            <td>
-                                {user.status_id === 1 && (
-                                <div>
-                                    <button 
-                                        className="authorize-button"
-                                        onClick={() => handleInstructorAction(
-                                        user._id,
-                                        user.first_name,
-                                        user.last_name,
-                                        'approve')}
-                                    >
-                                        Approve
-                                    </button>
-                                    <button 
-                                        className="decline-button"
-                                        onClick={() => handleInstructorAction(
-                                        user._id,
-                                        user.first_name,
-                                        user.last_name,
-                                        'decline')}
-                                    >
-                                        Decline
-                                    </button>
-                                </div>
-                                )}
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+        <div style={{margin: '20px', display: 'flex', justifyContent: 'center'}}>
+            {showSuccessBanner && (
+                <div className="alert alert-success fade show d-inline-flex text-align-center">
+                    Changes saved successfully!
+                    <button type="button" className="close close-button" data-dismiss="alert" aria-label="Close" onClick={() => setShowSuccessBanner(false)}>
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            )}
         </div>
-            
-        <div style={{ margin: '30px' }}></div> {/* Add gap between tables */}
+
+        {pendingUsers.length > 0 && (
+            <div>
+                <div className="table-container" 
+                    style={{ 
+                        overflow: 'auto',
+                        maxHeight: '500px',
+                        borderRadius: '15px'
+                    }} 
+                >
+                    <div style={{ margin: '10px' }}></div> 
+                    <h2>Pending Instructors</h2>
+                    <table className="user-table">
+                        <thead>
+                            <tr>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Authorize</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {pendingUsers.map((user) => (
+                                <tr key={user._id}>
+                                    <td>{user.first_name}</td>
+                                    <td>{user.last_name}</td>
+                                    <td>{user.email}</td>
+                                    <td>{userStatus[user.status_id]}</td>
+                                    <td>
+                                        {user.status_id === 1 && (
+                                        <div>
+                                            <button 
+                                                className="authorize-button"
+                                                onClick={() => handleInstructorAction(
+                                                user._id,
+                                                user.first_name,
+                                                user.last_name,
+                                                'approve')}
+                                            >
+                                                Approve
+                                            </button>
+                                            <button 
+                                                className="decline-button"
+                                                onClick={() => handleInstructorAction(
+                                                user._id,
+                                                user.first_name,
+                                                user.last_name,
+                                                'decline')}
+                                            >
+                                                Decline
+                                            </button>
+                                        </div>
+                                        )}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+                    
+                <div style={{ margin: '30px' }}></div> {/* Add gap between tables */}
+            </div>
+        )}
 
         {showConfirmation && (
             <CustomModal
@@ -238,17 +246,26 @@ return (
 
         {showDeclineConfirmation && (
             <CustomModal
-                title="Decline User"
+                title="Decline/Delete User"
                 isOpen={showDeclineConfirmation }
                 toggle={cancelAction}
                 onCancel={cancelAction}
-                onSubmit={declineAuthorization}
-                submitText="Decline User"
+                onDelete={confirmUserDeletion}
+                deleteText="Decline User"
                 >
                 <p>Are you sure you want to decline {' '}
                     <strong>{selectedUserFirstName}{' '}{selectedUserLastName}</strong>
-                    {' '} to be an Instructor?</p>
+                    {' '} to be an Instructor? <strong>This will delete the account</strong>.</p>
             </CustomModal>
+        )}
+
+        {showEditConfirmation && (
+            <AdminUserUpdateModal
+                isOpen={showEditConfirmation}
+                toggle={cancelAction}
+                onSubmit={handleEditConfimation}
+                user={selectedUser}
+            />
         )}
 
         {showDeleteConfirmation && (
@@ -267,22 +284,29 @@ return (
 
 
         <div className="table-container" 
-            style={{ overflow: 'auto', maxHeight: '1000px', borderRadius: '15px' }}>
-            <h1>All Users</h1>    
-            <input className="user-searchbar"
-                type="text"
-                placeholder="Search by name/email"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                
-            />
-            <button 
-                className ="sort-button"
-                onClick={sortUsers}
-                style={{borderRadius: '5px'}}>
-                Sort by User Role {sortOrder === 'asc' ? '▲' : '▼'}
-            </button>
-
+            style={{ overflow: 'auto', maxHeight: '1000px', borderRadius: '15px' }}
+        >
+            <div style={{ margin: '10px' }}></div> 
+            <h2>All Users</h2>
+            <div className='row col-md-10'>
+                <div className='col-md-8'>
+                    <input className="user-searchbar"
+                        type="text"
+                        placeholder="Search by name/email"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </div>
+                <div className='col-md-4'>
+                    <button 
+                        className ="sort-button"
+                        onClick={sortUsers}
+                        style={{borderRadius: '5px'}}>
+                        Sort by User Role {sortOrder === 'asc' ? '▲' : '▼'}
+                    </button>
+                </div>
+            </div> 
+            
             <div style={{margin:'10px'}}></div> {/* Add gap under search bar & button */}
 
             <table className="user-table">
@@ -293,6 +317,7 @@ return (
                         <th>Email</th>
                         <th>Role</th>
                         <th>Status</th>
+                        <th>Edit / Delete</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -304,17 +329,30 @@ return (
                         <td>{userRoleType[user.role_id]}</td>
                         <td>{userStatus[user.status_id]}</td>
                         <td>
-                            <IconContext.Provider value={{color: 'white'}}>
-                            <button 
-                                onClick={() => handleInstructorAction(
-                                user._id,
-                                user.first_name,
-                                user.last_name,
-                                'delete')}
-                            >
-                                <FaTrash/>
-                            </button>
-                            </IconContext.Provider>
+                            {getLoggedInUserId() !== user._id && (
+                                <div>
+                                    <IconContext.Provider value={{color: 'white'}}>
+                                    <button 
+                                        className='edit-button'
+                                        onClick={() => handleUserEdit(user)}
+                                    >
+                                        <FaRegEdit/>
+                                    </button>
+                                    </IconContext.Provider>
+                                    <IconContext.Provider value={{color: 'white'}}>
+                                    <button 
+                                        className='delete-button'
+                                        onClick={() => handleInstructorAction(
+                                        user._id,
+                                        user.first_name,
+                                        user.last_name,
+                                        'delete')}
+                                    >
+                                        <FaTrash/>
+                                    </button>
+                                    </IconContext.Provider>
+                                </div>
+                            )}
                         </td>
                     </tr>
                     ))}

@@ -4,10 +4,15 @@ export const UserRole = {
     admin: 3
 }
 
+export const UserRoleId = {
+    1: 'Student',
+    2: 'Instructor',
+    3: 'Admin',
+};
+
 export const UserStatus = {
     pending: 1,
-    approved: 2,
-    declined: 3
+    approved: 2
 }
 
 export const MeetingType = {
