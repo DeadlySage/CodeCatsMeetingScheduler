@@ -163,160 +163,165 @@ return (
         <div style={{ margin: '75px' }}></div>
 
         <div className="table-container" 
-        style={{ overflow: 'auto', maxHeight: '500px', borderRadius: '15px' }} >
-        <h1>Pending Instructors</h1>
-        <table className="user-table">
-          <thead>
-            <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Email</th>
-                <th>Status</th>
-                <th>Authorize</th>
-            </tr>
-          </thead>
-          <tbody>
-            {pendingUsers.map((user) => (
-                <tr key={user._id}>
-                    <td>{user.first_name}</td>
-                    <td>{user.last_name}</td>
-                    <td>{user.email}</td>
-                    <td>{userStatus[user.status_id]}</td>
-                    <td>
-                        {user.status_id === 1 && (
-                        <div>
-                            <button 
-                                className="authorize-button"
-                                onClick={() => handleInstructorAction(
-                                user._id,
-                                user.first_name,
-                                user.last_name,
-                                'approve')}
-                            >
-                                Approve
-                            </button>
-                            <button 
-                                className="decline-button"
-                                onClick={() => handleInstructorAction(
-                                user._id,
-                                user.first_name,
-                                user.last_name,
-                                'decline')}
-                            >
-                                Decline
-                            </button>
-                        </div>
-                        )}
-                    </td>
-                </tr>
-            ))}
-            </tbody>
-        </table>
-    </div>
-        
-    <div style={{ margin: '30px' }}></div> {/* Add gap between tables */}
-
-    {showConfirmation && (
-        <CustomModal
-            title="Approve User"
-            isOpen={showConfirmation}
-            toggle={cancelAction}
-            onCancel={cancelAction}
-            onSubmit={confirmAuthorization}
-            submitText="Approve User"
-            >
-            <p>Are you sure you want to approve {' '}
-                <strong>{selectedUserFirstName}{' '}{selectedUserLastName}</strong>
-                {' '} to be an Instructor?</p>
-        </CustomModal>
-    )}
-
-    {showDeclineConfirmation && (
-        <CustomModal
-            title="Decline User"
-            isOpen={showDeclineConfirmation }
-            toggle={cancelAction}
-            onCancel={cancelAction}
-            onSubmit={declineAuthorization}
-            submitText="Decline User"
-            >
-            <p>Are you sure you want to decline {' '}
-                <strong>{selectedUserFirstName}{' '}{selectedUserLastName}</strong>
-                {' '} to be an Instructor?</p>
-        </CustomModal>
-    )}
-
-    {showDeleteConfirmation && (
-        <CustomModal
-          title="Delete User"
-         isOpen={showDeleteConfirmation}
-            toggle={cancelAction}
-            onCancel={cancelAction}
-            onSubmit={confirmUserDeletion}
-            submitText="Delete User"
+            style={{ 
+                overflow: 'auto',
+                maxHeight: '500px',
+                borderRadius: '15px'
+            }} 
         >
-        <p>Are you sure you want to delete the user: {' '}
-            <strong>{selectedUserFirstName} {selectedUserLastName}</strong>?</p>
-        </CustomModal>
-    )}
-
-
-    <div className="table-container" 
-        style={{ overflow: 'auto', maxHeight: '1000px', borderRadius: '15px' }}>
-        <h1>All Users</h1>    
-        <input className="user-searchbar"
-            type="text"
-            placeholder="Search by name/email"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            <h2>Pending Instructors</h2>
+            <table className="user-table">
+                <thead>
+                    <tr>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Authorize</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {pendingUsers.map((user) => (
+                        <tr key={user._id}>
+                            <td>{user.first_name}</td>
+                            <td>{user.last_name}</td>
+                            <td>{user.email}</td>
+                            <td>{userStatus[user.status_id]}</td>
+                            <td>
+                                {user.status_id === 1 && (
+                                <div>
+                                    <button 
+                                        className="authorize-button"
+                                        onClick={() => handleInstructorAction(
+                                        user._id,
+                                        user.first_name,
+                                        user.last_name,
+                                        'approve')}
+                                    >
+                                        Approve
+                                    </button>
+                                    <button 
+                                        className="decline-button"
+                                        onClick={() => handleInstructorAction(
+                                        user._id,
+                                        user.first_name,
+                                        user.last_name,
+                                        'decline')}
+                                    >
+                                        Decline
+                                    </button>
+                                </div>
+                                )}
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
             
-        />
-        <button 
-            className ="sort-button"
-            onClick={sortUsers}
-            style={{borderRadius: '5px'}}>
-            Sort by User Role {sortOrder === 'asc' ? '▲' : '▼'}
-        </button>
+        <div style={{ margin: '30px' }}></div> {/* Add gap between tables */}
 
-    <div style={{margin:'10px'}}></div> {/* Add gap under search bar & button */}
+        {showConfirmation && (
+            <CustomModal
+                title="Approve User"
+                isOpen={showConfirmation}
+                toggle={cancelAction}
+                onCancel={cancelAction}
+                onSubmit={confirmAuthorization}
+                submitText="Approve User"
+                >
+                <p>Are you sure you want to approve {' '}
+                    <strong>{selectedUserFirstName}{' '}{selectedUserLastName}</strong>
+                    {' '} to be an Instructor?</p>
+            </CustomModal>
+        )}
 
-        <table className="user-table">
-            <thead>
-                <tr>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                {filteredUsers.map((user) => (
-                <tr key={user._id}>
-                    <td>{user.first_name}</td>
-                    <td>{user.last_name}</td>
-                    <td>{user.email}</td>
-                    <td>{userRoleType[user.role_id]}</td>
-                    <td>{userStatus[user.status_id]}</td>
-                    <td>
-                        <IconContext.Provider value={{color: 'white'}}>
-                        <button 
-                            onClick={() => handleInstructorAction(
-                            user._id,
-                            user.first_name,
-                            user.last_name,
-                            'delete')}
-                        >
-                            <FaTrash/>
-                        </button>
-                        </IconContext.Provider>
-                    </td>
-                </tr>
-                ))}
-            </tbody>
-        </table>
-    </div>  
-    <div style={{ margin: '30px' }}></div> {/* Add gap table and page bottom*/}
+        {showDeclineConfirmation && (
+            <CustomModal
+                title="Decline User"
+                isOpen={showDeclineConfirmation }
+                toggle={cancelAction}
+                onCancel={cancelAction}
+                onSubmit={declineAuthorization}
+                submitText="Decline User"
+                >
+                <p>Are you sure you want to decline {' '}
+                    <strong>{selectedUserFirstName}{' '}{selectedUserLastName}</strong>
+                    {' '} to be an Instructor?</p>
+            </CustomModal>
+        )}
+
+        {showDeleteConfirmation && (
+            <CustomModal
+            title="Delete User"
+            isOpen={showDeleteConfirmation}
+                toggle={cancelAction}
+                onCancel={cancelAction}
+                onSubmit={confirmUserDeletion}
+                submitText="Delete User"
+            >
+            <p>Are you sure you want to delete the user: {' '}
+                <strong>{selectedUserFirstName} {selectedUserLastName}</strong>?</p>
+            </CustomModal>
+        )}
+
+
+        <div className="table-container" 
+            style={{ overflow: 'auto', maxHeight: '1000px', borderRadius: '15px' }}>
+            <h1>All Users</h1>    
+            <input className="user-searchbar"
+                type="text"
+                placeholder="Search by name/email"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                
+            />
+            <button 
+                className ="sort-button"
+                onClick={sortUsers}
+                style={{borderRadius: '5px'}}>
+                Sort by User Role {sortOrder === 'asc' ? '▲' : '▼'}
+            </button>
+
+            <div style={{margin:'10px'}}></div> {/* Add gap under search bar & button */}
+
+            <table className="user-table">
+                <thead>
+                    <tr>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {filteredUsers.map((user) => (
+                    <tr key={user._id}>
+                        <td>{user.first_name}</td>
+                        <td>{user.last_name}</td>
+                        <td>{user.email}</td>
+                        <td>{userRoleType[user.role_id]}</td>
+                        <td>{userStatus[user.status_id]}</td>
+                        <td>
+                            <IconContext.Provider value={{color: 'white'}}>
+                            <button 
+                                onClick={() => handleInstructorAction(
+                                user._id,
+                                user.first_name,
+                                user.last_name,
+                                'delete')}
+                            >
+                                <FaTrash/>
+                            </button>
+                            </IconContext.Provider>
+                        </td>
+                    </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>  
+        <div style={{ margin: '30px' }}></div> {/* Add gap table and page bottom*/}
     </div>
   );
 }
