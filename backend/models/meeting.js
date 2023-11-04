@@ -4,7 +4,7 @@ const meetingSchema = new mongoose.Schema({
   instructor_id: mongoose.Schema.Types.ObjectId,
   start: Date,
   end: Date,
-  status_id: Number,
+  status: String,
   notes: String,
   link: String,
   attendees: [mongoose.Schema.Types.ObjectId],

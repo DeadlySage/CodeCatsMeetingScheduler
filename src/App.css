@@ -257,3 +257,19 @@ span.fc-icon-chevron-right {
   margin-left: 0px;
 }
 
+.fc-event {
+  --fc-event-bg-color: transparent;
+  --fc-event-border-color: transparent;
+}
+
+.fc-daygrid-dot-event {
+  display: block;
+}
+
+.fc-direction-ltr .fc-daygrid-event.fc-event-end, .fc-direction-rtl .fc-daygrid-event.fc-event-start {
+  margin-right: 0px;
+}
+
+.fc-direction-ltr .fc-daygrid-event.fc-event-start, .fc-direction-rtl .fc-daygrid-event.fc-event-end {
+  margin-left: 0px;
+}
