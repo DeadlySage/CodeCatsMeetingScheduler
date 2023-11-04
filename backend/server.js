@@ -40,7 +40,7 @@ app.use("/api/users", usersRouter);
 const meetingRouter = require('./routes/meetings');
 app.use('/api/meetings', meetingRouter);
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 //Login Route

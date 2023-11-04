@@ -2,34 +2,38 @@
 
 # To use this, install the "REST Client" extension in VS Code and click "Send Request"
 
-GET http://localhost:3001/users
+GET http://localhost:3000/api/users
 
 ###
 
-GET http://localhost:3001/users/652cd8dc7ea563b05aafd984
+GET http://localhost:3000/api/users/652cd8dc7ea563b05aafd984
 
 ###
 
-POST http://localhost:3001/users/
+POST http://localhost:3000/api/users/
 Content-Type: application/json
 
 {
-    "firstName": "test",
-    "lastName": "Te",
-    "email": "aaa@test.com",
-    "password": "Boburger1!",
+    "firstName": "Test",
+    "lastName": "Document",
+    "email": "test-15@csus.edu",
+    "password": "aaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     "roleId": 1,
-    "statusId": 1
+    "statusId": 1,
+    "firstQuestion": "First",
+    "secondQuestion": "Second",
+    "firstAnswer": "test1",
+    "secondAnswer": "test2"
 }
 
 ###
 
-DELETE http://localhost:3001/users/652cd8dc7ea563b05aafd984
+DELETE http://localhost:3000/api/users/652cd8dc7ea563b05aafd984
 
 
 ###
 
-PATCH http://localhost:3001/users/652b3f604faa28af881c609a
+PATCH http://localhost:3000/api/users/652b3f604faa28af881c609a
 Content-Type: application/json
 
 {
@@ -38,23 +42,23 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:3001/login?email=testbobby%2540csus.edu&password=Bobburger1!
+GET http://localhost:3000/api/login?email=testbobby%2540csus.edu&password=Bobburger1!
 
 ###
 
-GET http://localhost:3001/meetings/
+GET http://localhost:3000/api/meetings/
 
 ###
 
-GET http://localhost:3001/meetings/?instructorId=652cd8dc7ea563b05aafd984
+GET http://localhost:3000/api/meetings/?instructorId=652cd8dc7ea563b05aafd984
 
 ###
 
-GET http://localhost:3001/meetings/?meetingId=652927f92d44d19f60f65c8c
+GET http://localhost:3000/api/meetings/?meetingId=652927f92d44d19f60f65c8c
 
 ###
 
-POST http://localhost:3001/meetings/
+POST http://localhost:3000/api/meetings/
 Content-Type: application/json
 
 {
@@ -68,7 +72,7 @@ Content-Type: application/json
 
 ###
 
-PATCH http://localhost:3001/meetings/652927f92d44d19f60f65c8c
+PATCH http://localhost:3000/api/meetings/652927f92d44d19f60f65c8c
 Content-Type: application/json
 
 {

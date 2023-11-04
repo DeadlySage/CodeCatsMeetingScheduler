@@ -65,6 +65,7 @@ const RequireAdmin = ({ children }) => {
 function App() {
   return (
     <div className="main">
+      <meta name='theme-color' content='2C3E50'/>
       <Router>
         <div className="topnav">
           <Navbar/>

@@ -49,7 +49,7 @@
   "scripts": {
     "server": "npm start --prefix backend",
     "client": "react-scripts start",
-    "dev": "concurrently \"npm-run-all -p server client\"",
+    "dev": "npm run build && npm start",
     "start": "cd backend && npm start",
     "build": "react-scripts build && (cd backend && npm install)",
     "test": "react-scripts test",
