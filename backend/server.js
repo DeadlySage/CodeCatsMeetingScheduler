@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require('cors');
+const path = require('path');
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const app = express();
@@ -11,7 +12,10 @@ const UserStatus = {
     approved: 2
 }
 
-app.use(cors());
+const buildPath = path.join(__dirname, '..', 'build');
+app.use(express.static(buildPath));
+
+// app.use(cors());
 app.use(express.json());
 app.disable('etag');
 
@@ -36,7 +40,7 @@ app.use("/users", usersRouter);
 const meetingRouter = require('./routes/meetings');
 app.use('/meetings', meetingRouter);
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 //Login Route

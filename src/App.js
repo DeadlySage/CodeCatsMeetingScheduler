@@ -76,7 +76,6 @@ function App() {
             <Route path="/register" element={<CheckAuth><Register /></CheckAuth>} />
             <Route path="/user-homepage-calendar" element={<RequireAuth><HompageCalendar /></RequireAuth>} />
             <Route path="/appointment-selection" element={<RequireAuth><AppointmentSelection /></RequireAuth>} />
-            <Route path="/advisor-selection" element={<RequireAuth><AdvisorSelection /></RequireAuth>} />
             <Route path="/reset-password" element={<CheckAuth><ForgotPassword /></CheckAuth>} />
             <Route path="/calendar" element={<RequireAuth><Calendar /></RequireAuth>} />
             <Route path="/admin-dashboard" element={<RequireAuth><RequireAdmin><AdminDashboard /></RequireAdmin></RequireAuth>} />
