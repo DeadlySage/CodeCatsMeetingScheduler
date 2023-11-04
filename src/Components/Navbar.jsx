@@ -3,70 +3,58 @@ import * as FaIcons from "react-icons/fa";
 import * as AiIcons from "react-icons/ai";
 import * as RiIcons from "react-icons/ri";
 import { IconContext } from 'react-icons';
-import { Link, useLocation } from 'react-router-dom';
-import { NavbarData } from './NavbarData';
+import { useLocation } from 'react-router-dom';
+import Dropdown from 'react-bootstrap/Dropdown';
+import NavDropdown from 'react-bootstrap/NavDropdown';
+import './Navbar.css';
 import '../App.css';
-import { getLoggedInUserRole, logout } from '../AuthService';
+import { getLoggedInUserRole, logout, isUserLoggedIn } from '../AuthService';
 
 function Navbar() {
   const [sidebar, toggleSidebar] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
   const location = useLocation();
 
   const showSidebar = () => toggleSidebar(!sidebar);
 
   useEffect(() => {
-    const checkAdminRole = async () => {
+    const userVerification = async () => {
       const userRole = await getLoggedInUserRole();
-      setIsAdmin(userRole === 3); // Admin Role
+      setIsAdmin(userRole === 3);
+
+      const checkLoggedIn = isUserLoggedIn();
+      console.log('Checking if the user is logged in: ' + checkLoggedIn);
+      setLoggedIn(checkLoggedIn);
     };
 
-    checkAdminRole();
+    userVerification();
   }, [location]);
-
-  const handleLogout = () => {
-    logout();
-  };
 
   return (
     <>
       <IconContext.Provider value={{ color: 'white' }}>
         <div className="navbar">
-          <Link to="#" className='menu-icon'>
-            <FaIcons.FaBars onClick={showSidebar} />
-          </Link>
+          {loggedIn && (
+            <div style={{display: "flex", flex: "auto", justifyContent: "end", marginRight: "20px"}}>
+              <Dropdown>
+                <Dropdown.Toggle style={{ backgroundColor: 'transparent', borderColor: 'transparent' }}>
+                  <FaIcons.FaBars style={{ fontSize: '35px' }} />
+                </Dropdown.Toggle>
+                
+                <IconContext.Provider value={{ color: "black" }}>
+                  <Dropdown.Menu>
+                    <Dropdown.Item href="/calendar"><AiIcons.AiFillCalendar /> Calendar</Dropdown.Item>
+                    <Dropdown.Item href="/user-settings"><AiIcons.AiFillSetting /> Settings</Dropdown.Item>
+                    {isAdmin && ( <Dropdown.Item href="/admin-dashboard"><RiIcons.RiAdminFill /> Admin</Dropdown.Item> )}
+                    <NavDropdown.Divider />
+                    <Dropdown.Item href="/login" onClick={() => logout()}><AiIcons.AiOutlineLogout /> Logout</Dropdown.Item>
+                  </Dropdown.Menu>
+                </IconContext.Provider>
+              </Dropdown>
+            </div>
+          )}
         </div>
-        <nav className={sidebar ? 'nav-menu active' : 'nav-menu'}>
-          <ul className='nav-menu-items' onClick={showSidebar}>
-            <li className="navbar-toggle">
-              <Link to="#" className='menu-icon'>
-                <AiIcons.AiFillCloseCircle />
-              </Link>
-            </li>
-            {NavbarData.map((item, index) => (
-              <li key={index} className={item.className}>
-                <Link to={item.path}>
-                  {item.icon}
-                  <span>{item.title}</span>
-                </Link>
-              </li>
-            ))}
-            {isAdmin && (
-              <li className="nav-text">
-                <Link to="/admin-dashboard" className="menu-items">
-                  <RiIcons.RiAdminFill />
-                  <span>Admin</span>
-                </Link>
-              </li>
-            )}
-            <li className="nav-text">
-              <Link to="/login" className="menu-items" onClick={handleLogout}>
-                <AiIcons.AiOutlineLogout />
-                <span>Logout</span>
-              </Link>
-            </li>
-          </ul>
-        </nav>
       </IconContext.Provider>
     </>
   )
