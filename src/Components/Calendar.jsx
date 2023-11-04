@@ -1,5 +1,5 @@
-import React, {useState, useRef, useEffect} from 'react';
-import {Link} from 'react-router-dom';
+import React, { useState, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -10,10 +10,11 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-daterangepicker/daterangepicker.css';
 import { Tooltip } from 'bootstrap';
 import axios from 'axios'
-import {UserRole} from "./Constants";
+import { UserRole } from "./Constants";
+import { getLoggedInUser } from '../AuthService';
 
 
-import{
+import {
     Row,
     Col,
     Button,
@@ -25,11 +26,11 @@ import{
 import Select from 'react-select';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import events from './events';
-import CustomModal from './CustomModal'; 
+import CustomModal from './CustomModal';
 
 let todayStr = new Date().toISOString().replace(/T.*$/, '');
 
-export default function Calendar(){
+export default function Calendar() {
 
     const [weekendsVisible, setWeekendsVisible] = useState(true);
     const [currentEvents, setCurrentEvents] = useState([]);
@@ -39,27 +40,66 @@ export default function Calendar(){
     const tooltips = {};
 
     const [title, setTitle] = useState('');
-    const [start, setStart] = useState(new Date ());
+    const [start, setStart] = useState(new Date());
     const [end, setEnd] = useState(new Date());
     const [url, setUrl] = useState('');
     const [selectedInstructor, setSelectedInstructor] = useState('null');
     const [notes, setNote] = useState('');
+    const [status, setStatus] = useState('');
     const [type_id, setType_id] = useState();
     const [attendees, setAttendees] = useState([]);
+    const [meetings, setMeetings] = useState([]);
 
+    const mapMeetingsToEvents = (meetings) => {
+        return meetings.map(meeting => ({
+            id: meeting._id,
+            title: meeting.title || 'Untitled Meeting',
+            start: meeting.start,
+            end: meeting.end,
+            url: meeting.link,
+            notes: meeting.notes,
+            status: meeting.status,
+            type_id: meeting.type_id,
+        }));
+    }
 
-    const handleCloseModal = () =>{
+    useEffect(() => {
+        async function fetchUserAndMeetings() {
+            try {
+                const allMeetingsResponse = await axios.get('/meetings');
+                const allMeetings = allMeetingsResponse.data;
+                const user = await getLoggedInUser();
+
+                let relevantMeetings = [];
+                if (user) {
+                    if (user.role_id === 1) {
+                        relevantMeetings = allMeetings.filter(meeting => meeting.attendees.includes(user._id));
+                    } else if (user.role_id === 2 || user.role_id === 3) {
+                        relevantMeetings = allMeetings.filter(meeting => meeting.instructor_id && meeting.instructor_id.toString() === user._id.toString());
+                    }
+                }
+
+                setMeetings(mapMeetingsToEvents(relevantMeetings));
+            } catch (error) {
+                console.error('Error fetching user or meetings:', error);
+            }
+        }
+
+        fetchUserAndMeetings();
+    }, []);
+
+    const handleCloseModal = () => {
         handleClose();
         setModal(false);
     };
 
 
-    function handleDateSelect(selectInfo){
-        if(
+    function handleDateSelect(selectInfo) {
+        if (
             selectInfo.view.type === 'timeGridWeek' ||
             selectInfo.view.type === 'timeGridDay' ||
             selectInfo.view.type === 'listYear'
-        ){
+        ) {
             selectInfo.view.calendar.unselect();
             setState({ selectInfo, state: 'create' });
 
@@ -73,62 +113,89 @@ export default function Calendar(){
         }
     }
 
-    function renderEventContent(eventInfo){
-        return(
+    const getEventColor = (meeting) => {
+        if (meeting.type_id === 1) {
+            return meeting.status === 'Approved' ? '#198754' : '#ffc107';
+        } else if (meeting.type_id === 2) {
+            return 'red';
+        }
+        // Add more conditions as needed.
+        return null; // Default color or null if not specified.
+    };
+
+    function renderEventContent(eventInfo) {
+        let backgroundColor = getEventColor(eventInfo.event.extendedProps);
+        const style = {
+            backgroundColor,
+            borderRadius: '3px',
+            //border: '1px solid #000',
+            color: 'black',
+            padding: '4px 2px',
+            display: 'block',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+        };
+
+        return (
             <div>
                 <i
-                    style={{
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis'
-                    }}
+                    style={style}
                 >
                     {eventInfo.event.title}
-                    {eventInfo.event.extentedProps.status === 'pending' && ( <>Meeting is Pending</>)}
+                    {eventInfo.event.extendedProps.type_id === 2
+                        ? <span> (Blocked)</span>
+                        : (eventInfo.event.extendedProps.status === 'Pending' && <span> (Pending)</span>)}
+                    {eventInfo.event.extendedProps.type_id !== 2 &&
+                        (eventInfo.event.extendedProps.status === 'Approved' && <span> (Approved)</span>)}
                 </i>
             </div>
         );
     }
-    
-    
+
+
 
     function handleEventClick(clickInfo) {
-        clickInfo.jsEvent.preventDefault(); 
+        if (clickInfo.event.extendedProps.type_id === 2) {
+            clickInfo.jsEvent.preventDefault();
+            return;
+        }
+        clickInfo.jsEvent.preventDefault();
         setState({ clickInfo, state: 'update' });
-       
+
         setTitle(clickInfo.event.title);
         setStart(clickInfo.event.start);
         setEnd(clickInfo.event.end);
         setUrl(clickInfo.event.url);
         setNote(clickInfo.event.note);
         setModal(true);
-        
+
         if (tooltips[clickInfo.event.id]) {
             tooltips[clickInfo.event.id].dispose();
         }
     }
-    
-      
 
-    function handleEvents(events){
-        setCurrentEvents(events);
+
+
+    function handleEvents(meetings) {
+        setMeetings(meetings);
     }
 
-    function handleEventDrop(checkInfo){
+    function handleEventDrop(checkInfo) {
         setState({ checkInfo, state: 'drop' });
         setConfirmModal(true);
     }
 
-    function handleEventResize(checkInfo){
+    function handleEventResize(checkInfo) {
         setState({ checkInfo, state: 'resize' });
         setConfirmModal(true);
     }
 
-    function handleEdit(){
+    function handleEdit() {
         state.clickInfo.event.setStart(start);
         state.clickInfo.event.setEnd(end);
         state.clickInfo.event.mutate({
-            standardProps: {title}
+            standardProps: { title }
         });
         state.clickInfo.event.setProp('url', url);
         handleClose();
@@ -138,20 +205,20 @@ export default function Calendar(){
 
     const handleInstructorSelect = (instructor) => {
         setSelectedInstructor(instructor);
-      };
+    };
 
-    function handleSubmit(){
+    function handleSubmit() {
 
         //setMeetingStatus('pending');
 
 
         axios
             .post("/meetings", {
-                title: '', 
+                title: '',
                 start: state.selectInfo?.startStr || start.toISOString(),
                 end: state.selectInfo?.endStr || end.toISOString(),
                 url: '',
-                instructor_id : selectedInstructor ? selectedInstructor.valueOf : null,
+                instructor_id: selectedInstructor ? selectedInstructor.valueOf : null,
                 status: 'pending',
                 notes: '',
                 type_id: 1,
@@ -166,13 +233,13 @@ export default function Calendar(){
                 handleClose();
             })
             .catch((error) => {
-                console.error('Error creating meeting:',error);
+                console.error('Error creating meeting:', error);
             });
 
 
     }
 
-    function handleDelete(){
+    function handleDelete() {
         const meetingID = state.clickInfo.event.id;
 
         axios
@@ -188,7 +255,7 @@ export default function Calendar(){
 
     }
 
-    function handleClose(){
+    function handleClose() {
         setTitle('');
         setStart(new Date());
         setEnd(new Date());
@@ -198,13 +265,13 @@ export default function Calendar(){
         setType_id('1');
         setAttendees([]);
     }
-    
-    const [ state, setState] = useState({});
+
+    const [state, setState] = useState({});
 
     const [departments, setDepartments] = useState([
-        {value: '1', label: 'All'},
-        {value: '2', label: 'CSC 190'},
-        {value: '3', label: 'CSC 191'},
+        { value: '1', label: 'All' },
+        { value: '2', label: 'CSC 190' },
+        { value: '3', label: 'CSC 191' },
     ]);
     
     const [students, setStudents] = useState([]);
@@ -229,50 +296,50 @@ export default function Calendar(){
             })
             .catch((error) => {
                 console.error('Error fetching users:', error);
-        });
+            });
     }, []);
 
     function onFilter(element){
         //console.log(element.value);
     }
 
-    
+
     return (
-        <Container maxwidth = "lg">
+        <Container maxwidth="lg">
             <div className='Calendar'>
-                
+
                 <Container>
-                <h1>Your Calendar</h1>
-                    <Row style={{ marginBottom: 20}}>
+                    <h1>Your Calendar</h1>
+                    <Row style={{ marginBottom: 20 }}>
 
-                        <div className = 'dropdowns'>
+                        <div className='dropdowns'>
 
-                        <Col
-                            sm={{ size: 6}}
-                            md={{ size: 3}}
-                            style={{
-                                color : 'black',
-                                paddingLeft: 15
-                            }}
-                        >
-                            
-                            <Select
-                                style={{ float: 'left'}}
-                                defaultValue={departments[0]}
-                                options={departments}
-                                onChange={(element) => onFilter(element)}
-                            />
-                    
-                        </Col>
+                            <Col
+                                sm={{ size: 6 }}
+                                md={{ size: 3 }}
+                                style={{
+                                    color: 'black',
+                                    paddingLeft: 15
+                                }}
+                            >
 
-                        <Col
-                            sm={{ size: 6}}
-                            md={{ size: 3}}
-                            style={{
-                                color : 'black',
-                                paddingLeft: 15
-                            }}
-                        >
+                                <Select
+                                    style={{ float: 'left' }}
+                                    defaultValue={departments[0]}
+                                    options={departments}
+                                    onChange={(element) => onFilter(element)}
+                                />
+
+                            </Col>
+
+                            <Col
+                                sm={{ size: 6 }}
+                                md={{ size: 3 }}
+                                style={{
+                                    color: 'black',
+                                    paddingLeft: 15
+                                }}
+                            >
 
                             <Select
                                 value={selectedInstructor}
@@ -289,16 +356,16 @@ export default function Calendar(){
                         </Col>
 
                         </div>
-                        
+
                         <Col
-                            sm={{ size: 3, offset: 6}}
-                            md={{ size: 3, offset: 6}}
+                            sm={{ size: 3, offset: 6 }}
+                            md={{ size: 3, offset: 6 }}
                             style={{
                                 paddingRight: 15
                             }}
                         >
                             <Button
-                                style={{ float: 'right'}}
+                                style={{ float: 'right' }}
                                 color='success'
                                 onClick={() => setModal(true)}
                             >
@@ -309,12 +376,12 @@ export default function Calendar(){
                     <Row>
                         <Col md={12}>
                             <FullCalendar
-                                ref = {calendarRef}
+                                ref={calendarRef}
                                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
                                 headerToolbar={{
                                     left: 'prev,today,next',
-                                    center:'title',
-                                    right:'dayGridMonth, timeGridWeek, timeGridDay, listYear'
+                                    center: 'title',
+                                    right: 'dayGridMonth, timeGridWeek, timeGridDay, listYear'
                                 }}
                                 buttonText={{
                                     today: 'Today',
@@ -329,9 +396,9 @@ export default function Calendar(){
                                 selectMirror={true}
                                 dayMaxEvents={true}
                                 weekends={weekendsVisible}
-                                select = {handleDateSelect}
+                                select={handleDateSelect}
                                 eventContent={renderEventContent}
-                                eventsSet={() => handleEvents(events)}
+                                events={meetings}
                                 eventClick={handleEventClick}
                                 eventDrop={handleEventDrop}
                                 eventResize={handleEventResize}
@@ -347,12 +414,12 @@ export default function Calendar(){
                                 eventRemove={(e) => {
                                     console.log('eventRemove', e);
                                 }}
-                                
-                                eventMouseEnter={function(info) {
+
+                                eventMouseEnter={function (info) {
                                     var tooltip = new Tooltip(info.el, {
                                         title: '<h3>' + info.event.title + '</h3>' +
-                                        'Start: ' + info.event.start + '<br>' +
-                                        'End: ' + info.event.end,
+                                            'Start: ' + info.event.start + '<br>' +
+                                            'End: ' + info.event.end,
                                         placement: 'top',
                                         trigger: 'hover',
                                         container: 'body',
@@ -360,12 +427,12 @@ export default function Calendar(){
                                     });
                                     tooltips[info.event.id] = tooltip;
                                 }}
-                                eventMouseLeave={function(info) {
+                                eventMouseLeave={function (info) {
                                     if (tooltips[info.event.id]) {
                                         tooltips[info.event.id].dispose();
                                     }
                                 }}
-                                />
+                            />
                         </Col>
                     </Row>
                 </Container>
@@ -375,7 +442,7 @@ export default function Calendar(){
                     isOpen={modal}
                     toggle={handleCloseModal}
                     onCancel={handleCloseModal}
-                    onSubmit={state.clickInfo ? handleEdit: handleSubmit}
+                    onSubmit={state.clickInfo ? handleEdit : handleSubmit}
                     submitText={state.clickInfo ? 'Update' : 'Save'}
                     onDelete={state.clickInfo && handleDelete}
                     deleteText='Delete'
@@ -401,17 +468,17 @@ export default function Calendar(){
                                 endDate: end,
                                 timePicker: true
                             }}
-                            onApply={(event, picker) =>{
+                            onApply={(event, picker) => {
                                 setStart(new Date(picker.startDate));
                                 setEnd(new Date(picker.endDate));
                             }}
                         >
-                            <input className = 'form-control' type='text' />
+                            <input className='form-control' type='text' />
                         </DateRangePicker>
                     </FormGroup>
                     <FormGroup>
                         <Label for='url'>Meeting URL</Label>
-                         <Input
+                        <Input
                             type='text'
                             name='url'
                             placeholder='Enter URL'
@@ -421,7 +488,7 @@ export default function Calendar(){
                     </FormGroup>
 
                     <FormGroup>
-                        <Label for = 'notes'>Notes</Label>
+                        <Label for='notes'>Notes</Label>
                         <Input
                             type='text'
                             name='note'
@@ -430,9 +497,9 @@ export default function Calendar(){
                             onChange={(e) => setNote(e.target.value)}
                         />
                     </FormGroup>
-                    
-        
-           
+
+
+
 
                 </CustomModal>
 
@@ -454,8 +521,8 @@ export default function Calendar(){
                     Do you want to {state.state} this event?
                 </CustomModal>
             </div>
-            </Container>
-        );
+        </Container>
+    );
 }
 
 // CP-98
