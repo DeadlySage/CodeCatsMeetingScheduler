@@ -154,7 +154,6 @@ export const UserSettings = () => {
         } else {
             const loggedInUser = await getLoggedInUser();
             const oldPasswordMatch = await bcrypt.compare(password.trim(), loggedInUser.password.trim());
-            console.log('Old Password Match: ' + oldPasswordMatch)
             if (oldPasswordMatch) {
                 result.push("Password cannot be your old password");
             }

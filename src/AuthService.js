@@ -35,7 +35,6 @@ export async function getLoggedInUser() {
         let loggedInUser = null;
         await axios.get('/users/' + loggedInUserId)
         .then((response) =>  { 
-            // console.log(response.data);
             loggedInUser = response.data; 
         })
         .catch((error) => { 

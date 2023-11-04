@@ -86,7 +86,6 @@ const AdminDashboard = () => {
 
     const confirmAuthorization = () => {
         if (selectedUserId) {
-            console.log('Selected User ID:', selectedUserId); // Log the selected user's ID
             axios.patch(`/users/${selectedUserId}`, { statusId: 2 }) // Set statusId to 2 for "Approve"
                 .then((response) => {
                     const updatedUsers = users.map((user) => {
@@ -122,7 +121,6 @@ const AdminDashboard = () => {
 
     const confirmUserDeletion = () => {
         if (selectedUserId) {
-            console.log('Selected User ID:', selectedUserId); // Log the selected user's ID
           // Make an API request to delete the user
           axios.delete(`/users/${selectedUserId}`)
             .then((response) => {

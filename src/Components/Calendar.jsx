@@ -158,7 +158,7 @@ export default function Calendar(){
                 attendees: []
             })
             .then((response) => {
-                console.log('Meeting created successfully', response.data);
+                console.log('Meeting created successfully');
                 
                 // let calendarApi = calendarRef.current.getApi();
                 // calendarApi.addEvent(newEvent);
@@ -231,7 +231,7 @@ export default function Calendar(){
     // }
 
     function onFilter(element){
-        console.log(element.value);
+        //console.log(element.value);
     }
 
     

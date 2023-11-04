@@ -46,7 +46,11 @@ const RequireAdmin = ({ children }) => {
 
   if (isAdmin === null) {
     // The isAdmin value is still pending (not yet resolved).
-    return <div>Loading...</div>;
+    return  <div style={{margin: '20px', display: 'flex', justifyContent: 'center'}}>
+              <div className="alert alert-secondary fade show d-inline-flex text-align-center">
+                <strong>Loading ...</strong>
+              </div>
+            </div>;
   }
 
   if (!isAdmin) {

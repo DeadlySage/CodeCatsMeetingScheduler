@@ -211,7 +211,6 @@ export const ForgotPassword = (props) => {
         .then(function (response) {
             if (response.data && Object.keys(response.data).length > 0) {
                 // Admin found
-                console.log(response.data);
                 setAdmins(response.data);
             } else {
                 // No admin found

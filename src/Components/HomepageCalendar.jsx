@@ -57,9 +57,9 @@ export default function HompageCalendar() {
         fetch('/meetings')
             .then(response => response.json())
             .then(data => {
-                console.log("Fetched meetings:", data);
+                console.log("Fetched meetings:");
                 const events = mapMeetingsToEvents(data);
-                console.log("Converted to events:", events);
+                console.log("Converted to events:");
                 setMeetings(events);
             });
     }, []);
