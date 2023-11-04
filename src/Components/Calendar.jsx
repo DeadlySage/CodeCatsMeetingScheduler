@@ -207,28 +207,30 @@ export default function Calendar(){
         {value: '3', label: 'CSC 191'},
     ]);
     
-    const [users, setUsers] = useState([]);
+    const [students, setStudents] = useState([]);
+    const [instructors, setInstructors] = useState([]);
 
     useEffect(() => {
         axios.get('/users')
             .then((response) => {
-                setUsers(response.data);
+                const instructorData = [];
+                const studentData = [];
+
+                for (const user of response.data) {
+                    if (user.role_id !== UserRole.student) {
+                        instructorData.push(user);
+                    } else {
+                        studentData.push(user);
+                    }
+                }
+
+                setInstructors(instructorData);
+                setStudents(studentData);
             })
             .catch((error) => {
                 console.error('Error fetching users:', error);
         });
     }, []);
-
-
-    const instructors = users.filter((user) => user.role_id === UserRole.instructor || 
-    user.role_id === UserRole.admin).map((instructor) => `${instructor.first_name} 
-    ${instructor.last_name}`);
-    const instructorMap = new Map();
-    // for (let i = 0; i < users.length; i++) {
-    //     if (users[i].role_id == 2) {
-    //         instructorMap.set(users[i].id, users[i].first_name.concat(users[i].last_name))
-    //     } 
-    // }
 
     function onFilter(element){
         //console.log(element.value);
@@ -278,8 +280,8 @@ export default function Calendar(){
                                 options={[
                                     { value: '', label: 'All Instructors' },
                                     ...instructors.map((instructor) => ({
-                                        value: instructor,
-                                        label: instructor,
+                                        value: instructor._id,
+                                        label: `${instructor.first_name} ${instructor.last_name}`,
                                     }))
                                 ]}
                             />
