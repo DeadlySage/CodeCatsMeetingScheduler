@@ -263,6 +263,7 @@ return (
             <AdminUserUpdateModal
                 isOpen={showEditConfirmation}
                 toggle={cancelAction}
+                onCancel={cancelAction}
                 onSubmit={handleEditConfimation}
                 user={selectedUser}
             />
@@ -274,8 +275,8 @@ return (
             isOpen={showDeleteConfirmation}
                 toggle={cancelAction}
                 onCancel={cancelAction}
-                onSubmit={confirmUserDeletion}
-                submitText="Delete User"
+                onDelete={confirmUserDeletion}
+                deleteText="Delete User"
             >
             <p>Are you sure you want to delete the user: {' '}
                 <strong>{selectedUserFirstName} {selectedUserLastName}</strong>?</p>

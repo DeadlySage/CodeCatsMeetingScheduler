@@ -188,7 +188,7 @@ export const UserSettings = () => {
     };
 
     return (
-        <div className="auth-form-container col-xl-3 col-md-5 col-10 mx-auto">
+        <div className="auth-form-container col-xl-3 col-md-5 col-10 mx-auto" style={{ maxWidth: "400px" }}>
             {showOptionsForm && (
                 <div>
                     <div className="row" style={{textAlign: "center", marginTop: 20}}>

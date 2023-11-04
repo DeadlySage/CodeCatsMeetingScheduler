@@ -8,6 +8,7 @@ import bcrypt from 'bcryptjs';
 export default function AdminUserUpdateModal({
     isOpen,
     toggle,
+    onCancel,
     onSubmit,
     user
 }) {
@@ -51,6 +52,7 @@ export default function AdminUserUpdateModal({
             }
             isOpen={isOpen}
             toggle={toggle}
+            onCancel={onCancel}
             onSubmit={handleSubmit}
             submitText={"Save"}
         >
