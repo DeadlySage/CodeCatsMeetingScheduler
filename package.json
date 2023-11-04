@@ -51,11 +51,11 @@
     "server": "npm start --prefix backend",
     "client": "set PORT=3000 && react-scripts start",
     "dev": "concurrently \"npm-run-all -p server client\"",
-    "start": "npm run heroku-postbuild && npm run server",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "heroku-postbuild": "npm run build --prefix client"
+    "heroku-postbuild": "npm run build"
   },
   "engines": {
     "node": "18.x",
