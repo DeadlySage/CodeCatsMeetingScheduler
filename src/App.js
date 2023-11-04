@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import { Login } from "./Components/Login";
 import { Register } from "./Components/Register";
 import AppointmentSelection from "./Components/AppointmentSelection";
-import AdvisorSelection from "./Components/AdvisorSelection";
 import Calendar from "./Components/Calendar";
 import { ForgotPassword } from "./Components/ForgotPassword";
 import Navbar from "./Components/Navbar";
