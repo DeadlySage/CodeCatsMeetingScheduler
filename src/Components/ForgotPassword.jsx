@@ -32,7 +32,7 @@ export const ForgotPassword = (props) => {
         e.preventDefault();
         const formErrors = handleMainFormValidation();
         if(formErrors.length === 0){
-            axios.get('/users', {
+            axios.get('/api/users', {
                 params: {
                     email: email
                 }
@@ -96,7 +96,7 @@ export const ForgotPassword = (props) => {
                 setIsLoading(true);
                 const hashedPassword = await bcrypt.hash(password, 10);
 
-                await axios.patch("/users/" + user._id, {
+                await axios.patch("/api/users/" + user._id, {
                     password: hashedPassword
                 });
 
@@ -203,7 +203,7 @@ export const ForgotPassword = (props) => {
     }
 
     const handleShowContactAdminModal = () => {
-        axios.get('/users', {
+        axios.get('/api/users', {
             params: {
                 roleId: UserRole.admin
             }

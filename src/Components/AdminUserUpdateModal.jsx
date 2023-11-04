@@ -29,7 +29,7 @@ export default function AdminUserUpdateModal({
             params.password = hashedPassword;
         }
         
-        axios.patch(`/users/${user._id}`, params)
+        axios.patch(`/api/users/${user._id}`, params)
         .then(function (response) {
             onSubmit();
         })

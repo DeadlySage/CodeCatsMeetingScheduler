@@ -4,7 +4,7 @@ const cookies = new Cookies();
 
 export async function login(email, password) {
     logout();
-    const response = await axios.get('/login', {
+    const response = await axios.get('/api/login', {
         params: {
             email: encodeURIComponent(email),
             password: encodeURIComponent(password)
@@ -33,7 +33,7 @@ export async function getLoggedInUser() {
     const loggedInUserId = getLoggedInUserId();
     if(userLoggedIn) {
         let loggedInUser = null;
-        await axios.get('/users/' + loggedInUserId)
+        await axios.get('/api/users/' + loggedInUserId)
         .then((response) =>  { 
             loggedInUser = response.data; 
         })

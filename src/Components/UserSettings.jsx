@@ -31,7 +31,7 @@ export const UserSettings = () => {
                 setIsLoading(true);
                 const hashedPassword = await bcrypt.hash(password, 10);
 
-                await axios.patch("/users/" + loggedInUser._id, {
+                await axios.patch("/api/users/" + loggedInUser._id, {
                     password: hashedPassword
                 });
 
@@ -57,7 +57,7 @@ export const UserSettings = () => {
             try {
                 setIsLoading(true);
                 
-                await axios.patch("/users/" + loggedInUser._id, {
+                await axios.patch("/api/users/" + loggedInUser._id, {
                     firstQuestion: firstQuestion,
                     secondQuestion: secondQuestion,
                     firstAnswer: firstAnswer,

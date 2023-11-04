@@ -35,7 +35,7 @@ export const Register = () => {
                 setIsLoading(true);
                 const hashedPassword = await bcrypt.hash(password, 10);
 
-                await axios.post("/users", {
+                await axios.post("/api/users", {
                     firstName: firstName,
                     lastName: lastName,
                     email: email,

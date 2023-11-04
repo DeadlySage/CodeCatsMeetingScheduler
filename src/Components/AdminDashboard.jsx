@@ -34,7 +34,7 @@ const AdminDashboard = () => {
 
     // Get user data from the server
     useEffect(() => {
-        axios.get('/users/')
+        axios.get('/api/users/')
         .then((response) => {setUsers(response.data); })
         .catch((error) => {console.error('Error fetching users:', error);});
     },[]);
@@ -86,7 +86,7 @@ const AdminDashboard = () => {
 
     const confirmAuthorization = () => {
         if (selectedUserId) {
-            axios.patch(`/users/${selectedUserId}`, { statusId: 2 }) // Set statusId to 2 for "Approve"
+            axios.patch(`/api/users/${selectedUserId}`, { statusId: 2 }) // Set statusId to 2 for "Approve"
                 .then((response) => {
                     const updatedUsers = users.map((user) => {
                         if (user._id === selectedUserId) {
@@ -110,7 +110,7 @@ const AdminDashboard = () => {
     };
 
     const handleEditConfimation = () => {
-        axios.get('/users/')
+        axios.get('/api/users/')
         .then((response) => {
             setUsers(response.data); 
             setShowEditConfirmation(false);
@@ -122,7 +122,7 @@ const AdminDashboard = () => {
     const confirmUserDeletion = () => {
         if (selectedUserId) {
           // Make an API request to delete the user
-          axios.delete(`/users/${selectedUserId}`)
+          axios.delete(`/api/users/${selectedUserId}`)
             .then((response) => {
               // Update list after deletion
               const updatedUsers = users.filter((user) => user._id !== selectedUserId);

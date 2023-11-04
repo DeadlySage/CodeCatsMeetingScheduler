@@ -35,16 +35,16 @@ async function connect(){
 connect();
 
 const usersRouter = require("./routes/users");
-app.use("/users", usersRouter);
+app.use("/api/users", usersRouter);
 
 const meetingRouter = require('./routes/meetings');
-app.use('/meetings', meetingRouter);
+app.use('/api/meetings', meetingRouter);
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 //Login Route
-app.get('/login', async (req, res) => {
+app.get('/api/login', async (req, res) => {
     const email = decodeURIComponent(req.query.email);
     const password = decodeURIComponent(req.query.password);
     try {
@@ -73,4 +73,12 @@ app.get('/login', async (req, res) => {
         console.error(error);
         res.status(500).json({ message: 'Server error' });
     }
+})
+
+app.get('/*', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'build', 'index.html'), function(err){
+        if (err) {
+            res.status(500).send(err);
+        }
+    });
 })

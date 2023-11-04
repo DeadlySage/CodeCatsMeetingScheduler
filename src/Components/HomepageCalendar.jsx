@@ -54,7 +54,7 @@ export default function HompageCalendar() {
 
     useEffect(() => {
         // Fetch data from /meetings endpoint
-        fetch('/meetings')
+        fetch('/api/meetings')
             .then(response => response.json())
             .then(data => {
                 console.log("Fetched meetings:");

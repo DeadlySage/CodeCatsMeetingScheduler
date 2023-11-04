@@ -66,7 +66,7 @@ export default function Calendar() {
     useEffect(() => {
         async function fetchUserAndMeetings() {
             try {
-                const allMeetingsResponse = await axios.get('/meetings');
+                const allMeetingsResponse = await axios.get('/api/meetings');
                 const allMeetings = allMeetingsResponse.data;
                 const user = await getLoggedInUser();
 
@@ -213,7 +213,7 @@ export default function Calendar() {
 
 
         axios
-            .post("/meetings", {
+            .post("/api/meetings", {
                 title: '',
                 start: state.selectInfo?.startStr || start.toISOString(),
                 end: state.selectInfo?.endStr || end.toISOString(),
@@ -278,7 +278,7 @@ export default function Calendar() {
     const [instructors, setInstructors] = useState([]);
 
     useEffect(() => {
-        axios.get('/users')
+        axios.get('/api/users')
             .then((response) => {
                 const instructorData = [];
                 const studentData = [];
