@@ -263,7 +263,7 @@ export default function Calendar() {
         const meetingID = state.clickInfo.event.id;
 
         axios
-            .delete(`/routes/meetings/%(meetingID`)
+            .delete(`/api/meetings/${meetingID}`)
             .then(() => {
                 console.log('Meeting deleted successfully');
                 state.clickInfo.event.remove();
