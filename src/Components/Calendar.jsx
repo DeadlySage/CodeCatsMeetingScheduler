@@ -320,6 +320,7 @@ export default function Calendar() {
     
     const [students, setStudents] = useState([]);
     const [instructors, setInstructors] = useState([]);
+    const [isUserStudent, setIsUserStudent] = useState(true);
 
     useEffect(() => {
         axios.get('/api/users')
@@ -330,6 +331,7 @@ export default function Calendar() {
                 for (const user of response.data) {
                     if (user.role_id !== UserRole.student) {
                         instructorData.push(user);
+                        setIsUserStudent(false);
                     } else {
                         studentData.push(user);
                     }
@@ -353,10 +355,10 @@ export default function Calendar() {
             <div className='Calendar'>
 
                 <Container>
-                    <h1>Your Calendar</h1>
-                    <Row style={{ marginBottom: 20 }}>
+                    <h1 style={{ textAlign: "center" }}>Your Calendar</h1>
+                    <div className="row" style={{ marginBottom: 20 }}>
 
-                        <div className='dropdowns'>
+                        {/* <div className='dropdowns'>
 
                             <Col
                                 sm={{ size: 6 }}
@@ -397,26 +399,34 @@ export default function Calendar() {
                                 ]}
                             />
                             
-                        </Col>
+                            </Col>
 
-                        </div>
+                        </div> */}
 
-                        <Col
-                            sm={{ size: 3, offset: 6 }}
-                            md={{ size: 3, offset: 6 }}
+                        <div className='col'
                             style={{
-                                paddingRight: 15
+                                paddingRight: 15,
+                                width: '100%',
+                                display: 'flex',
+                                justifyContent: 'center'
                             }}
                         >
-                            <Button
-                                style={{ float: 'right' }}
-                                color='success'
+                            <div className='button'
+                                style={{ 
+                                    color: 'white', 
+                                    backgroundColor: 'green',
+                                    padding: '10px',
+                                    borderRadius: '5px',
+                                    cursor: 'pointer',
+                                    border: 'none',
+
+                                 }}
                                 onClick={() => setModal(true)}
                             >
-                                Add Meeting
-                            </Button>
-                        </Col>
-                    </Row>
+                                {isUserStudent ? 'Request Meeting' : 'Create Meeting'}
+                            </div>
+                        </div>
+                    </div>
                     <Row>
                         <Col md={12}>
                             <FullCalendar

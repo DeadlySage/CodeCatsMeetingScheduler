@@ -31,7 +31,7 @@ async function connect(){
         console.error(error);
     }
 }
-  
+
 connect();
 
 const usersRouter = require("./routes/users");

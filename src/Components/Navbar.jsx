@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import * as FaIcons from "react-icons/fa";
 import * as AiIcons from "react-icons/ai";
 import * as RiIcons from "react-icons/ri";
+import { MdOutlineLogout } from "react-icons/md";
 import { IconContext } from 'react-icons';
 import { useLocation } from 'react-router-dom';
 import Dropdown from 'react-bootstrap/Dropdown';
@@ -44,11 +45,11 @@ function Navbar() {
                 
                 <IconContext.Provider value={{ color: "black" }}>
                   <Dropdown.Menu>
-                    <Dropdown.Item href="/calendar"><AiIcons.AiFillCalendar /> Calendar</Dropdown.Item>
-                    <Dropdown.Item href="/user-settings"><AiIcons.AiFillSetting /> Settings</Dropdown.Item>
-                    {isAdmin && ( <Dropdown.Item href="/admin-dashboard"><RiIcons.RiAdminFill /> Admin</Dropdown.Item> )}
+                    <Dropdown.Item href="/calendar">Calendar <AiIcons.AiOutlineCalendar /></Dropdown.Item>
+                    <Dropdown.Item href="/user-settings">Settings <AiIcons.AiOutlineSetting /></Dropdown.Item>
+                    {isAdmin && ( <Dropdown.Item href="/admin-dashboard">Admin <RiIcons.RiAdminLine /></Dropdown.Item> )}
                     <NavDropdown.Divider />
-                    <Dropdown.Item href="/login" onClick={() => logout()}><AiIcons.AiOutlineLogout /> Logout</Dropdown.Item>
+                    <Dropdown.Item href="/login" onClick={() => logout()}>Logout <MdOutlineLogout /></Dropdown.Item>
                   </Dropdown.Menu>
                 </IconContext.Provider>
               </Dropdown>
