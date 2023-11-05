@@ -273,3 +273,7 @@ span.fc-icon-chevron-right {
 .fc-direction-ltr .fc-daygrid-event.fc-event-start, .fc-direction-rtl .fc-daygrid-event.fc-event-end {
   margin-left: 0px;
 }
+
+.fc-daygrid-day-number, .fc-col-header-cell-cushion {
+  text-decoration: none;
+}

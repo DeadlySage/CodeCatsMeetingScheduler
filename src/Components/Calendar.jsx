@@ -113,23 +113,43 @@ export default function Calendar() {
         }
     }
 
-    const getEventColor = (meeting) => {
+    const getEventColors = (meeting) => {
+        let backgroundColor, textColor;
+
         if (meeting.type_id === 1) {
-            return meeting.status === 'Approved' ? '#198754' : '#ffc107';
+            switch (meeting.status) {
+                case 'Approved':
+                    backgroundColor = '#198754'; // success color - green
+                    textColor = '#ffffff'; // white text color
+                    break;
+                case 'Pending':
+                    backgroundColor = '#ffc107'; // warning color - yellow
+                    textColor = '#0c0c0c'; // dark text color
+                    break;
+                default:
+                    backgroundColor = '#dc3545'; // error color - red
+                    textColor = '#ffffff'; // white text color
+                    break;
+            }
         } else if (meeting.type_id === 2) {
-            return 'red';
+            backgroundColor = 'red'; // error color - red
+            textColor = '#ffffff'; // white text color
+        } else {
+            // Default colors or null if not specified.
+            backgroundColor = null;
+            textColor = null;
         }
-        // Add more conditions as needed.
-        return null; // Default color or null if not specified.
+
+        return { backgroundColor, textColor };
     };
 
     function renderEventContent(eventInfo) {
-        let backgroundColor = getEventColor(eventInfo.event.extendedProps);
+        let { backgroundColor, textColor } = getEventColors(eventInfo.event.extendedProps);
         const style = {
             backgroundColor,
             borderRadius: '3px',
             //border: '1px solid #000',
-            color: 'black',
+            color: textColor,
             padding: '4px 2px',
             display: 'block',
             whiteSpace: 'nowrap',
