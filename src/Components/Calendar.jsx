@@ -44,7 +44,7 @@ export default function Calendar() {
     const [end, setEnd] = useState(new Date());
     const [url, setUrl] = useState('');
     const [selectedInstructor, setSelectedInstructor] = useState('null');
-    const [notes, setNote] = useState('');
+    const [notes, setNotes] = useState('');
     const [status, setStatus] = useState('');
     const [type_id, setType_id] = useState();
     const [attendees, setAttendees] = useState([]);
@@ -187,7 +187,7 @@ export default function Calendar() {
         setStart(clickInfo.event.start);
         setEnd(clickInfo.event.end);
         setUrl(clickInfo.event.url);
-        setNote(clickInfo.event.note);
+        setNotes(clickInfo.event.extendedProps.notes);
         setModal(true);
 
         if (tooltips[clickInfo.event.id]) {
@@ -212,12 +212,36 @@ export default function Calendar() {
     }
 
     function handleEdit() {
+        const meetingID = state.clickInfo.event.id;
+
         state.clickInfo.event.setStart(start);
         state.clickInfo.event.setEnd(end);
         state.clickInfo.event.mutate({
             standardProps: { title }
         });
         state.clickInfo.event.setProp('url', url);
+        state.clickInfo.event.setExtendedProp('notes', notes);
+
+        const updatePayload = {
+            title: title,
+            start: start,
+            end: end,
+            link: url,
+            notes: notes,
+        };
+
+        axios.patch(`/api/meetings/${meetingID}`, updatePayload)
+            .then(response => {
+                console.log('Meeting updated successfully', response);
+            })
+            .catch(error => {
+                console.error('Error updating meeting:', error);
+            });
+
+        if (tooltips[state.clickInfo.event.id]) {
+            tooltips[state.clickInfo.event.id].dispose();
+        }
+
         handleClose();
     }
 
@@ -281,7 +305,7 @@ export default function Calendar() {
         setEnd(new Date());
         setState({});
         setModal(false);
-        setNote('');
+        setNotes('');
         setType_id('1');
         setAttendees([]);
     }
@@ -493,7 +517,7 @@ export default function Calendar() {
                                 setEnd(new Date(picker.endDate));
                             }}
                         >
-                            <input className='form-control' type='text' />
+                            <input className='form-control' type='text' disabled />
                         </DateRangePicker>
                     </FormGroup>
                     <FormGroup>
@@ -511,10 +535,10 @@ export default function Calendar() {
                         <Label for='notes'>Notes</Label>
                         <Input
                             type='text'
-                            name='note'
+                            name='notes'
                             placeholder='Notes'
                             value={notes}
-                            onChange={(e) => setNote(e.target.value)}
+                            onChange={(e) => setNotes(e.target.value)}
                         />
                     </FormGroup>
 
