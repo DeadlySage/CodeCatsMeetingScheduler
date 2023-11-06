@@ -13,8 +13,8 @@ const UserRole = {
 //Get all 
 router.get("/", async (req, res) => {
     const email = req.query.email;
-    const roleId = req.query.roleId
-
+    const roleId = req.query.roleId;
+    
     if (email) {
         try {
             const user = await User.findOne({ email: email });

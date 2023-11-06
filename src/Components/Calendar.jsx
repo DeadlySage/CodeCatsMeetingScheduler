@@ -357,7 +357,6 @@ export default function Calendar() {
             <div className='Calendar'>
 
                 <Container>
-                    <h1 style={{ textAlign: "center" }}>Your Calendar</h1>
                     <div className="row" style={{ marginBottom: 20 }}>
 
                         {/* <div className='dropdowns'>
@@ -407,7 +406,7 @@ export default function Calendar() {
                                 headerToolbar={{
                                     left: 'prev,today,next',
                                     center: 'title',
-                                    right: 'dayGridMonth, timeGridWeek, timeGridDay, listYear'
+                                    right: 'dayGridMonth timeGridWeek timeGridDay listYear'
                                 }}
                                 buttonText={{
                                     today: 'Today',
@@ -416,7 +415,7 @@ export default function Calendar() {
                                     day: 'Day',
                                     list: 'My Meetings'
                                 }}
-                                initialView='dayGridMonth'
+                                initialView='listYear'
                                 editable={true}
                                 selectable={true}
                                 selectMirror={true}
@@ -464,7 +463,7 @@ export default function Calendar() {
                 </Container>
 
                 <CustomModal    // Modal for 'Add Meetings' button
-                    title={state.state === 'update' ? 'My Meeting' : 'Add New Meeting'}
+                    title={state.state === 'update' ? 'My Meeting' : 'New Meeting'}
                     isOpen={modal}
                     toggle={handleCloseModal}
                     onCancel={handleCloseModal}

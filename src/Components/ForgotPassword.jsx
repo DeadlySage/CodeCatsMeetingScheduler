@@ -307,12 +307,10 @@ export const ForgotPassword = (props) => {
                         <div className="row">
                             <div className="col">
                                 <button 
-                                    className="button rounded" 
+                                    className="cancel-button" 
                                     style={{ 
                                         width: "100%", 
-                                        marginTop: "25px", 
-                                        backgroundColor: 'gray',
-                                        color: 'white'
+                                        marginTop: "25px"
                                     }}
                                     onClick={handleQuestionsCancel}
                                 >
@@ -325,7 +323,7 @@ export const ForgotPassword = (props) => {
                         </div>
                     </form>
                     <div style={{textAlign: 'center'}}>
-                        <button className="link-btn" style={{ marginTop: '5px', marginBottom: '15px' }} onClick={handleShowContactAdminModal}>Can't remember answers</button>
+                        <button className="link-button" style={{ marginTop: '5px', marginBottom: '15px' }} onClick={handleShowContactAdminModal}>Can't remember answers</button>
                     </div>
                 </div>
             )}
@@ -390,12 +388,10 @@ export const ForgotPassword = (props) => {
                         <div className="row">
                             <div className="col">
                                 <button 
-                                    className="button rounded" 
+                                    className="cancel-button" 
                                     style={{ 
                                         width: "100%", 
-                                        marginTop: "25px", 
-                                        backgroundColor: 'gray',
-                                        color: 'white'
+                                        marginTop: "25px"
                                     }}
                                     onClick={handlePasswordCancel}
                                 >

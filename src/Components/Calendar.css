@@ -14,10 +14,6 @@ span.fc-icon-chevron-right {
     color: black;
 }
 
-.Kenneth_Elliot {
-    color: black;
-}
-
 .dropdowns {
     z-index: 20;
 }
@@ -49,18 +45,55 @@ span.fc-icon-chevron-right {
 
 .fc-daygrid-day-number, .fc-col-header-cell-cushion {
     text-decoration: none;
+    color:var(--primary-button-color);
 }
 
 .new-meeting-button {
     border: none;
-    background-color: var(--primary-button-color);
-    padding: 10px;
+    background-color: var(--success-button-color);
+    padding-top: 10px;
+    padding-bottom: 10px;
     border-radius: 5px;
+    margin-top: 20px;
+    padding-left: 30px;
+    padding-right: 30px;
     cursor: pointer;
+    width: 320px;
     color: white;
+    text-align: center;
     transition: background-color 0.15s;
 }
 
 .new-meeting-button:hover {
+    background-color: var(--hovered-success-button-color);
+}
+
+@media (max-width: 450px) {
+    .new-meeting-button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 1000px) {
+    .fc
+    .fc-toolbar.fc-header-toolbar {
+        display: block;
+        text-align: center;
+    }
+
+    .fc-header-toolbar
+    .fc-toolbar-chunk {
+        display: block;
+    }
+}
+
+.fc
+.fc-button-primary {
+    background-color: var(--primary-button-color);
+    border: none;
+}
+
+.fc:hover
+.fc-button-primary:hover {
     background-color: var(--hovered-button-color);
 }

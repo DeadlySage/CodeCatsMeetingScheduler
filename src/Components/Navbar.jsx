@@ -13,12 +13,10 @@ import { getLoggedInUserRole, logout, isUserLoggedIn } from '../AuthService';
 import logo from '../codecats-logo-small.png';
 
 function Navbar() {
-  const [sidebar, toggleSidebar] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const location = useLocation();
-
-  const showSidebar = () => toggleSidebar(!sidebar);
+  const[headerText, setHeaderText] = useState('');
 
   useEffect(() => {
     const userVerification = async () => {
@@ -30,6 +28,17 @@ function Navbar() {
       setLoggedIn(checkLoggedIn);
     };
 
+    switch(window.location.pathname) {
+      case '/calendar': 
+        setHeaderText('Calendar');
+        break;
+      case '/admin-dashboard':
+        setHeaderText('Dashboard');
+        break;
+      default: 
+        setHeaderText('');
+    }
+
     userVerification();
   }, [location]);
 
@@ -39,6 +48,9 @@ function Navbar() {
         <div className="navbar">
           <div style={{display: "flex", flex: "auto", justifyContent: "start", marginLeft: "20px"}} >
             <img src={logo} alt="Logo" style={{ width: '70px', height: 'auto' }} />
+          </div>
+          <div style={{display: "flex", flex: "auto", justifyContent: "center"}} >
+            <h1>{headerText}</h1>
           </div>
           {loggedIn && (
             <div style={{display: "flex", flex: "auto", justifyContent: "end", marginRight: "20px"}}>

@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.d97c37e6.css",
-    "main.js": "/static/js/main.01ea2db1.js",
+    "main.css": "/static/css/main.89ed0c45.css",
+    "main.js": "/static/js/main.0225b1d6.js",
     "static/js/496.c901da74.chunk.js": "/static/js/496.c901da74.chunk.js",
     "static/media/materialdesignicons-webfont.eot": "/static/media/materialdesignicons-webfont.b04f03f08b5445700a30.eot",
     "static/media/materialdesignicons-webfont.ttf?v=7.3.67": "/static/media/materialdesignicons-webfont.89ae221302c6617c0a87.ttf",
@@ -11,12 +11,12 @@
     "static/media/bootstrap-icons.woff?": "/static/media/bootstrap-icons.449ad8adf6ae0424b7ed.woff",
     "static/media/bootstrap-icons.woff2?": "/static/media/bootstrap-icons.dea24bf5a7646d8b84e7.woff2",
     "index.html": "/index.html",
-    "main.d97c37e6.css.map": "/static/css/main.d97c37e6.css.map",
-    "main.01ea2db1.js.map": "/static/js/main.01ea2db1.js.map",
+    "main.89ed0c45.css.map": "/static/css/main.89ed0c45.css.map",
+    "main.0225b1d6.js.map": "/static/js/main.0225b1d6.js.map",
     "496.c901da74.chunk.js.map": "/static/js/496.c901da74.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.d97c37e6.css",
-    "static/js/main.01ea2db1.js"
+    "static/css/main.89ed0c45.css",
+    "static/js/main.0225b1d6.js"
   ]
 }

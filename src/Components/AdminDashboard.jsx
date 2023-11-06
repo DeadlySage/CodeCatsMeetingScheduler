@@ -148,10 +148,6 @@ const AdminDashboard = () => {
 
 return (
     <div>
-        <header className="admin-header">
-            <h1>Admin Dashboard</h1>
-        </header>
-
         <div style={{margin: '20px', display: 'flex', justifyContent: 'center'}}>
             {showSuccessBanner && (
                 <div className="alert alert-success fade show d-inline-flex text-align-center">

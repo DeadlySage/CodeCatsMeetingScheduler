@@ -50,7 +50,8 @@
   "scripts": {
     "server": "npm start --prefix backend",
     "client": "react-scripts start",
-    "dev": "npm run build && npm start",
+    "dev": "nodemon -x \"npm run buildrun\"",
+    "buildrun": "npm run build && cd backend && npm run dev",
     "start": "cd backend && npm start",
     "build": "react-scripts build && (cd backend && npm install)",
     "test": "react-scripts test",
@@ -85,6 +86,12 @@
     "concurrently": "^8.2.1",
     "eslint": "^8.50.0",
     "eslint-plugin-react": "^7.33.2",
+    "nodemon": "^3.0.1",
     "web-vitals": "^3.3.1"
+  },
+  "nodemonConfig": {
+    "delay": 30,
+    "ext": "jsx, js, css",
+    "ignore": ["test/*", "docs/*", "logs/*", "build/*", "node_modules/*"]
   }
 }

@@ -3,6 +3,10 @@
   --secondary-app-color: #e2edfa;
   --primary-button-color: #2eb0db;
   --hovered-button-color: #2692b7;
+  --success-button-color: #6eba80;
+  --hovered-success-button-color: #52895f;
+  --danger-button-color: #d54c4e;
+  --hovered-danger-button-color: #ae3d3f;
 }
 
 .App {
@@ -103,7 +107,7 @@ button:hover {
 
 .link-button {
   background-color: transparent;
-  color: white;
+  color: black;
   text-decoration: underline;
   padding: 0px;
   transition: background-color .15s;
