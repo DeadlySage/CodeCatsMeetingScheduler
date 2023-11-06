@@ -8,6 +8,7 @@ import listPlugin from '@fullcalendar/list';
 import { nanoid } from 'nanoid';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-daterangepicker/daterangepicker.css';
+import './Calendar.css';
 import { Tooltip } from 'bootstrap';
 import axios from 'axios'
 import { UserRole } from "./Constants";
@@ -320,7 +321,6 @@ export default function Calendar() {
     
     const [students, setStudents] = useState([]);
     const [instructors, setInstructors] = useState([]);
-    const [isUserStudent, setIsUserStudent] = useState(true);
 
     useEffect(() => {
         axios.get('/api/users')
@@ -331,7 +331,6 @@ export default function Calendar() {
                 for (const user of response.data) {
                     if (user.role_id !== UserRole.student) {
                         instructorData.push(user);
-                        setIsUserStudent(false);
                     } else {
                         studentData.push(user);
                     }
@@ -411,19 +410,10 @@ export default function Calendar() {
                                 justifyContent: 'center'
                             }}
                         >
-                            <div className='button'
-                                style={{ 
-                                    color: 'white', 
-                                    backgroundColor: 'green',
-                                    padding: '10px',
-                                    borderRadius: '5px',
-                                    cursor: 'pointer',
-                                    border: 'none',
-
-                                 }}
+                            <div className='new-meeting-button'
                                 onClick={() => setModal(true)}
                             >
-                                {isUserStudent ? 'Request Meeting' : 'Create Meeting'}
+                                New Meeting                      
                             </div>
                         </div>
                     </div>

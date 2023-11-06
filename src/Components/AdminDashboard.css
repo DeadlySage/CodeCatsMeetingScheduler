@@ -1,9 +1,10 @@
 /* Admin-Dashboard CSS */
 
 .admin-header{
-    background-color: #2C3E50;
+    /* background-color: #2C3E50; */
+    /* background-color: var(--primary-app-color); */
     text-align: center;
-    color:white;
+    color:black;
 }
 
 .user-table {
@@ -14,11 +15,12 @@
   
 .user-table th,
 .user-table td {
-    border: 1px solid #000000;
+    border: 1px solid var(--secondary-app-color);
     padding: 8px;
     text-align: center;
-    background-color: #2C3E50;
-    color: white;
+    /* background-color: #2C3E50; */
+    background-color: white;
+    color: black;
 }
   
 .user-searchbar{
@@ -29,8 +31,9 @@
 }
 
 .table-container {
-    background-color: #2C3E50;
-    color: white;
+    /* background-color: #2C3E50; */
+    background-color: var(--secondary-app-color);
+    color: black;
     width: 60%;
     max-width: 100%;
     margin: 0 auto;

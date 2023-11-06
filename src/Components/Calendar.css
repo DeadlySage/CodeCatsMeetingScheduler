@@ -1,0 +1,66 @@
+.Calendar {
+    color: black;
+}
+  
+span.fc-icon-chevron-left {
+    margin-left: 0px;
+}
+
+span.fc-icon-chevron-right {
+    margin-left: 0px;
+}
+
+.Calendar {
+    color: black;
+}
+
+.Kenneth_Elliot {
+    color: black;
+}
+
+.dropdowns {
+    z-index: 20;
+}
+
+span.fc-icon-chevron-left {
+    margin-left: 0px;
+}
+
+span.fc-icon-chevron-right {
+    margin-left: 0px;
+}
+
+.fc-event {
+    --fc-event-bg-color: transparent;
+    --fc-event-border-color: transparent;
+}
+
+.fc-daygrid-dot-event {
+    display: block;
+}
+
+.fc-direction-ltr .fc-daygrid-event.fc-event-end, .fc-direction-rtl .fc-daygrid-event.fc-event-start {
+    margin-right: 0px;
+}
+
+.fc-direction-ltr .fc-daygrid-event.fc-event-start, .fc-direction-rtl .fc-daygrid-event.fc-event-end {
+    margin-left: 0px;
+}
+
+.fc-daygrid-day-number, .fc-col-header-cell-cushion {
+    text-decoration: none;
+}
+
+.new-meeting-button {
+    border: none;
+    background-color: var(--primary-button-color);
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+    transition: background-color 0.15s;
+}
+
+.new-meeting-button:hover {
+    background-color: var(--hovered-button-color);
+}

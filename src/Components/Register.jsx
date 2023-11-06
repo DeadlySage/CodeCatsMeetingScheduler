@@ -153,7 +153,7 @@ export const Register = () => {
     }
 
     return (
-        <div className="auth-form-container col-xl-8 col-md-10 col-10 mx-auto">
+        <div className="auth-form-container col-xl-8 col-md-10 col-10 mx-auto" style={{ maxWidth: "900px" }}>
             <div className="row" style={{textAlign: "center", marginTop: 20}}>
                 <h2>Sign Up</h2>
             </div>
@@ -386,7 +386,7 @@ export const Register = () => {
                                     <div className="col">
                                         <Link to="/login">
                                             <button 
-                                                className="link-btn" 
+                                                className="link-button" 
                                                 style={{ marginTop: "30px" }}
                                             >
                                                 Log in

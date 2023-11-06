@@ -198,11 +198,9 @@ export const UserSettings = () => {
                         <button className="button rounded" onClick={(handleChangeClick)} style={{marginBottom: "15px"}}>Change Security Questions</button>
                         <div className="col">
                                 <button 
-                                    className="button rounded" 
+                                    className="cancel-button" 
                                     style={{ 
                                         width: "100%", 
-                                        backgroundColor: 'gray',
-                                        color: 'white'
                                     }}
                                     onClick={handleRedirectToCalendar}
                                 >
@@ -273,12 +271,10 @@ export const UserSettings = () => {
                         <div className="row">
                             <div className="col">
                                 <button 
-                                    className="button rounded" 
+                                    className="cancel-button" 
                                     style={{ 
                                         width: "100%", 
                                         marginTop: "25px", 
-                                        backgroundColor: 'gray',
-                                        color: 'white'
                                     }}
                                     onClick={handlePasswordCancel}
                                 >
@@ -377,12 +373,10 @@ export const UserSettings = () => {
                         <div className="row">
                             <div className="col">
                                 <button 
-                                    className="button rounded" 
+                                    className="cancel-button" 
                                     style={{ 
                                         width: "100%", 
-                                        marginTop: "25px", 
-                                        backgroundColor: 'gray',
-                                        color: 'white'
+                                        marginTop: "25px"
                                     }}
                                     onClick={handleQuestionsCancel}
                                 >

@@ -10,6 +10,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import './Navbar.css';
 import '../App.css';
 import { getLoggedInUserRole, logout, isUserLoggedIn } from '../AuthService';
+import logo from '../codecats-logo-small.png';
 
 function Navbar() {
   const [sidebar, toggleSidebar] = useState(false);
@@ -36,6 +37,9 @@ function Navbar() {
     <>
       <IconContext.Provider value={{ color: 'white' }}>
         <div className="navbar">
+          <div style={{display: "flex", flex: "auto", justifyContent: "start", marginLeft: "20px"}} >
+            <img src={logo} alt="Logo" style={{ width: '70px', height: 'auto' }} />
+          </div>
           {loggedIn && (
             <div style={{display: "flex", flex: "auto", justifyContent: "end", marginRight: "20px"}}>
               <Dropdown>
@@ -44,12 +48,30 @@ function Navbar() {
                 </Dropdown.Toggle>
                 
                 <IconContext.Provider value={{ color: "black" }}>
-                  <Dropdown.Menu>
-                    <Dropdown.Item href="/calendar">Calendar <AiIcons.AiOutlineCalendar /></Dropdown.Item>
-                    <Dropdown.Item href="/user-settings">Settings <AiIcons.AiOutlineSetting /></Dropdown.Item>
-                    {isAdmin && ( <Dropdown.Item href="/admin-dashboard">Admin <RiIcons.RiAdminLine /></Dropdown.Item> )}
+                  <Dropdown.Menu className='menu-dropdown'>
+                    <Dropdown.Item href="/calendar" className="navbar-dropdown-item">
+                      <span>Calendar</span>
+                      <AiIcons.AiOutlineCalendar />
+                    </Dropdown.Item>
+                    <Dropdown.Item href="/user-settings" className="navbar-dropdown-item">
+                      <span>Settings</span>
+                      <AiIcons.AiOutlineSetting />
+                    </Dropdown.Item>
+                    {isAdmin && ( 
+                      <Dropdown.Item href="/admin-dashboard" className="navbar-dropdown-item">
+                        <span>Admin</span>
+                        <RiIcons.RiAdminLine />
+                      </Dropdown.Item> 
+                    )}
                     <NavDropdown.Divider />
-                    <Dropdown.Item href="/login" onClick={() => logout()}>Logout <MdOutlineLogout /></Dropdown.Item>
+                    <Dropdown.Item 
+                      href="/login" 
+                      onClick={() => logout()} 
+                      className="navbar-dropdown-item"
+                    >
+                      <span>Logout</span>
+                      <MdOutlineLogout />
+                    </Dropdown.Item>
                   </Dropdown.Menu>
                 </IconContext.Provider>
               </Dropdown>

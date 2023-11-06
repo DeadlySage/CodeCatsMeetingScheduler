@@ -253,7 +253,7 @@ export const ForgotPassword = (props) => {
                             <button className="button rounded" style={{ width: "100%", marginTop: "25px" }} type="submit">Submit</button>
                             <div>
                                 <Link to="/login">
-                                    <button className="link-btn" style={{ marginTop: '30px' }}>Log in</button>
+                                    <button className="link-button" style={{ marginTop: '30px' }}>Log in</button>
                                 </Link>
                             </div>
                         </form>

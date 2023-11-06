@@ -127,7 +127,7 @@ const AdminDashboard = () => {
               // Update list after deletion
               const updatedUsers = users.filter((user) => user._id !== selectedUserId);
               setUsers(updatedUsers);
-              setShowDeleteConfirmation(false);
+              closeAllModals();
               console.log('User delete success');
             })
             .catch((error) => {
@@ -138,7 +138,7 @@ const AdminDashboard = () => {
       };
       
 
-    const cancelAction = () => {
+    const closeAllModals = () => {
         // Close the modal
         setShowConfirmation(false);
         setShowDeclineConfirmation(false);
@@ -231,8 +231,8 @@ return (
             <CustomModal
                 title="Approve User"
                 isOpen={showConfirmation}
-                toggle={cancelAction}
-                onCancel={cancelAction}
+                toggle={closeAllModals}
+                onCancel={closeAllModals}
                 onSubmit={confirmAuthorization}
                 submitText="Approve User"
                 >
@@ -246,8 +246,8 @@ return (
             <CustomModal
                 title="Decline/Delete User"
                 isOpen={showDeclineConfirmation }
-                toggle={cancelAction}
-                onCancel={cancelAction}
+                toggle={closeAllModals}
+                onCancel={closeAllModals}
                 onDelete={confirmUserDeletion}
                 deleteText="Decline User"
                 >
@@ -260,8 +260,8 @@ return (
         {showEditConfirmation && (
             <AdminUserUpdateModal
                 isOpen={showEditConfirmation}
-                toggle={cancelAction}
-                onCancel={cancelAction}
+                toggle={closeAllModals}
+                onCancel={closeAllModals}
                 onSubmit={handleEditConfimation}
                 user={selectedUser}
             />
@@ -271,8 +271,8 @@ return (
             <CustomModal
             title="Delete User"
             isOpen={showDeleteConfirmation}
-                toggle={cancelAction}
-                onCancel={cancelAction}
+                toggle={closeAllModals}
+                onCancel={closeAllModals}
                 onDelete={confirmUserDeletion}
                 deleteText="Delete User"
             >

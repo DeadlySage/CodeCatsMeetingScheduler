@@ -127,10 +127,10 @@ export const Login = () => {
                 </div>
                 <div style={{ position: "relative", marginTop: "30px", marginBottom: "20px" }}>
                     <Link to="/reset-password">
-                        <button className="link-btn" style={{ position: "absolute", left: 0 }}>Forgot Password</button>
+                        <button className="link-button" style={{ position: "absolute", left: 0 }}>Forgot Password</button>
                     </Link>
                     <Link to="/register">
-                        <button className="link-btn" style={{ position: "absolute", right: 0 }}>Sign Up</button>
+                        <button className="link-button" style={{ position: "absolute", right: 0 }}>Sign Up</button>
                     </Link>
                 </div>
             </form>
