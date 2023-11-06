@@ -1,20 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import listPlugin from '@fullcalendar/list';
-import { nanoid } from 'nanoid';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-daterangepicker/daterangepicker.css';
 import './Calendar.css';
 import { Tooltip } from 'bootstrap';
 import axios from 'axios'
-import { UserRole } from "./Constants";
 import { getLoggedInUser } from '../AuthService';
-
-
+import {UserRole, MeetingStatus, ClassType} from "./Constants";
 import {
     Row,
     Col,
@@ -26,15 +22,11 @@ import {
 } from 'reactstrap';
 import Select from 'react-select';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
-import events from './events';
 import CustomModal from './CustomModal';
-
-let todayStr = new Date().toISOString().replace(/T.*$/, '');
 
 export default function Calendar() {
 
     const [weekendsVisible, setWeekendsVisible] = useState(true);
-    const [currentEvents, setCurrentEvents] = useState([]);
     const [modal, setModal] = useState(false);
     const [confirmModal, setConfirmModal] = useState(false);
     const calendarRef = useRef(null);
@@ -44,12 +36,16 @@ export default function Calendar() {
     const [start, setStart] = useState(new Date());
     const [end, setEnd] = useState(new Date());
     const [url, setUrl] = useState('');
-    const [selectedInstructor, setSelectedInstructor] = useState('null');
     const [notes, setNotes] = useState('');
-    const [status, setStatus] = useState('');
     const [type_id, setType_id] = useState();
-    const [attendees, setAttendees] = useState([]);
     const [meetings, setMeetings] = useState([]);
+    const [state, setState] = useState({});
+    const [students, setStudents] = useState([]);
+    const [instructors, setInstructors] = useState([]);
+    const [isUserStudent, setIsUserStudent] = useState(true);
+    const [selectedInstructor, setSelectedInstructor] = useState('null');
+    const [selectedClass, setSelectedClass] = useState('null');
+    const [selectedAttendees, setSelectedAttendees] = useState([]);
 
     const mapMeetingsToEvents = (meetings) => {
         return meetings.map(meeting => ({
@@ -72,6 +68,7 @@ export default function Calendar() {
                 const user = await getLoggedInUser();
 
                 let relevantMeetings = [];
+
                 if (user) {
                     if (user.role_id === 1) {
                         relevantMeetings = allMeetings.filter(meeting => meeting.attendees.includes(user._id));
@@ -88,12 +85,6 @@ export default function Calendar() {
 
         fetchUserAndMeetings();
     }, []);
-
-    const handleCloseModal = () => {
-        handleClose();
-        setModal(false);
-    };
-
 
     function handleDateSelect(selectInfo) {
         if (
@@ -175,6 +166,10 @@ export default function Calendar() {
     }
 
 
+    const handleCloseModal = () => {
+        handleClose();
+        setModal(false);
+    };
 
     function handleEventClick(clickInfo) {
         if (clickInfo.event.extendedProps.type_id === 2) {
@@ -195,8 +190,6 @@ export default function Calendar() {
             tooltips[clickInfo.event.id].dispose();
         }
     }
-
-
 
     function handleEvents(meetings) {
         setMeetings(meetings);
@@ -246,43 +239,67 @@ export default function Calendar() {
         handleClose();
     }
 
-    const [meetingStatus, setMeetingStatus] = useState('pending');
+    const handleAttendeesSelect = (selectedStudents) => {
+        setSelectedAttendees(selectedStudents);
+    }
 
     const handleInstructorSelect = (instructor) => {
         setSelectedInstructor(instructor);
     };
 
-    function handleSubmit() {
-
-        //setMeetingStatus('pending');
-
-
-        axios
-            .post("/api/meetings", {
-                title: '',
-                start: state.selectInfo?.startStr || start.toISOString(),
-                end: state.selectInfo?.endStr || end.toISOString(),
-                url: '',
-                instructor_id: selectedInstructor ? selectedInstructor.valueOf : null,
-                status: 'pending',
-                notes: '',
-                type_id: 1,
-                attendees: []
-            })
-            .then((response) => {
-                console.log('Meeting created successfully');
-                
-                // let calendarApi = calendarRef.current.getApi();
-                // calendarApi.addEvent(newEvent);
-
-                handleClose();
-            })
-            .catch((error) => {
-                console.error('Error creating meeting:', error);
-            });
-
-
+    const handleClassSelect = (classType) => {
+        setSelectedClass(classType);
     }
+
+    async function handleSubmit() {
+        try {
+            const user = await getLoggedInUser();
+            const meetingStatus = await getMeetingStatus(user);
+
+            if (user) {
+                 
+                await axios.post("/api/meetings", {
+                    title: title,
+                    class_name: selectedClass.value,
+                    start: state.selectInfo?.startStr || start.toISOString(),
+                    end: state.selectInfo?.endStr || end.toISOString(),
+                    url: url,
+                    instructor_id: selectedInstructor.value,
+                    //instructor_id: selectedInstructor ? selectedInstructor.valueOf : null,
+                    status: meetingStatus,
+                    notes: notes,
+                    type_id: 1,
+                    attendees: selectedAttendees.map(selectedAttendee => selectedAttendee.value),
+                });
+    
+                console.log('Meeting status:', meetingStatus);
+                console.log('Meeting created successfully');
+    
+                handleClose();
+            }
+        } catch (error) {
+            console.error('Error creating meeting:', error);
+        }
+    }
+
+
+    async function getMeetingStatus(user) {
+        try {
+            if (user) {
+                // Admin & Instructors meetings are approved by default.
+                if (user.role_id !== UserRole.student) {
+                    return MeetingStatus.approved;
+                } else if(user.role_id === UserRole.student){
+                    return MeetingStatus.pending;
+                }
+            }
+            return ''; // Return a default value if user is not available
+        } catch (error) {
+            console.error('Error getting meeting status:', error);
+            return ''; 
+        }
+    }
+    
 
     function handleDelete() {
         const meetingID = state.clickInfo.event.id;
@@ -297,7 +314,6 @@ export default function Calendar() {
             .catch((error) => {
                 console.error('Error deleting meeting :', error);
             });
-
     }
 
     function handleClose() {
@@ -306,21 +322,11 @@ export default function Calendar() {
         setEnd(new Date());
         setState({});
         setModal(false);
+        setUrl('');
         setNotes('');
-        setType_id('1');
-        setAttendees([]);
+        setType_id({});
+        setSelectedAttendees([]);
     }
-
-    const [state, setState] = useState({});
-
-    const [departments, setDepartments] = useState([
-        { value: '1', label: 'All' },
-        { value: '2', label: 'CSC 190' },
-        { value: '3', label: 'CSC 191' },
-    ]);
-    
-    const [students, setStudents] = useState([]);
-    const [instructors, setInstructors] = useState([]);
 
     useEffect(() => {
         axios.get('/api/users')
@@ -329,7 +335,8 @@ export default function Calendar() {
                 const studentData = [];
 
                 for (const user of response.data) {
-                    if (user.role_id !== UserRole.student) {
+                    // Only adds approved Instructors & Admins
+                    if (user.role_id !== UserRole.student && user.status_id == 2) {
                         instructorData.push(user);
                     } else {
                         studentData.push(user);
@@ -343,10 +350,6 @@ export default function Calendar() {
                 console.error('Error fetching users:', error);
             });
     }, []);
-
-    function onFilter(element){
-        //console.log(element.value);
-    }
 
 
     return (
@@ -367,14 +370,6 @@ export default function Calendar() {
                                     paddingLeft: 15
                                 }}
                             >
-
-                                <Select
-                                    style={{ float: 'left' }}
-                                    defaultValue={departments[0]}
-                                    options={departments}
-                                    onChange={(element) => onFilter(element)}
-                                />
-
                             </Col>
 
                             <Col
@@ -385,19 +380,6 @@ export default function Calendar() {
                                     paddingLeft: 15
                                 }}
                             >
-
-                            <Select
-                                value={selectedInstructor}
-                                onChange={handleInstructorSelect}
-                                options={[
-                                    { value: '', label: 'All Instructors' },
-                                    ...instructors.map((instructor) => ({
-                                        value: instructor._id,
-                                        label: `${instructor.first_name} ${instructor.last_name}`,
-                                    }))
-                                ]}
-                            />
-                            
                             </Col>
 
                         </div> */}
@@ -446,7 +428,7 @@ export default function Calendar() {
                                 eventClick={handleEventClick}
                                 eventDrop={handleEventDrop}
                                 eventResize={handleEventResize}
-
+                                
 
                                 //dateClick={handleDateClick}
                                 eventAdd={(e) => {
@@ -481,7 +463,7 @@ export default function Calendar() {
                     </Row>
                 </Container>
 
-                <CustomModal
+                <CustomModal    // Modal for 'Add Meetings' button
                     title={state.state === 'update' ? 'My Meeting' : 'Add New Meeting'}
                     isOpen={modal}
                     toggle={handleCloseModal}
@@ -491,8 +473,36 @@ export default function Calendar() {
                     onDelete={state.clickInfo && handleDelete}
                     deleteText='Delete'
                 >
+
                     <FormGroup>
-                        <Label for='email'>Team Name</Label>
+                        <Label for='class'>Class</Label>
+                        <Select
+                            value={selectedClass}
+                            options={[
+                                { value: ClassType.CSC_190, label: ClassType.CSC_190 },
+                                { value: ClassType.CSC_191, label: ClassType.CSC_191 },
+                            ]}
+                             onChange={handleClassSelect}
+                        />
+                    </FormGroup>
+
+                    <FormGroup>
+                        <Label for='instructor'>Instructor</Label>
+                        <Select
+                            value={selectedInstructor}
+                            options={[
+                                { value: '', label: 'Select an instructor' },
+                                 ...instructors.map((instructor) => ({
+                                        value: instructor._id,
+                                        label: `${instructor.first_name} ${instructor.last_name}`,
+                                    }))
+                                 ]}
+                            onChange={handleInstructorSelect}
+                         />  
+                    </FormGroup>
+
+                    <FormGroup>
+                        <Label for='title'>Team Name</Label>
                         <Input
                             type='text'
                             name='title'
@@ -501,8 +511,25 @@ export default function Calendar() {
                             onChange={(e) => setTitle(e.target.value)}
                         />
                     </FormGroup>
+
                     <FormGroup>
-                        <Label for='email'>Start Date and Time - End Date and Time</Label>
+                        <Label for='attendees'>Select Attendees</Label>
+                        <Select
+                        isMulti
+                             value={selectedAttendees}
+                             options={[
+                                 { value: '', label: 'Select an instructor' },
+                                  ...students.map((student) => ({
+                                         value: student._id,
+                                         label: `${student.first_name} ${student.last_name}`,
+                                     }))
+                                  ]}
+                             onChange={handleAttendeesSelect}
+                        />
+                    </FormGroup>                  
+
+                    <FormGroup>
+                        <Label for='date'>Start Date and Time - End Date and Time</Label>
                         <DateRangePicker
                             initialSettings={{
                                 locale: {
@@ -520,6 +547,7 @@ export default function Calendar() {
                             <input className='form-control' type='text' disabled />
                         </DateRangePicker>
                     </FormGroup>
+
                     <FormGroup>
                         <Label for='url'>Meeting URL</Label>
                         <Input
@@ -536,13 +564,11 @@ export default function Calendar() {
                         <Input
                             type='text'
                             name='notes'
-                            placeholder='Notes'
+                            placeholder='Enter Notes'
                             value={notes}
                             onChange={(e) => setNotes(e.target.value)}
                         />
                     </FormGroup>
-
-
 
 
                 </CustomModal>
@@ -569,5 +595,3 @@ export default function Calendar() {
     );
 }
 
-// CP-98
-// update meeting view on mobile

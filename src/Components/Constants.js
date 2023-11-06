@@ -21,7 +21,19 @@ export const MeetingType = {
 }
 
 export const MeetingStatus = {
-    pending: 1,
-    approved: 2,
-    declined: 3
+    pending: 'Pending',
+    approved: 'Approved',
+    declined: 'Declined'
 }
+
+export const ClassType = {
+    CSC_190: 'CSC 190',
+    CSC_191: 'CSC 191'
+}
+
+
+
+
+
+
+
