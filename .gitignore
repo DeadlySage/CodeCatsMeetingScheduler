@@ -8,4 +8,4 @@ node_modules/
 .env
 
 #ignore the build folder
-build
+build/*
