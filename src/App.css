@@ -1,12 +1,18 @@
 :root {
   --primary-app-color: #2F5266;
   --secondary-app-color: #D2D0CA;
+
   --primary-button-color: #2F5266;
-  --hovered-button-color: #1d3340;
+  --primary-button-hover-color: #1d3340;
+
+  --cancel-button-color: #7a7a7b;
+  --cancel-button-hover-color: #565e64;
+
   --success-button-color: #6eba80;
-  --hovered-success-button-color: #52895f;
+  --success-button-hover-color: #52895f;
+
   --danger-button-color: #d54c4e;
-  --hovered-danger-button-color: #ae3d3f;
+  --danger-button-hover-color: #ae3d3f;
 }
 
 .App {
@@ -88,12 +94,12 @@ button {
 }
 
 button:hover {
-  background-color: var(--hovered-button-color);
+  background-color: var(--primary-button-hover-color);
 }
 
 .cancel-button {
   border: none;
-  background-color: #7a7a7b;
+  background-color: var(--cancel-button-color);
   padding: 10px;
   border-radius: 5px;
   cursor: pointer;
@@ -102,7 +108,7 @@ button:hover {
 }
 
 .cancel-button:hover {
-  background-color: #565e64;
+  background-color: var(--cancel-button-hover-color);
 }
 
 .link-button {

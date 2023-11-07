@@ -46,8 +46,10 @@ function Navbar() {
     <>
       <IconContext.Provider value={{ color: 'white' }}>
         <div className="navbar">
-          <div style={{display: "flex", flex: "auto", justifyContent: "start", marginLeft: "20px"}} >
-            <img src={logo} alt="Logo" style={{ width: '70px', height: 'auto' }} />
+          <div style={{display: "flex", flex: "auto", justifyContent: "start", marginLeft: "30px"}} >
+            <a href="/calendar" style={{ textDecoration: 'none', cursor: 'pointer' }}>
+              <img src={logo} alt="Logo" style={{ width: '50px', height: 'auto' }} />
+            </a>
           </div>
           <div style={{display: "flex", flex: "auto", justifyContent: "center", color: "white"}} >
             <h1>{headerText}</h1>

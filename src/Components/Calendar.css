@@ -65,7 +65,7 @@ span.fc-icon-chevron-right {
 }
 
 .new-meeting-button:hover {
-    background-color: var(--hovered-success-button-color);
+    background-color: var(--success-button-hover-color);
 }
 
 @media (max-width: 450px) {
@@ -95,5 +95,5 @@ span.fc-icon-chevron-right {
 
 .fc:hover
 .fc-button-primary:hover {
-    background-color: var(--hovered-button-color);
+    background-color: var(--primary-button-hover-color);
 }
