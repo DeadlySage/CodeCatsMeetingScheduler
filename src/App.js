@@ -65,7 +65,8 @@ const RequireAdmin = ({ children }) => {
 function App() {
   return (
     <div className="main">
-      <meta name='theme-color' content='2C3E50'/>
+      <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+      <meta name="theme-color" content="#2eb0db" />
       <Router>
         <div className="topnav">
           <Navbar/>
