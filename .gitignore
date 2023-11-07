@@ -6,3 +6,6 @@ node_modules/
 
 #ignore env variables
 .env
+
+#ignore the build folder
+build
