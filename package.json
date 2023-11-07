@@ -92,6 +92,12 @@
   "nodemonConfig": {
     "delay": 30,
     "ext": "jsx, js, css",
-    "ignore": ["test/*", "docs/*", "logs/*", "build/*", "node_modules/*"]
+    "ignore": [
+      "test/*",
+      "docs/*",
+      "logs/*",
+      "build/*",
+      "node_modules/*"
+    ]
   }
 }

@@ -1,8 +1,8 @@
 :root {
-  --primary-app-color: #2eb0db;
-  --secondary-app-color: #e2edfa;
-  --primary-button-color: #2eb0db;
-  --hovered-button-color: #2692b7;
+  --primary-app-color: #2F5266;
+  --secondary-app-color: #D2D0CA;
+  --primary-button-color: #2F5266;
+  --hovered-button-color: #1d3340;
   --success-button-color: #6eba80;
   --hovered-success-button-color: #52895f;
   --danger-button-color: #d54c4e;
@@ -93,7 +93,7 @@ button:hover {
 
 .cancel-button {
   border: none;
-  background-color: #6c757d;
+  background-color: #7a7a7b;
   padding: 10px;
   border-radius: 5px;
   cursor: pointer;

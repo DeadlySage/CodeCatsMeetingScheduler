@@ -4,9 +4,10 @@ const path = require('path');
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const app = express();
-const uri = "mongodb+srv://Admin:4321admin@cluster0.lyj1ljm.mongodb.net/scheduler?retryWrites=true&w=majority"
 const bcrypt = require("bcrypt");
 const User = require("./models/user");
+require('dotenv').config();
+
 const UserStatus = {
     pending: 1,
     approved: 2
@@ -23,11 +24,14 @@ app.disable('etag');
 require("dotenv").config();
 app.use(bodyParser.json());
 
-async function connect(){
-    try{
-        await mongoose.connect(uri ,{useUnifiedTopology: true, useNewUrlParser: true});
+async function connect() {
+    try {
+        await mongoose.connect(process.env.MONGODB_URI, {
+            useUnifiedTopology: true,
+            useNewUrlParser: true
+        });
         console.log("Connected to MongoDB");
-    }catch (error){
+    } catch (error) {
         console.error(error);
     }
 }
