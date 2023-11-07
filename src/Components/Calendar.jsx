@@ -543,7 +543,10 @@ export default function Calendar() {
                                 setEnd(new Date(picker.endDate));
                             }}
                         >
-                            <input className='form-control' type='text' disabled />
+                            <input
+                                className='form-control'
+                                type='text'
+                                disabled={!!state.clickInfo} />
                         </DateRangePicker>
                     </FormGroup>
 
