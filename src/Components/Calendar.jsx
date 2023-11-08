@@ -445,10 +445,27 @@ export default function Calendar() {
                                 }}
 
                                 eventMouseEnter={function (info) {
+                                    const className = info.event.extendedProps.class_name;
+                                    const title = className ? `${className} - ${info.event.title}` : info.event.title;
+                                    const startDate = new Intl.DateTimeFormat('en-US', {
+                                        year: 'numeric', month: 'numeric', day: 'numeric',
+                                        hour: '2-digit', minute: '2-digit'
+                                    }).format(info.event.start);
+
+                                    const endDate = new Intl.DateTimeFormat('en-US', {
+                                        year: 'numeric', month: 'numeric', day: 'numeric',
+                                        hour: '2-digit', minute: '2-digit'
+                                    }).format(info.event.end);
+
+                                    const notes = info.event.extendedProps.notes ? info.event.extendedProps.notes : "No notes provided";
+
                                     var tooltip = new Tooltip(info.el, {
-                                        title: '<h3>' + info.event.title + '</h3>' +
-                                            'Start: ' + info.event.start + '<br>' +
-                                            'End: ' + info.event.end,
+                                        title: `<div>
+                                                    <h3 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${title}</h3>
+                                                    <div>Start: ${startDate}</div>
+                                                    <div>End: ${endDate}</div>
+                                                    <div>Notes: ${notes}</div>
+                                                </div>`,
                                         placement: 'top',
                                         trigger: 'hover',
                                         container: 'body',
