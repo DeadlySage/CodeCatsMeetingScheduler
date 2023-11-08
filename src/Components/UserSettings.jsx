@@ -291,7 +291,7 @@ export const UserSettings = () => {
             {showQuestionsForm && (
                 <div>
                     <div className="row" style={{textAlign: "center", marginTop: 20}}>
-                        <h2>Reset Password</h2>
+                        <h2>Reset Questions</h2>
                     </div>
                     <form className="user-settings-form" onSubmit={handleQuestionsSubmit}>
                         <div className="row" style={{textAlign: "left"}}>

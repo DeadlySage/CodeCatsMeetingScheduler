@@ -18,11 +18,10 @@
     padding: 10px; 
     border: none;
     border-radius: 5px;
-    width: 100%; 
+    max-width: 90%; 
 }
 
 .table-container {
-    /* background-color: #2C3E50; */
     background-color: var(--secondary-app-color);
     color: black;
     width: 60%;
@@ -46,9 +45,10 @@
     border-radius: 0;
     justify-content: right;
     float: right;
+    color: black;
 }
 
-.authorize-button,
+/* .authorize-button,
 .decline-button {
     width: 80px;
     background-color: var(--success-button-color);
@@ -59,6 +59,10 @@
     border-radius: 5px;
     margin-right: 5px;
     margin-left: 5px;
+} */
+
+.authorize-button {
+    background-color: var(--success-button-color);
 }
 
 .authorize-button:hover{
@@ -84,7 +88,9 @@
 }
 
 .edit-button,
-.delete-button {
+.delete-button,
+.authorize-button,
+.decline-button {
     text-align: center; 
     border-radius: 5px;
     margin-right: 5px;
@@ -95,8 +101,8 @@
 
 @media screen and (max-width: 900px) {
 .table-container {
-    width: 95%; /* Reduce the width for smaller screens */
-    padding: 1rem; 
+    width: 100%; /* Reduce the width for smaller screens */
+    /* padding: 1rem;  */
 }
   
 .user-table {
@@ -107,4 +113,4 @@
 .user-table td {
       padding: 0.2em; 
     }
-  }
+}

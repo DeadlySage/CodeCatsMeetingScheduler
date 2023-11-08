@@ -4,6 +4,8 @@ import CustomModal from './CustomModal';
 import './AdminDashboard.css';
 import { IconContext } from 'react-icons';
 import { FaTrash, FaRegEdit } from 'react-icons/fa';
+import { BsCheckLg } from 'react-icons/bs';
+import { AiOutlineClose } from 'react-icons/ai';
 import { getLoggedInUserId } from '../AuthService';
 import AdminUserUpdateModal from './AdminUserUpdateModal';
 
@@ -148,9 +150,11 @@ const AdminDashboard = () => {
 
 return (
     <div>
-        <div style={{margin: '20px', display: 'flex', justifyContent: 'center'}}>
+        <div style={{display: 'flex', justifyContent: 'center'}}>
             {showSuccessBanner && (
-                <div className="alert alert-success fade show d-inline-flex text-align-center">
+                <div className="alert alert-success fade show text-align-left"
+                    style={{width: '60%', maxWidth: '100%'}}
+                >
                     Changes saved successfully!
                     <button type="button" className="close close-button" data-dismiss="alert" aria-label="Close" onClick={() => setShowSuccessBanner(false)}>
                         <span aria-hidden="true">&times;</span>
@@ -168,7 +172,6 @@ return (
                         borderRadius: '15px'
                     }} 
                 >
-                    <div style={{ margin: '10px' }}></div> 
                     <h2>Pending Instructors</h2>
                     <table className="user-table">
                         <thead>
@@ -198,7 +201,7 @@ return (
                                                 user.last_name,
                                                 'approve')}
                                             >
-                                                Approve
+                                                <BsCheckLg />
                                             </button>
                                             <button 
                                                 className="decline-button"
@@ -208,7 +211,7 @@ return (
                                                 user.last_name,
                                                 'decline')}
                                             >
-                                                Decline
+                                                <AiOutlineClose />
                                             </button>
                                         </div>
                                         )}
@@ -281,7 +284,6 @@ return (
         <div className="table-container" 
             style={{ overflow: 'auto', maxHeight: '1000px', borderRadius: '15px' }}
         >
-            <div style={{ margin: '10px' }}></div> 
             <h2>All Users</h2>
             <div className='row col-md-10'>
                 <div className='col-md-8'>
@@ -311,7 +313,6 @@ return (
                         <th>Last Name</th>
                         <th>Email</th>
                         <th>Role</th>
-                        <th>Status</th>
                         <th>Edit / Delete</th>
                     </tr>
                 </thead>
@@ -322,7 +323,6 @@ return (
                         <td>{user.last_name}</td>
                         <td>{user.email}</td>
                         <td>{userRoleType[user.role_id]}</td>
-                        <td>{userStatus[user.status_id]}</td>
                         <td>
                             {getLoggedInUserId() !== user._id && (
                                 <div>

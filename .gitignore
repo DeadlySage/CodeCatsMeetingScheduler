@@ -9,3 +9,4 @@ node_modules/
 
 #ignore the build folder
 build/*
+build\*

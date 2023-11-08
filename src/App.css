@@ -3,7 +3,7 @@
   --secondary-app-color: #D2D0CA;
 
   --primary-button-color: #2F5266;
-  --primary-button-hover-color: #1d3340;
+  --primary-button-hover-color: #457896;
 
   --cancel-button-color: #7a7a7b;
   --cancel-button-hover-color: #565e64;
@@ -23,6 +23,7 @@
   justify-content: center;
   color: white; */
   background-color: white;
+  margin-top: 100px;
 }
 
 .auth-form-container,
@@ -194,4 +195,11 @@ button:hover {
 
 #passwordIcon {
   font-size: 20px;
+}
+
+.topnav {
+  position: fixed;
+  top: 0;
+  z-index: 100;
+  width: 100%;
 }
