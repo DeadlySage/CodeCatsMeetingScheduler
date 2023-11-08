@@ -57,6 +57,7 @@ export default function Calendar() {
             notes: meeting.notes,
             status: meeting.status,
             type_id: meeting.type_id,
+            class_name: meeting.class_name
         }));
     }
 
@@ -149,12 +150,15 @@ export default function Calendar() {
             textOverflow: 'ellipsis',
         };
 
+        const className = eventInfo.event.extendedProps.class_name;
+        const title = className ? `${className} - ${eventInfo.event.title}` : eventInfo.event.title;
+
         return (
             <div>
                 <i
                     style={style}
                 >
-                    {eventInfo.event.title}
+                    {title}
                     {eventInfo.event.extendedProps.type_id === 2
                         ? <span> (Blocked)</span>
                         : (eventInfo.event.extendedProps.status === 'Pending' && <span> (Pending)</span>)}
