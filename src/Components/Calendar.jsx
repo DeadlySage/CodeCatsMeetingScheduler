@@ -503,6 +503,7 @@ export default function Calendar() {
                                 { value: ClassType.CSC_191, label: ClassType.CSC_191 },
                             ]}
                              onChange={handleClassSelect}
+                             isDisabled={!!state.clickInfo}
                         />
                     </FormGroup>
 
@@ -518,6 +519,7 @@ export default function Calendar() {
                                     }))
                                  ]}
                             onChange={handleInstructorSelect}
+                            isDisabled={!!state.clickInfo}
                          />  
                     </FormGroup>
 
@@ -538,7 +540,7 @@ export default function Calendar() {
                         isMulti
                              value={selectedAttendees}
                              options={[
-                                 { value: '', label: 'Select an instructor' },
+                                 { value: '', label: 'Select a student' },
                                   ...students.map((student) => ({
                                          value: student._id,
                                          label: `${student.first_name} ${student.last_name}`,
