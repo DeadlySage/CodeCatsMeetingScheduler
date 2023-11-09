@@ -67,6 +67,10 @@ span.fc-icon-chevron-right {
     background-color: var(--success-button-hover-color);
 }
 
+.validation-message{
+    color: red;
+}
+
 @media (max-width: 450px) {
     .new-meeting-button {
         width: 100%;
@@ -96,3 +100,4 @@ span.fc-icon-chevron-right {
 .fc-button-primary:hover {
     background-color: var(--primary-button-hover-color);
 }
+
