@@ -12,6 +12,7 @@ span.fc-icon-chevron-right {
 
 .Calendar {
     color: black;
+    height: auto !important;
 }
 
 .dropdowns {
@@ -48,6 +49,16 @@ span.fc-icon-chevron-right {
     color:var(--primary-button-color);
 }
 
+.fc-list-day-text {
+    color: black;
+    text-decoration: none;
+}
+
+.fc-list-day-side-text {
+    color: black;
+    text-decoration: none;
+}
+
 .new-meeting-button {
     border: none;
     background-color: var(--success-button-color);
@@ -65,6 +76,12 @@ span.fc-icon-chevron-right {
 
 .new-meeting-button:hover {
     background-color: var(--success-button-hover-color);
+}
+
+.fc-view-harness,
+.fc-view-harness-active {
+    /* min-width: 300px !important; */
+    min-height: 500px !important;
 }
 
 @media (max-width: 450px) {

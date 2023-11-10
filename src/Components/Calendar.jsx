@@ -6,6 +6,8 @@ import interactionPlugin from '@fullcalendar/interaction';
 import listPlugin from '@fullcalendar/list';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-daterangepicker/daterangepicker.css';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import './Calendar.css';
 import { Tooltip } from 'bootstrap';
 import axios from 'axios'
@@ -31,10 +33,13 @@ export default function Calendar() {
     const [confirmModal, setConfirmModal] = useState(false);
     const calendarRef = useRef(null);
     const tooltips = {};
-
     const [title, setTitle] = useState('');
     const [start, setStart] = useState(new Date());
-    const [end, setEnd] = useState(new Date());
+    const [end, setEnd] = useState(() => {
+        const endDate = new Date();
+        endDate.setMinutes(endDate.getMinutes() + 30);
+        return endDate;
+    });
     const [url, setUrl] = useState('');
     const [notes, setNotes] = useState('');
     const [type_id, setType_id] = useState();
@@ -320,10 +325,65 @@ export default function Calendar() {
             });
     }
 
+    const handleDateChange = (date) => {
+        setStart((prevStart) => {
+            const newStart = new Date(prevStart);
+            newStart.setFullYear(date.getFullYear());
+            newStart.setMonth(date.getMonth());
+            newStart.setDate(date.getDate());
+            console.log('New Start: ' + newStart);
+            return newStart;
+        });
+        setEnd((prevEnd) => {
+            const newEnd = new Date(prevEnd);
+            newEnd.setFullYear(date.getFullYear());
+            newEnd.setMonth(date.getMonth());
+            newEnd.setDate(date.getDate());
+            console.log('New End: ' + newEnd);
+            return newEnd;
+        });
+    };
+
+    const handleStartTimeChange = (time) => {
+        setStart((prevStart) => {
+            const newStart = new Date(prevStart);
+            newStart.setHours(time.getHours());
+            newStart.setMinutes(time.getMinutes());
+            newStart.setSeconds(0);
+            // setSelectedStartTime(newStart);
+
+            console.log('New Start: ' + newStart);
+            return newStart;
+        });
+        setEnd((prevEnd) => {
+            const newEnd = new Date(prevEnd);
+            newEnd.setHours(time.getHours());
+            newEnd.setMinutes(time.getMinutes() + 30);
+            newEnd.setSeconds(0);
+            console.log('New End: ' + newEnd);
+            return newEnd;
+        });
+    };
+
+    const handleEndTimeChange = (time) => {
+        setEnd((prevEnd) => {
+            const newEnd = new Date(prevEnd);
+            newEnd.setHours(time.getHours());
+            newEnd.setMinutes(time.getMinutes());
+            newEnd.setSeconds(0);
+            console.log('New End: ' + newEnd);
+            return newEnd;
+        });
+    };
+
     function handleClose() {
         setTitle('');
         setStart(new Date());
-        setEnd(new Date());
+        setEnd(() => {
+            const endDate = new Date();
+            endDate.setMinutes(endDate.getMinutes() + 30);
+            return endDate;
+        });
         setState({});
         setModal(false);
         setUrl('');
@@ -355,38 +415,11 @@ export default function Calendar() {
             });
     }, []);
 
-
     return (
         <Container maxwidth="lg">
             <div className='Calendar'>
-
                 <Container>
                     <div className="row" style={{ marginBottom: 20 }}>
-
-                        {/* <div className='dropdowns'>
-
-                            <Col
-                                sm={{ size: 6 }}
-                                md={{ size: 3 }}
-                                style={{
-                                    color: 'black',
-                                    paddingLeft: 15
-                                }}
-                            >
-                            </Col>
-
-                            <Col
-                                sm={{ size: 6 }}
-                                md={{ size: 3 }}
-                                style={{
-                                    color: 'black',
-                                    paddingLeft: 15
-                                }}
-                            >
-                            </Col>
-
-                        </div> */}
-
                         <div className='col'
                             style={{
                                 paddingRight: 15,
@@ -419,13 +452,20 @@ export default function Calendar() {
                                     day: 'Day',
                                     list: 'My Meetings'
                                 }}
-                                initialView='listYear'
+                                initialView='listMonth'
+                                listDayFormat={{
+                                    weekday: 'long',
+                                    month: 'long',
+                                    day: 'numeric',
+                                    year: 'numeric'
+                                }}
+                                listDaySideFormat={false}
                                 editable={true}
                                 selectable={true}
                                 selectMirror={true}
                                 dayMaxEvents={true}
                                 weekends={weekendsVisible}
-                                select={handleDateSelect}
+                                // select={handleDateSelect}
                                 eventContent={renderEventContent}
                                 events={meetings}
                                 eventClick={handleEventClick}
@@ -550,28 +590,56 @@ export default function Calendar() {
                         />
                     </FormGroup>                  
 
-                    <FormGroup>
-                        <Label for='date'>Start Date and Time - End Date and Time</Label>
-                        <DateRangePicker
-                            initialSettings={{
-                                locale: {
-                                    format: 'M/DD hh:mm A'
-                                },
-                                startDate: start,
-                                endDate: end,
-                                timePicker: true
-                            }}
-                            onApply={(event, picker) => {
-                                setStart(new Date(picker.startDate));
-                                setEnd(new Date(picker.endDate));
-                            }}
-                        >
-                            <input
-                                className='form-control'
-                                type='text'
-                                disabled={!!state.clickInfo} />
-                        </DateRangePicker>
-                    </FormGroup>
+                    <Row>
+                        <Col>
+                            <Label for='date'>Date</Label>
+                        </Col>
+                        <Col>
+                            <Label for='startTime'>Start</Label>
+                        </Col>
+                        <Col>
+                            <Label for='endTime'>End</Label>
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col>
+                            <FormGroup>
+                                <DatePicker
+                                    selected={start}
+                                    onChange={handleDateChange}
+                                    dateFormat='M/dd/yyyy'
+                                    className='form-control'
+                                />
+                            </FormGroup>
+                        </Col>
+                        <Col>
+                            <FormGroup>
+                                <DatePicker
+                                    selected={start}
+                                    onChange={handleStartTimeChange}
+                                    showTimeSelect
+                                    showTimeSelectOnly
+                                    timeIntervals={15}
+                                    dateFormat='h:mm aa'
+                                    className='form-control'
+                                />
+                            </FormGroup>
+                        </Col>
+                        <Col>
+                            <FormGroup>
+                                <DatePicker
+                                    selected={end}
+                                    onChange={handleEndTimeChange}
+                                    showTimeSelect
+                                    showTimeSelectOnly
+                                    timeIntervals={15}
+                                    dateFormat='h:mm aa'
+                                    className='form-control'
+                                />
+                            </FormGroup>
+                        </Col>
+                    </Row>
 
                     <FormGroup>
                         <Label for='url'>Meeting URL</Label>

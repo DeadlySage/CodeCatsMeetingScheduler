@@ -24,7 +24,6 @@ function Navbar() {
       setIsAdmin(userRole === 3);
 
       const checkLoggedIn = isUserLoggedIn();
-      console.log('Checking if the user is logged in: ' + checkLoggedIn);
       setLoggedIn(checkLoggedIn);
     };
 
