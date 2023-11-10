@@ -45,12 +45,21 @@ export default function Calendar() {
     const [type_id, setType_id] = useState();
     const [meetings, setMeetings] = useState([]);
     const [state, setState] = useState({});
+    const [user, setUser] = useState(null);
     const [students, setStudents] = useState([]);
     const [instructors, setInstructors] = useState([]);
-    const [isUserStudent, setIsUserStudent] = useState(true);
-    const [selectedInstructor, setSelectedInstructor] = useState('null');
-    const [selectedClass, setSelectedClass] = useState('null');
+    const [selectedInstructor, setSelectedInstructor] = useState();
+    const [selectedClass, setSelectedClass] = useState();
     const [selectedAttendees, setSelectedAttendees] = useState([]);
+    const initialValidationMessages = {
+        class: '',
+        instructor: '',
+        title: '',
+        attendees: '',
+        url: '',
+    
+    };
+    const [validationMessages, setValidationMessages] = useState(initialValidationMessages);
 
     const mapMeetingsToEvents = (meetings) => {
         return meetings.map(meeting => ({
@@ -58,39 +67,53 @@ export default function Calendar() {
             title: meeting.title || 'Untitled Meeting',
             start: meeting.start,
             end: meeting.end,
-            url: meeting.link,
+            url: meeting.url,
             notes: meeting.notes,
             status: meeting.status,
             type_id: meeting.type_id,
-            class_name: meeting.class_name
+            class_name: meeting.class_name, 
+            instructor_id: meeting.instructor_id,
+            attendees: meeting.attendees
         }));
     }
-
     useEffect(() => {
         async function fetchUserAndMeetings() {
             try {
                 const allMeetingsResponse = await axios.get('/api/meetings');
                 const allMeetings = allMeetingsResponse.data;
-                const user = await getLoggedInUser();
+                const fetchedUser = await getLoggedInUser();
 
+                setUser(fetchedUser);
+                
                 let relevantMeetings = [];
 
-                if (user) {
-                    if (user.role_id === 1) {
-                        relevantMeetings = allMeetings.filter(meeting => meeting.attendees.includes(user._id));
-                    } else if (user.role_id === 2 || user.role_id === 3) {
-                        relevantMeetings = allMeetings.filter(meeting => meeting.instructor_id && meeting.instructor_id.toString() === user._id.toString());
+                if (fetchedUser) {
+                    if (fetchedUser.role_id === 1) {
+                        relevantMeetings = allMeetings.filter(meeting => meeting.attendees.includes(fetchedUser._id));
+                    } else if (fetchedUser.role_id === 2 || fetchedUser.role_id === 3) {
+                        relevantMeetings = allMeetings.filter(meeting => meeting.instructor_id && meeting.instructor_id.toString() === fetchedUser._id.toString());
                     }
                 }
 
                 setMeetings(mapMeetingsToEvents(relevantMeetings));
+
+                // Preselect the logged-in user in the attendees list if it's empty
+                if (selectedAttendees.length === 0) {
+                    setSelectedAttendees([
+                        {
+                            value: fetchedUser._id,
+                            label: `${fetchedUser.first_name} ${fetchedUser.last_name}`,
+                        },
+                    ]);
+                }
+
             } catch (error) {
                 console.error('Error fetching user or meetings:', error);
             }
         }
 
         fetchUserAndMeetings();
-    }, []);
+    }, [selectedAttendees]);
 
     function handleDateSelect(selectInfo) {
         if (
@@ -107,7 +130,7 @@ export default function Calendar() {
             //Console Select Info
             setStart(selectInfo.start);
             setEnd(selectInfo.end);
-            setModal(true);
+            setModal(true); 
         }
     }
 
@@ -193,6 +216,33 @@ export default function Calendar() {
         setEnd(clickInfo.event.end);
         setUrl(clickInfo.event.url);
         setNotes(clickInfo.event.extendedProps.notes);
+        
+
+        // Set the selected instructor based on the meeting's instructor_id
+        const selectedInstructorData = instructors.find(
+            (instructor) => instructor._id === clickInfo.event.extendedProps.instructor_id
+        );
+        setSelectedInstructor({
+            value: selectedInstructorData._id,
+            label: `${selectedInstructorData.first_name} ${selectedInstructorData.last_name}`,
+        });
+
+        // Set the selected class based on the meeting's class_name
+        setSelectedClass({
+            value: clickInfo.event.extendedProps.class_name,
+            label: clickInfo.event.extendedProps.class_name,
+        });
+
+        // Set the selected attendees from the student ids
+        const selectedAttendeesData = clickInfo.event.extendedProps.attendees.map(attendeeId => {
+        const attendee = students.find(student => student._id === attendeeId);
+        return {
+            value: attendee._id,
+            label: `${attendee.first_name} ${attendee.last_name}`,
+        };
+    });
+    setSelectedAttendees(selectedAttendeesData);
+
         setModal(true);
 
         if (tooltips[clickInfo.event.id]) {
@@ -215,38 +265,49 @@ export default function Calendar() {
     }
 
     function handleEdit() {
-        const meetingID = state.clickInfo.event.id;
-
-        state.clickInfo.event.setStart(start);
-        state.clickInfo.event.setEnd(end);
-        state.clickInfo.event.mutate({
-            standardProps: { title }
-        });
-        state.clickInfo.event.setProp('url', url);
-        state.clickInfo.event.setExtendedProp('notes', notes);
-
-        const updatePayload = {
-            title: title,
-            start: start,
-            end: end,
-            link: url,
-            notes: notes,
-        };
-
-        axios.patch(`/api/meetings/${meetingID}`, updatePayload)
-            .then(response => {
-                console.log('Meeting updated successfully', response);
-            })
-            .catch(error => {
-                console.error('Error updating meeting:', error);
+        try {
+            const meetingID = state.clickInfo.event.id;
+            state.clickInfo.event.setStart(start);
+            state.clickInfo.event.setEnd(end);
+            state.clickInfo.event.mutate({
+                standardProps: { title }
             });
+            state.clickInfo.event.setProp('url', url);
+            state.clickInfo.event.setExtendedProp('notes', notes);
 
-        if (tooltips[state.clickInfo.event.id]) {
-            tooltips[state.clickInfo.event.id].dispose();
+            const updatedAttendees = selectedAttendees.map(selectedAttendee => selectedAttendee.value);
+            
+            const isValid = validateMeeting();
+    
+            if (isValid) {
+                const updatePayload = {
+                    title: title,
+                    start: start,
+                    end: end,
+                    url: url,
+                    notes: notes,
+                    attendees: updatedAttendees, 
+                };
+
+                axios.patch(`/api/meetings/${meetingID}`, updatePayload)
+                    .then(response => {
+                        console.log('Meeting updated successfully', response);
+                    })
+                    .catch(error => {
+                        console.error('Error updating meeting:', error);
+                    });
+
+                if (tooltips[state.clickInfo.event.id]) {
+                    tooltips[state.clickInfo.event.id].dispose();
+                }
+
+                handleClose();
+            } 
+        } catch (error) {
+            console.error('Error updating meeting:', error);
         }
-
-        handleClose();
     }
+    
 
     const handleAttendeesSelect = (selectedStudents) => {
         setSelectedAttendees(selectedStudents);
@@ -262,11 +323,11 @@ export default function Calendar() {
 
     async function handleSubmit() {
         try {
-            const user = await getLoggedInUser();
-            const meetingStatus = await getMeetingStatus(user);
+            const isValid = validateMeeting();
 
-            if (user) {
-                 
+            if (isValid) {
+                const meetingStatus = await getMeetingStatus(user);
+    
                 await axios.post("/api/meetings", {
                     title: title,
                     class_name: selectedClass.value,
@@ -274,7 +335,6 @@ export default function Calendar() {
                     end: state.selectInfo?.endStr || end.toISOString(),
                     url: url,
                     instructor_id: selectedInstructor.value,
-                    //instructor_id: selectedInstructor ? selectedInstructor.valueOf : null,
                     status: meetingStatus,
                     notes: notes,
                     type_id: 1,
@@ -289,6 +349,37 @@ export default function Calendar() {
         } catch (error) {
             console.error('Error creating meeting:', error);
         }
+    }
+    
+
+    function validateMeeting() {
+        const validationErrors = {};
+    
+        if (!selectedClass) {
+            validationErrors.class = 'Please select a class.';
+        }
+    
+        if (!selectedInstructor) {
+            validationErrors.instructor = 'Please select an instructor.';
+        }
+    
+        if (!title) {
+            validationErrors.title = 'Please enter a team name.';
+        }
+    
+        if (selectedAttendees.length === 0) {
+            validationErrors.attendees = 'Please select at least one attendee.';
+        }
+    
+        if (!url) {
+            validationErrors.url = 'Please enter a meeting URL.';
+        }
+    
+        // Update state with validation errors
+        setValidationMessages(validationErrors);
+    
+        // Return true if there are no validation errors
+        return Object.keys(validationErrors).length === 0; 
     }
 
 
@@ -389,7 +480,9 @@ export default function Calendar() {
         setUrl('');
         setNotes('');
         setType_id({});
+        setSelectedClass('');
         setSelectedAttendees([]);
+        setValidationMessages(initialValidationMessages);
     }
 
     useEffect(() => {
@@ -535,8 +628,9 @@ export default function Calendar() {
                 >
 
                     <FormGroup>
-                        <Label for='class'>Class</Label>
+                        <Label for='class'>Class*</Label>
                         <Select
+                            placeholder='Select Class'
                             value={selectedClass}
                             options={[
                                 { value: ClassType.CSC_190, label: ClassType.CSC_190 },
@@ -545,15 +639,16 @@ export default function Calendar() {
                              onChange={handleClassSelect}
                              isDisabled={!!state.clickInfo}
                         />
+                        <div className="validation-message">{validationMessages.class}</div>
                     </FormGroup>
 
                     <FormGroup>
-                        <Label for='instructor'>Instructor</Label>
+                        <Label for='instructor'>Instructor*</Label>
                         <Select
+                            placeholder='Select Instructor'
                             value={selectedInstructor}
                             options={[
-                                { value: '', label: 'Select an instructor' },
-                                 ...instructors.map((instructor) => ({
+                                 ...instructors.map((instructor) => ({ 
                                         value: instructor._id,
                                         label: `${instructor.first_name} ${instructor.last_name}`,
                                     }))
@@ -561,10 +656,11 @@ export default function Calendar() {
                             onChange={handleInstructorSelect}
                             isDisabled={!!state.clickInfo}
                          />  
+                        <div className="validation-message">{validationMessages.instructor}</div>
                     </FormGroup>
 
                     <FormGroup>
-                        <Label for='title'>Team Name</Label>
+                        <Label for='title'>Team Name*</Label>
                         <Input
                             type='text'
                             name='title'
@@ -572,12 +668,14 @@ export default function Calendar() {
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                         />
+                        <div className="validation-message">{validationMessages.title}</div>
                     </FormGroup>
 
                     <FormGroup>
-                        <Label for='attendees'>Select Attendees</Label>
+                        <Label for='attendees'>Select Attendees*</Label>
                         <Select
                         isMulti
+                             placeholder='Select Attendees'
                              value={selectedAttendees}
                              options={[
                                  { value: '', label: 'Select a student' },
@@ -588,6 +686,7 @@ export default function Calendar() {
                                   ]}
                              onChange={handleAttendeesSelect}
                         />
+                        <div className="validation-message">{validationMessages.attendees}</div>
                     </FormGroup>                  
 
                     <Row>
@@ -642,14 +741,15 @@ export default function Calendar() {
                     </Row>
 
                     <FormGroup>
-                        <Label for='url'>Meeting URL</Label>
+                        <Label for='url'>Meeting URL*</Label>
                         <Input
                             type='text'
                             name='url'
-                            placeholder='Enter URL'
+                            placeholder='Enter Meeting URL'
                             value={url}
                             onChange={(e) => setUrl(e.target.value)}
                         />
+                        <div className="validation-message">{validationMessages.url}</div>
                     </FormGroup>
 
                     <FormGroup>
