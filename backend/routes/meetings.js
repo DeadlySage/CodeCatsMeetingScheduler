@@ -73,8 +73,8 @@ router.patch('/:id', async (req, res) => {
         if (req.body.end != null) {
             meeting.end = req.body.end;
         }
-        if (req.body.statusId != null) {
-            meeting.status_id = req.body.statusId;
+        if (req.body.status != null) {
+            meeting.status = req.body.status;
         }
         if (req.body.notes != null) {
             meeting.notes = req.body.notes;

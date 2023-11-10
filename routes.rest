@@ -54,7 +54,11 @@ GET http://localhost:3000/api/meetings/?instructorId=652cd8dc7ea563b05aafd984
 
 ###
 
-GET http://localhost:3000/api/meetings/?meetingId=652927f92d44d19f60f65c8c
+GET http://localhost:3000/api/meetings/?userId=654580101c7d3ca3348babc6
+
+###
+
+DELETE http://localhost:3000/api/meetings/654a3fcd19d04ce274c067a0
 
 ###
 

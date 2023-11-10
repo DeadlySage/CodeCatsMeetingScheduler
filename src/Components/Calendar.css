@@ -93,6 +93,10 @@ span.fc-icon-chevron-right {
     margin-bottom: 0.5em !important;
 }
 
+.fc-popover {
+    z-index: 10 !important;
+}
+
 @media (max-width: 450px) {
     .new-meeting-button {
         width: 100%;
@@ -117,13 +121,24 @@ span.fc-icon-chevron-right {
     }
 }
 
-.fc
 .fc-button-primary {
     background-color: var(--primary-button-color);
     border: none;
 }
 
-.fc:hover
 .fc-button-primary:hover {
-    background-color: var(--primary-button-hover-color);
+    background-color: var(--primary-button-hover-color) !important;
+}
+
+/* .fc-button-primary:focus,
+.fc-button-active::selection {
+    background-color: var(--primary-button-active-color) !important;
+} */
+
+:root {
+    --fc-button-active-bg-color: var(--primary-button-active-color);
+}
+
+.tooltip {
+    z-index: 9 !important;
 }

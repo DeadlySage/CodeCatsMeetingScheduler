@@ -11,7 +11,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import './Calendar.css';
 import { Tooltip } from 'bootstrap';
 import axios from 'axios'
-import { getLoggedInUser } from '../AuthService';
+import { getLoggedInUser, isUserAdmin } from '../AuthService';
 import {UserRole, MeetingStatus, ClassType} from "./Constants";
 import {
     Row,
@@ -43,6 +43,7 @@ export default function Calendar() {
     const [url, setUrl] = useState('');
     const [notes, setNotes] = useState('');
     const [type_id, setType_id] = useState();
+    const [status, setStatus] = useState('');
     const [meetings, setMeetings] = useState([]);
     const [state, setState] = useState({});
     const [user, setUser] = useState(null);
@@ -197,7 +198,6 @@ export default function Calendar() {
         );
     }
 
-
     const handleCloseModal = () => {
         handleClose();
         setModal(false);
@@ -216,8 +216,8 @@ export default function Calendar() {
         setEnd(clickInfo.event.end);
         setUrl(clickInfo.event.url);
         setNotes(clickInfo.event.extendedProps.notes);
+        setStatus(clickInfo.event.extendedProps.status);
         
-
         // Set the selected instructor based on the meeting's instructor_id
         const selectedInstructorData = instructors.find(
             (instructor) => instructor._id === clickInfo.event.extendedProps.instructor_id
@@ -235,14 +235,14 @@ export default function Calendar() {
 
         // Set the selected attendees from the student ids
         const selectedAttendeesData = clickInfo.event.extendedProps.attendees.map(attendeeId => {
-        const attendee = students.find(student => student._id === attendeeId);
-        return {
-            value: attendee._id,
-            label: `${attendee.first_name} ${attendee.last_name}`,
-        };
-    });
-    setSelectedAttendees(selectedAttendeesData);
+            const attendee = students.find(student => student._id === attendeeId);
+            return {
+                value: attendee._id,
+                label: `${attendee.first_name} ${attendee.last_name}`,
+            };
+        });
 
+        setSelectedAttendees(selectedAttendeesData);
         setModal(true);
 
         if (tooltips[clickInfo.event.id]) {
@@ -264,7 +264,12 @@ export default function Calendar() {
         setConfirmModal(true);
     }
 
-    function handleEdit() {
+    function handleApprove() {
+        handleEdit(MeetingStatus.approved);
+    }
+
+    function handleEdit(newStatus = "Pending") {
+        console.log(newStatus);
         try {
             const meetingID = state.clickInfo.event.id;
             state.clickInfo.event.setStart(start);
@@ -287,6 +292,7 @@ export default function Calendar() {
                     url: url,
                     notes: notes,
                     attendees: updatedAttendees, 
+                    status: newStatus
                 };
 
                 axios.patch(`/api/meetings/${meetingID}`, updatePayload)
@@ -307,7 +313,6 @@ export default function Calendar() {
             console.error('Error updating meeting:', error);
         }
     }
-    
 
     const handleAttendeesSelect = (selectedStudents) => {
         setSelectedAttendees(selectedStudents);
@@ -399,6 +404,22 @@ export default function Calendar() {
             return ''; 
         }
     }
+
+    function doesMeetingNeedApproval() {
+        try {
+            if (user) {
+                if (user.role_id !== UserRole.student && 
+                    status === MeetingStatus.pending) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        } catch (error) {
+            console.error('Error determining approval:', error);
+            return false; 
+        }
+    }
     
 
     function handleDelete() {
@@ -422,7 +443,6 @@ export default function Calendar() {
             newStart.setFullYear(date.getFullYear());
             newStart.setMonth(date.getMonth());
             newStart.setDate(date.getDate());
-            console.log('New Start: ' + newStart);
             return newStart;
         });
         setEnd((prevEnd) => {
@@ -430,7 +450,6 @@ export default function Calendar() {
             newEnd.setFullYear(date.getFullYear());
             newEnd.setMonth(date.getMonth());
             newEnd.setDate(date.getDate());
-            console.log('New End: ' + newEnd);
             return newEnd;
         });
     };
@@ -441,8 +460,6 @@ export default function Calendar() {
             newStart.setHours(time.getHours());
             newStart.setMinutes(time.getMinutes());
             newStart.setSeconds(0);
-
-            console.log('New Start: ' + newStart);
             return newStart;
         });
         setEnd((prevEnd) => {
@@ -450,7 +467,6 @@ export default function Calendar() {
             newEnd.setHours(time.getHours());
             newEnd.setMinutes(time.getMinutes() + 30);
             newEnd.setSeconds(0);
-            console.log('New End: ' + newEnd);
             return newEnd;
         });
     };
@@ -461,7 +477,6 @@ export default function Calendar() {
             newEnd.setHours(time.getHours());
             newEnd.setMinutes(time.getMinutes());
             newEnd.setSeconds(0);
-            console.log('New End: ' + newEnd);
             return newEnd;
         });
     };
@@ -481,6 +496,7 @@ export default function Calendar() {
         setType_id({});
         setSelectedClass('');
         setSelectedAttendees([]);
+        setStatus('');
         setValidationMessages(initialValidationMessages);
     }
 
@@ -533,9 +549,9 @@ export default function Calendar() {
                                 ref={calendarRef}
                                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
                                 headerToolbar={{
-                                    left: 'title',
+                                    start: 'title',
                                     center: 'prev,today,next',
-                                    right: 'dayGridMonth timeGridWeek timeGridDay listMonth'
+                                    end: 'dayGridMonth timeGridWeek timeGridDay listMonth'
                                 }}
                                 buttonText={{
                                     today: 'Today',
@@ -615,17 +631,20 @@ export default function Calendar() {
                     </Row>
                 </Container>
 
-                <CustomModal    // Modal for 'Add Meetings' button
-                    title={state.state === 'update' ? 'My Meeting' : 'New Meeting'}
+                <CustomModal
+                    title={state.state === 'update' ? `${selectedClass.value}: ${title}` : 'New Meeting'}
                     isOpen={modal}
                     toggle={handleCloseModal}
                     onCancel={handleCloseModal}
-                    onSubmit={state.clickInfo ? handleEdit : handleSubmit}
+                    onSubmit={() => (state.clickInfo ? handleEdit("Pending") : handleSubmit())}
                     submitText={state.clickInfo ? 'Update' : 'Save'}
                     onDelete={state.clickInfo && handleDelete}
                     deleteText='Delete'
+                    {...(doesMeetingNeedApproval() && {
+                        onSuccess: handleApprove,
+                        successText: 'Approve',
+                    })}
                 >
-
                     <FormGroup>
                         <Label for='class'>Class*</Label>
                         <Select
@@ -659,11 +678,11 @@ export default function Calendar() {
                     </FormGroup>
 
                     <FormGroup>
-                        <Label for='title'>Team Name*</Label>
+                        <Label for='title'>Team Name & Subject*</Label>
                         <Input
                             type='text'
                             name='title'
-                            placeholder='Enter Team Name'
+                            placeholder='Enter Team Name & Meeting Subject'
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                         />
@@ -708,6 +727,7 @@ export default function Calendar() {
                                     onChange={handleDateChange}
                                     dateFormat='M/dd/yyyy'
                                     className='form-control'
+                                    disabled={status === MeetingStatus.approved}
                                 />
                             </FormGroup>
                         </Col>
@@ -721,6 +741,7 @@ export default function Calendar() {
                                     timeIntervals={15}
                                     dateFormat='h:mm aa'
                                     className='form-control'
+                                    disabled={status === MeetingStatus.approved}
                                 />
                             </FormGroup>
                         </Col>
@@ -734,6 +755,7 @@ export default function Calendar() {
                                     timeIntervals={15}
                                     dateFormat='h:mm aa'
                                     className='form-control'
+                                    disabled={status === MeetingStatus.approved}
                                 />
                             </FormGroup>
                         </Col>

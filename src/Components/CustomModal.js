@@ -11,14 +11,16 @@ export default function CustomModal({
     submitText,
     onDelete,
     deleteText,
+    onSuccess,
+    successText,
     children,
     headerBackgroundClass = ""
 }) {
     return(
-        <Modal isOpen={isOpen} toggle={toggle}>
+        <Modal isOpen={isOpen} toggle={toggle} style={{zIndex: 1000}}>
             <ModalHeader className= {headerBackgroundClass} toggle={toggle}>{title}</ModalHeader>
             <ModalBody>{children}</ModalBody>
-            {(onCancel || onSubmit || onDelete) && (
+            {(onCancel || onSubmit || onDelete || onSuccess) && (
                 <ModalFooter>
                 {
                     onCancel &&(
@@ -38,6 +40,13 @@ export default function CustomModal({
                     onSubmit &&(
                         <Button color = 'primary' onClick={onSubmit}>
                             {submitText || 'Submit'}
+                        </Button>
+                    )
+                }
+                {
+                    onSuccess &&(
+                        <Button color = 'success' onClick={onSuccess}>
+                            {successText || 'Success'}
                         </Button>
                     )
                 }
