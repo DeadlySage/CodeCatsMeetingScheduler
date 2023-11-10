@@ -268,7 +268,7 @@ export default function Calendar() {
         handleEdit(MeetingStatus.approved);
     }
 
-    function handleEdit(newStatus = "Pending") {
+    function handleEdit(newStatus) {
         console.log(newStatus);
         try {
             const meetingID = state.clickInfo.event.id;
@@ -405,11 +405,11 @@ export default function Calendar() {
         }
     }
 
-    function doesMeetingNeedApproval() {
+    function doesMeetingNeedApproval(newStatus) {
         try {
             if (user) {
                 if (user.role_id !== UserRole.student && 
-                    status === MeetingStatus.pending) {
+                    newStatus === MeetingStatus.pending) {
                     return true;
                 } else {
                     return false;
@@ -636,12 +636,12 @@ export default function Calendar() {
                     isOpen={modal}
                     toggle={handleCloseModal}
                     onCancel={handleCloseModal}
-                    onSubmit={() => (state.clickInfo ? handleEdit("Pending") : handleSubmit())}
+                    onSubmit={() => (state.clickInfo ? handleEdit(state.clickInfo.event.extendedProps.status) : handleSubmit())}
                     submitText={state.clickInfo ? 'Update' : 'Save'}
                     onDelete={state.clickInfo && handleDelete}
                     deleteText='Delete'
-                    {...(doesMeetingNeedApproval() && {
-                        onSuccess: handleApprove,
+                    {...(state.clickInfo && doesMeetingNeedApproval(state.clickInfo.event.extendedProps.status) && {
+                        onSuccess: () =>(handleApprove()),
                         successText: 'Approve',
                     })}
                 >
