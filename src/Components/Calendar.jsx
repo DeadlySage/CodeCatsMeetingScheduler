@@ -441,7 +441,6 @@ export default function Calendar() {
             newStart.setHours(time.getHours());
             newStart.setMinutes(time.getMinutes());
             newStart.setSeconds(0);
-            // setSelectedStartTime(newStart);
 
             console.log('New Start: ' + newStart);
             return newStart;
@@ -534,16 +533,16 @@ export default function Calendar() {
                                 ref={calendarRef}
                                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
                                 headerToolbar={{
-                                    left: 'prev,today,next',
-                                    center: 'title',
-                                    right: 'dayGridMonth timeGridWeek timeGridDay listYear'
+                                    left: 'title',
+                                    center: 'prev,today,next',
+                                    right: 'dayGridMonth timeGridWeek timeGridDay listMonth'
                                 }}
                                 buttonText={{
                                     today: 'Today',
                                     month: 'Month',
                                     week: 'Week',
                                     day: 'Day',
-                                    list: 'My Meetings'
+                                    list: 'List'
                                 }}
                                 initialView='listMonth'
                                 listDayFormat={{

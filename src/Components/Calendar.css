@@ -88,6 +88,11 @@ span.fc-icon-chevron-right {
     color: red;
 }
 
+.fc-toolbar,
+.fc-header-toolbar {
+    margin-bottom: 0.5em !important;
+}
+
 @media (max-width: 450px) {
     .new-meeting-button {
         width: 100%;
@@ -105,6 +110,11 @@ span.fc-icon-chevron-right {
     .fc-toolbar-chunk {
         display: block;
     }
+
+    .fc-button-group {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
 }
 
 .fc
@@ -117,4 +127,3 @@ span.fc-icon-chevron-right {
 .fc-button-primary:hover {
     background-color: var(--primary-button-hover-color);
 }
-
