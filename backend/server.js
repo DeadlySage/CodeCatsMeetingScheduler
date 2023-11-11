@@ -72,7 +72,14 @@ app.get('/api/login', async (req, res) => {
         }
 
         // Successful login
-        res.status(200).json({ loggedInUserId: user.id });
+        user.last_logged_in = Date.now();
+        try {
+            await user.save();
+            res.status(200).json({ loggedInUserId: user.id });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Error updating last_logged_in field' });
+        }
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server error' });

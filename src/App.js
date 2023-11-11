@@ -3,14 +3,12 @@ import './App.css';
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { Login } from "./Components/Login";
 import { Register } from "./Components/Register";
-import AppointmentSelection from "./Components/AppointmentSelection";
 import Calendar from "./Components/Calendar";
 import { ForgotPassword } from "./Components/ForgotPassword";
 import Navbar from "./Components/Navbar";
 import '@mdi/font/css/materialdesignicons.min.css';
 import "bootstrap-icons/font/bootstrap-icons.css";
 import AdminDashboard from "./Components/AdminDashboard";
-import HompageCalendar from "./Components/HomepageCalendar";
 import {UserSettings} from "./Components/UserSettings";
 import {isUserLoggedIn, isUserAdmin} from './AuthService';
 
@@ -74,8 +72,6 @@ function App() {
             <Route path="/" element={<Navigate replace to="/login" />} />
             <Route path="/login" element={<CheckAuth><Login /></CheckAuth>} />
             <Route path="/register" element={<CheckAuth><Register /></CheckAuth>} />
-            <Route path="/user-homepage-calendar" element={<RequireAuth><HompageCalendar /></RequireAuth>} />
-            <Route path="/appointment-selection" element={<RequireAuth><AppointmentSelection /></RequireAuth>} />
             <Route path="/reset-password" element={<CheckAuth><ForgotPassword /></CheckAuth>} />
             <Route path="/calendar" element={<RequireAuth><Calendar /></RequireAuth>} />
             <Route path="/admin-dashboard" element={<RequireAuth><RequireAdmin><AdminDashboard /></RequireAdmin></RequireAuth>} />

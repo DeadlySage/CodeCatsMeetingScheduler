@@ -124,6 +124,9 @@ router.patch("/:id", getUser, async (req, res) => {
     if (req.body.secondAnswer != null) {
         res.user.second_answer = req.body.secondAnswer;
     }
+    if (req.body.lastLoggedIn != null) {
+        res.user.last_logged_in = req.body.lastLoggedIn;
+    }
     try {
         const updatedUser = await res.user.save();
         res.json(updatedUser);

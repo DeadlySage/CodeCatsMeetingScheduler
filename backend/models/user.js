@@ -40,6 +40,10 @@ const userSchema = new mongoose.Schema({
     second_answer: {
         type: String,
         required: true
+    },
+    last_logged_in: {
+        type: Date,
+        required: false
     }
 });
 

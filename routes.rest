@@ -6,6 +6,10 @@ GET http://localhost:3000/api/users
 
 ###
 
+GET http://localhost:3000/api/users/?email=nicholasbailey@csus.edu
+
+###
+
 GET http://localhost:3000/api/users/652cd8dc7ea563b05aafd984
 
 ###

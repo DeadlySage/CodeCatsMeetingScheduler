@@ -99,18 +99,26 @@
 }
   
 
-@media screen and (max-width: 900px) {
-.table-container {
-    width: 100%; /* Reduce the width for smaller screens */
-    /* padding: 1rem;  */
-}
-  
-.user-table {
-  font-size: 0.6em; /* Reduce the font size for smaller screens */
-}
-  
-.user-table th,
-.user-table td {
-      padding: 0.2em; 
+@media screen and (max-width: 1125px) {
+    .table-container {
+        width: 100%; /* Reduce the width for smaller screens */
+        /* padding: 1rem;  */
     }
+    
+    .user-table {
+    font-size: 0.6em; /* Reduce the font size for smaller screens */
+    }
+    
+    .user-table th,
+    .user-table td {
+        padding: 0.2em; 
+    }
+}
+
+.th-sortable {
+    cursor: pointer;
+}
+
+.th-sortable:hover {
+    background-color: #eae8e2;
 }

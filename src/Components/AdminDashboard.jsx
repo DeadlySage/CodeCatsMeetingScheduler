@@ -23,7 +23,8 @@ const userStatus = {
 const AdminDashboard = () => {
     const [users, setUsers] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-    const [sortOrder, setSortOrder] = useState('asc');
+    const [roleSortOrder, setRoleSortOrder] = useState('asc');
+    const [lastLoggedInSortOrder, setLastLoggedInSortOrder] = useState('asc');
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [showDeclineConfirmation, setShowDeclineConfirmation] = useState(false);
     const [showEditConfirmation, setShowEditConfirmation] = useState(false);
@@ -51,19 +52,39 @@ const AdminDashboard = () => {
         );
     });
 
-    const sortUsers = () => {
+    const sortUsersByRole = () => {
         // Toggles between asc and desc order.
-        const newSortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
-        setSortOrder(newSortOrder);
+        const newSortOrder = roleSortOrder === 'asc' ? 'desc' : 'asc';
+        setRoleSortOrder(newSortOrder);
 
         // Sorts users based on roleid value.
         const sortedUsers = [...filteredUsers].sort((a,b) =>{
-            if (sortOrder === 'asc'){
+            if (roleSortOrder === 'asc'){
                 return a.role_id - b.role_id;
             }else{
                 return b.role_id - a.role_id;
             }
         });
+        setUsers(sortedUsers);
+    };
+
+    const sortUsersByLastLoggedIn = () => {
+        // Toggles between asc and desc order.
+        const newSortOrder = lastLoggedInSortOrder === 'asc' ? 'desc' : 'asc';
+        setLastLoggedInSortOrder(newSortOrder);
+      
+        // Sorts users based on last_logged_in value.
+        const sortedUsers = [...filteredUsers].sort((a, b) => {
+            const dateA = a.last_logged_in || 0; // Handle the case where last_logged_in is null
+            const dateB = b.last_logged_in || 0;
+        
+            if (lastLoggedInSortOrder === 'asc') {
+                return dateA - dateB;
+            } else {
+                return dateB - dateA;
+            }
+        });
+      
         setUsers(sortedUsers);
     };
 
@@ -286,21 +307,13 @@ return (
         >
             <h2>All Users</h2>
             <div className='row col-md-10'>
-                <div className='col-md-8'>
+                <div>
                     <input className="user-searchbar"
                         type="text"
                         placeholder="Search by name/email"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
-                </div>
-                <div className='col-md-4'>
-                    <button 
-                        className ="sort-button"
-                        onClick={sortUsers}
-                        style={{borderRadius: '5px'}}>
-                        Sort by User Role {sortOrder === 'asc' ? '▲' : '▼'}
-                    </button>
                 </div>
             </div> 
             
@@ -312,7 +325,12 @@ return (
                         <th>First Name</th>
                         <th>Last Name</th>
                         <th>Email</th>
-                        <th>Role</th>
+                        <th className='th-sortable' onClick={sortUsersByRole}>
+                            Role {roleSortOrder === 'asc' ? '▲' : '▼'}
+                        </th>
+                        <th className='th-sortable' onClick={sortUsersByLastLoggedIn}>
+                            Last Login {lastLoggedInSortOrder === 'asc' ? '▲' : '▼'}
+                        </th>
                         <th>Edit / Delete</th>
                     </tr>
                 </thead>
@@ -324,27 +342,32 @@ return (
                         <td>{user.email}</td>
                         <td>{userRoleType[user.role_id]}</td>
                         <td>
+                            {user.last_logged_in
+                                ? new Date(user.last_logged_in).toLocaleDateString('en-US')
+                                : 'Never'}
+                            </td>
+                        <td>
                             {getLoggedInUserId() !== user._id && (
                                 <div>
                                     <IconContext.Provider value={{color: 'white'}}>
-                                    <button 
-                                        className='edit-button'
-                                        onClick={() => handleUserEdit(user)}
-                                    >
-                                        <FaRegEdit/>
-                                    </button>
+                                        <button 
+                                            className='edit-button'
+                                            onClick={() => handleUserEdit(user)}
+                                        >
+                                            <FaRegEdit/>
+                                        </button>
                                     </IconContext.Provider>
                                     <IconContext.Provider value={{color: 'white'}}>
-                                    <button 
-                                        className='delete-button'
-                                        onClick={() => handleInstructorAction(
-                                        user._id,
-                                        user.first_name,
-                                        user.last_name,
-                                        'delete')}
-                                    >
-                                        <FaTrash/>
-                                    </button>
+                                        <button 
+                                            className='delete-button'
+                                            onClick={() => handleInstructorAction(
+                                            user._id,
+                                            user.first_name,
+                                            user.last_name,
+                                            'delete')}
+                                        >
+                                            <FaTrash/>
+                                        </button>
                                     </IconContext.Provider>
                                 </div>
                             )}
