@@ -61,6 +61,7 @@ export default function Calendar() {
     
     };
     const [validationMessages, setValidationMessages] = useState(initialValidationMessages);
+    var tooltip = null;
 
     const mapMeetingsToEvents = (meetings) => {
         return meetings.map(meeting => ({
@@ -204,6 +205,10 @@ export default function Calendar() {
     };
 
     function handleEventClick(clickInfo) {
+        if (tooltip) {
+            tooltip.dispose();
+        }
+
         if (clickInfo.event.extendedProps.type_id === 2) {
             clickInfo.jsEvent.preventDefault();
             return;
@@ -244,10 +249,6 @@ export default function Calendar() {
 
         setSelectedAttendees(selectedAttendeesData);
         setModal(true);
-
-        if (tooltips[clickInfo.event.id]) {
-            tooltips[clickInfo.event.id].dispose();
-        }
     }
 
     function handleEvents(meetings) {
@@ -302,10 +303,6 @@ export default function Calendar() {
                     .catch(error => {
                         console.error('Error updating meeting:', error);
                     });
-
-                if (tooltips[state.clickInfo.event.id]) {
-                    tooltips[state.clickInfo.event.id].dispose();
-                }
 
                 handleClose();
             } 
@@ -498,6 +495,9 @@ export default function Calendar() {
         setSelectedAttendees([]);
         setStatus('');
         setValidationMessages(initialValidationMessages);
+        if (tooltip) {
+            tooltip.dispose();
+        }
     }
 
     useEffect(() => {
@@ -607,7 +607,7 @@ export default function Calendar() {
 
                                     const notes = info.event.extendedProps.notes ? info.event.extendedProps.notes : "No notes provided";
 
-                                    var tooltip = new Tooltip(info.el, {
+                                    tooltip = new Tooltip(info.el, {
                                         title: `<div>
                                                     <h3 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${title}</h3>
                                                     <div>Start: ${startDate}</div>
@@ -615,15 +615,16 @@ export default function Calendar() {
                                                     <div>Notes: ${notes}</div>
                                                 </div>`,
                                         placement: 'top',
-                                        trigger: 'hover',
+                                        trigger: 'manual',
                                         container: 'body',
                                         html: true
                                     });
-                                    tooltips[info.event.id] = tooltip;
+                                    //tooltips[info.event.id] = tooltip;
+                                    tooltip.show();
                                 }}
                                 eventMouseLeave={function (info) {
-                                    if (tooltips[info.event.id]) {
-                                        tooltips[info.event.id].dispose();
+                                    if (tooltip) {
+                                        tooltip.dispose();
                                     }
                                 }}
                             />
