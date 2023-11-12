@@ -80,7 +80,7 @@ router.patch('/:id', async (req, res) => {
             meeting.notes = req.body.notes;
         }
         if (req.body.link != null) {
-            meeting.url = req.body.link;
+            meeting.link = req.body.link;
         }
         if (req.body.attendees != null) {
             meeting.attendees = req.body.attendees;
