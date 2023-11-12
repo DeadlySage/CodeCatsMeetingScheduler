@@ -9,7 +9,6 @@ import 'bootstrap-daterangepicker/daterangepicker.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './Calendar.css';
-import { Tooltip } from 'bootstrap';
 import axios from 'axios'
 import { getLoggedInUser, isUserAdmin } from '../AuthService';
 import {UserRole, MeetingStatus, ClassType} from "./Constants";
@@ -25,6 +24,8 @@ import {
 import Select from 'react-select';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import CustomModal from './CustomModal';
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
 
 export default function Calendar() {
 
@@ -171,7 +172,7 @@ export default function Calendar() {
         const style = {
             backgroundColor,
             borderRadius: '3px',
-            //border: '1px solid #000',
+            border: '0.25px solid #aeaeae',
             color: textColor,
             padding: '4px 2px',
             display: 'block',
@@ -182,20 +183,49 @@ export default function Calendar() {
 
         const className = eventInfo.event.extendedProps.class_name;
         const title = className ? `${className} - ${eventInfo.event.title}` : eventInfo.event.title;
+        const startDate = new Intl.DateTimeFormat('en-US', {
+            year: 'numeric', month: 'numeric', day: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        }).format(eventInfo.event.start);
+    
+        const endDate = new Intl.DateTimeFormat('en-US', {
+            year: 'numeric', month: 'numeric', day: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        }).format(eventInfo.event.end);
+    
+        const notes = eventInfo.event.extendedProps.notes || "No notes provided";
+
+        const EventTooltipContent = ({ title, startDate, endDate, notes }) => {
+            return (
+                <div>
+                    <h3 style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {title}
+                    </h3>
+                    <div>Start: {startDate}</div>
+                    <div>End: {endDate}</div>
+                    <div>Notes: {notes}</div>
+                </div>
+            );
+        };
 
         return (
-            <div>
-                <i
-                    style={style}
-                >
-                    {title}
-                    {eventInfo.event.extendedProps.type_id === 2
-                        ? <span> (Blocked)</span>
-                        : (eventInfo.event.extendedProps.status === 'Pending' && <span> (Pending)</span>)}
-                    {eventInfo.event.extendedProps.type_id !== 2 &&
-                        (eventInfo.event.extendedProps.status === 'Approved' && <span> (Approved)</span>)}
-                </i>
-            </div>
+            <Tippy
+                content={<EventTooltipContent title={title} startDate={startDate} endDate={endDate} notes={notes} />}
+                theme="forest"
+            >
+                <div>
+                    <i
+                        style={style}
+                    >
+                        {title}
+                        {eventInfo.event.extendedProps.type_id === 2
+                            ? <span> (Blocked)</span>
+                            : (eventInfo.event.extendedProps.status === 'Pending' && <span> (Pending)</span>)}
+                        {eventInfo.event.extendedProps.type_id !== 2 &&
+                            (eventInfo.event.extendedProps.status === 'Approved' && <span> (Approved)</span>)}
+                    </i>
+                </div>
+            </Tippy>
         );
     }
 
@@ -592,41 +622,6 @@ export default function Calendar() {
                                     console.log('eventRemove', e);
                                 }}
 
-                                eventMouseEnter={function (info) {
-                                    const className = info.event.extendedProps.class_name;
-                                    const title = className ? `${className} - ${info.event.title}` : info.event.title;
-                                    const startDate = new Intl.DateTimeFormat('en-US', {
-                                        year: 'numeric', month: 'numeric', day: 'numeric',
-                                        hour: '2-digit', minute: '2-digit'
-                                    }).format(info.event.start);
-
-                                    const endDate = new Intl.DateTimeFormat('en-US', {
-                                        year: 'numeric', month: 'numeric', day: 'numeric',
-                                        hour: '2-digit', minute: '2-digit'
-                                    }).format(info.event.end);
-
-                                    const notes = info.event.extendedProps.notes ? info.event.extendedProps.notes : "No notes provided";
-
-                                    tooltip = new Tooltip(info.el, {
-                                        title: `<div>
-                                                    <h3 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${title}</h3>
-                                                    <div>Start: ${startDate}</div>
-                                                    <div>End: ${endDate}</div>
-                                                    <div>Notes: ${notes}</div>
-                                                </div>`,
-                                        placement: 'top',
-                                        trigger: 'manual',
-                                        container: 'body',
-                                        html: true
-                                    });
-                                    //tooltips[info.event.id] = tooltip;
-                                    tooltip.show();
-                                }}
-                                eventMouseLeave={function (info) {
-                                    if (tooltip) {
-                                        tooltip.dispose();
-                                    }
-                                }}
                             />
                         </Col>
                     </Row>
