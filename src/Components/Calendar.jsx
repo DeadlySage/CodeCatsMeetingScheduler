@@ -235,10 +235,6 @@ export default function Calendar() {
     };
 
     function handleEventClick(clickInfo) {
-        if (tooltip) {
-            tooltip.dispose();
-        }
-
         if (clickInfo.event.extendedProps.type_id === 2) {
             clickInfo.jsEvent.preventDefault();
             return;
@@ -525,9 +521,6 @@ export default function Calendar() {
         setSelectedAttendees([]);
         setStatus('');
         setValidationMessages(initialValidationMessages);
-        if (tooltip) {
-            tooltip.dispose();
-        }
     }
 
     useEffect(() => {
@@ -598,7 +591,7 @@ export default function Calendar() {
                                     year: 'numeric'
                                 }}
                                 listDaySideFormat={false}
-                                editable={true}
+                                editable={false}
                                 selectable={true}
                                 selectMirror={true}
                                 dayMaxEvents={true}
@@ -610,7 +603,6 @@ export default function Calendar() {
                                 eventDrop={handleEventDrop}
                                 eventResize={handleEventResize}
                                 
-
                                 //dateClick={handleDateClick}
                                 eventAdd={(e) => {
                                     console.log('eventAdd', e);
