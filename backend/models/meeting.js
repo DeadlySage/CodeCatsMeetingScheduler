@@ -6,7 +6,7 @@ const meetingSchema = new mongoose.Schema({
   title: String,
   start: Date,
   end: Date,
-  url: String,
+  link: String,
   attendees: [mongoose.Schema.Types.ObjectId],
   notes: String,
   status: String,

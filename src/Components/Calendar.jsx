@@ -41,7 +41,7 @@ export default function Calendar() {
         endDate.setMinutes(endDate.getMinutes() + 30);
         return endDate;
     });
-    const [url, setUrl] = useState('');
+    const [link, setLink] = useState('');
     const [notes, setNotes] = useState('');
     const [type_id, setType_id] = useState();
     const [status, setStatus] = useState('');
@@ -58,7 +58,7 @@ export default function Calendar() {
         instructor: '',
         title: '',
         attendees: '',
-        url: '',
+        link: '',
     
     };
     const [validationMessages, setValidationMessages] = useState(initialValidationMessages);
@@ -70,7 +70,7 @@ export default function Calendar() {
             title: meeting.title || 'Untitled Meeting',
             start: meeting.start,
             end: meeting.end,
-            url: meeting.url,
+            link: meeting.link,
             notes: meeting.notes,
             status: meeting.status,
             type_id: meeting.type_id,
@@ -100,8 +100,8 @@ export default function Calendar() {
 
                 setMeetings(mapMeetingsToEvents(relevantMeetings));
 
-                // Preselect the logged-in user in the attendees list if it's empty
-                if (selectedAttendees.length === 0) {
+                // Preselect the logged-in student user in the attendees list if it's empty
+                if (selectedAttendees.length === 0 && fetchedUser && fetchedUser.role_id === 1) {
                     setSelectedAttendees([
                         {
                             value: fetchedUser._id,
@@ -245,7 +245,7 @@ export default function Calendar() {
         setTitle(clickInfo.event.title);
         setStart(clickInfo.event.start);
         setEnd(clickInfo.event.end);
-        setUrl(clickInfo.event.url);
+        setLink(clickInfo.event.extendedProps.link);
         setNotes(clickInfo.event.extendedProps.notes);
         setStatus(clickInfo.event.extendedProps.status);
         
@@ -304,7 +304,7 @@ export default function Calendar() {
             state.clickInfo.event.mutate({
                 standardProps: { title }
             });
-            state.clickInfo.event.setProp('url', url);
+            state.clickInfo.event.setExtendedProp('link', link);
             state.clickInfo.event.setExtendedProp('notes', notes);
 
             const updatedAttendees = selectedAttendees.map(selectedAttendee => selectedAttendee.value);
@@ -316,7 +316,7 @@ export default function Calendar() {
                     title: title,
                     start: start,
                     end: end,
-                    url: url,
+                    link: link,
                     notes: notes,
                     attendees: updatedAttendees, 
                     status: newStatus
@@ -361,7 +361,7 @@ export default function Calendar() {
                     class_name: selectedClass.value,
                     start: state.selectInfo?.startStr || start.toISOString(),
                     end: state.selectInfo?.endStr || end.toISOString(),
-                    url: url,
+                    link: link,
                     instructor_id: selectedInstructor.value,
                     status: meetingStatus,
                     notes: notes,
@@ -399,8 +399,8 @@ export default function Calendar() {
             validationErrors.attendees = 'Please select at least one attendee.';
         }
     
-        if (!url) {
-            validationErrors.url = 'Please enter a meeting URL.';
+        if (!link) {
+            validationErrors.link = 'Please enter a meeting URL.';
         }
     
         // Update state with validation errors
@@ -514,7 +514,7 @@ export default function Calendar() {
         });
         setState({});
         setModal(false);
-        setUrl('');
+        setLink('');
         setNotes('');
         setType_id({});
         setSelectedClass('');
@@ -748,17 +748,17 @@ export default function Calendar() {
                             </FormGroup>
                         </Col>
                     </Row>
-
+               
                     <FormGroup>
-                        <Label for='url'>Meeting URL*</Label>
+                        <Label for='link'>Meeting URL*</Label>
                         <Input
                             type='text'
-                            name='url'
+                            name='link'
                             placeholder='Enter Meeting URL'
-                            value={url}
-                            onChange={(e) => setUrl(e.target.value)}
+                            value={link}
+                            onChange={(e) => setLink(e.target.value)}
                         />
-                        <div className="validation-message">{validationMessages.url}</div>
+                        <div className="validation-message">{validationMessages.link}</div>
                     </FormGroup>
 
                     <FormGroup>
