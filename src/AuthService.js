@@ -12,7 +12,7 @@ export async function login(email, password) {
     });
     if (response.status === 200) {
         const expirationDate = new Date();
-        expirationDate.setDate(expirationDate.getDate() + 200); // Expires in 200 days
+        expirationDate.setDate(expirationDate.getDate() + 1); // Expires in 1 day
         cookies.set('LoggedInUserId', response.data.loggedInUserId, { path: '/', expires: expirationDate });
     } else {
         throw new Error(response.message);
