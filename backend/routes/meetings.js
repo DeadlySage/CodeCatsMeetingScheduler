@@ -16,6 +16,17 @@ router.post('/', async (req, res) => {
 
 // GET all current user's meetings
 router.get('/', async (req, res) => {
+    // Automatically delete meetings over 6 months old
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+    
+    try {
+        // Delete meetings older than 6 months
+        await Meeting.deleteMany({ start: { $lt: sixMonthsAgo } });
+    } catch (error) {
+        return res.status(500).json({ error: "Failed to delete old meetings" });
+    }
+
     const meetingId = req.query.meetingId;
     const userId = req.query.userId;
     const instructorId = req.query.instructorId;

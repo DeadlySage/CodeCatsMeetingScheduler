@@ -400,10 +400,6 @@ export default function Calendar() {
             validationErrors.attendees = 'Please select at least one attendee.';
         }
     
-        if (!link) {
-            validationErrors.link = 'Please enter a meeting URL.';
-        }
-    
         // Update state with validation errors
         setValidationMessages(validationErrors);
     
@@ -635,7 +631,7 @@ export default function Calendar() {
                     })}
                 >
                     <FormGroup>
-                        <Label for='class'>Class*</Label>
+                        <Label for='class' style={{ display: 'flex', alignItems: 'center' }}>Class <p style={{color: 'red'}}>*</p></Label>
                         <Select
                             placeholder='Select Class'
                             value={selectedClass}
@@ -650,7 +646,7 @@ export default function Calendar() {
                     </FormGroup>
 
                     <FormGroup>
-                        <Label for='instructor'>Instructor*</Label>
+                        <Label for='instructor' style={{ display: 'flex', alignItems: 'center' }}>Instructor <p style={{color: 'red'}}>*</p></Label>
                         <Select
                             placeholder='Select Instructor'
                             value={selectedInstructor}
@@ -667,7 +663,7 @@ export default function Calendar() {
                     </FormGroup>
 
                     <FormGroup>
-                        <Label for='title'>Team Name & Subject*</Label>
+                        <Label for='title' style={{ display: 'flex', alignItems: 'center' }}>Team Name & Subject <p style={{color: 'red'}}>*</p></Label>
                         <Input
                             type='text'
                             name='title'
@@ -679,7 +675,7 @@ export default function Calendar() {
                     </FormGroup>
 
                     <FormGroup>
-                        <Label for='attendees'>Select Attendees*</Label>
+                        <Label for='attendees' style={{ display: 'flex', alignItems: 'center' }}>Select Attendees <p style={{color: 'red'}}>*</p></Label>
                         <Select
                         isMulti
                              placeholder='Select Attendees'
@@ -698,13 +694,13 @@ export default function Calendar() {
 
                     <Row>
                         <Col>
-                            <Label for='date'>Date</Label>
+                            <Label for='date' style={{ display: 'flex', alignItems: 'center' }}>Date <p style={{color: 'red'}}>*</p></Label>
                         </Col>
                         <Col>
-                            <Label for='startTime'>Start</Label>
+                            <Label for='startTime' style={{ display: 'flex', alignItems: 'center' }}>Start <p style={{color: 'red'}}>*</p></Label>
                         </Col>
                         <Col>
-                            <Label for='endTime'>End</Label>
+                            <Label for='endTime' style={{ display: 'flex', alignItems: 'center' }}>End <p style={{color: 'red'}}>*</p></Label>
                         </Col>
                     </Row>
 
@@ -751,7 +747,7 @@ export default function Calendar() {
                     </Row>
                
                     <FormGroup>
-                        <Label for='link'>Meeting URL*</Label>
+                        <Label for='link'>Meeting URL</Label>
                         <Input
                             type='text'
                             name='link'
@@ -759,7 +755,6 @@ export default function Calendar() {
                             value={link}
                             onChange={(e) => setLink(e.target.value)}
                         />
-                        <div className="validation-message">{validationMessages.link}</div>
                     </FormGroup>
 
                     <FormGroup>
