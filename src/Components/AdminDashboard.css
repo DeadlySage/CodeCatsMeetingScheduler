@@ -97,9 +97,14 @@
     margin-left: 5px;
     display: inline-flex;
 }
-  
 
-@media screen and (max-width: 1125px) {
+@media (max-width: 600px) {
+    .user-table .email-column {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 1300px) {
     .table-container {
         width: 100%; /* Reduce the width for smaller screens */
         /* padding: 1rem;  */
@@ -115,10 +120,21 @@
     }
 }
 
-.th-sortable {
+.th-clickable {
     cursor: pointer;
 }
 
-.th-sortable:hover {
+.th-clickable:hover {
+    background-color: #eae8e2;
+}
+
+.checkbox-label {
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.checkbox-label:hover {
     background-color: #eae8e2;
 }

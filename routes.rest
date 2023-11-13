@@ -20,7 +20,7 @@ Content-Type: application/json
 {
     "firstName": "Test",
     "lastName": "Document",
-    "email": "test-15@csus.edu",
+    "email": "test-22@csus.edu",
     "password": "aaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     "roleId": 1,
     "statusId": 1,

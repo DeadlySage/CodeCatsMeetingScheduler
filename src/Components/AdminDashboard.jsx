@@ -29,11 +29,14 @@ const AdminDashboard = () => {
     const [showDeclineConfirmation, setShowDeclineConfirmation] = useState(false);
     const [showEditConfirmation, setShowEditConfirmation] = useState(false);
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+    const [showDeleteMultipleConfirmation, setShowDeleteMultipleConfirmation] = useState(false);
     const [selectedUserId, setSelectedUserId] = useState(null);
     const [selectedUser, setSelectedUser] = useState(null);
     const [selectedUserFirstName, setSelectedUserFirstName] = useState('');
     const [selectedUserLastName, setSelectedUserLastName] = useState('');
     const [showSuccessBanner, setShowSuccessBanner] = useState(false);
+    const [selectedUsers, setSelectedUsers] = useState([]);
+    const loggedInUserId = getLoggedInUserId();
 
     // Get user data from the server
     useEffect(() => {
@@ -72,19 +75,19 @@ const AdminDashboard = () => {
         // Toggles between asc and desc order.
         const newSortOrder = lastLoggedInSortOrder === 'asc' ? 'desc' : 'asc';
         setLastLoggedInSortOrder(newSortOrder);
-      
+    
         // Sorts users based on last_logged_in value.
         const sortedUsers = [...filteredUsers].sort((a, b) => {
-            const dateA = a.last_logged_in || 0; // Handle the case where last_logged_in is null
-            const dateB = b.last_logged_in || 0;
-        
+            const dateA = a.last_logged_in ? new Date(a.last_logged_in) : new Date(0);
+            const dateB = b.last_logged_in ? new Date(b.last_logged_in) : new Date(0);
+    
             if (lastLoggedInSortOrder === 'asc') {
                 return dateA - dateB;
             } else {
                 return dateB - dateA;
             }
         });
-      
+    
         setUsers(sortedUsers);
     };
 
@@ -105,6 +108,39 @@ const AdminDashboard = () => {
     const handleUserEdit = (user) => {
         setSelectedUser(user);
         setShowEditConfirmation(true);
+    };
+
+    const handleUserSelection = (thisUser) => {
+        // Toggle user selection
+        if (selectedUsers.includes(thisUser)) {
+            setSelectedUsers(selectedUsers.filter(user => user._id !== thisUser._id));
+        } else {
+            setSelectedUsers([...selectedUsers, thisUser]);
+        }
+    };
+
+    const handleDeleteSelectedUsers = async () => {
+        try {
+            // Delete selected users using axios.delete
+            await Promise.all(selectedUsers.map(async (thisUser) => {
+                try {
+                    await axios.delete(`/api/users/${thisUser._id}`);
+                    console.log('User delete success');
+                } catch (error) {
+                    console.error('Error deleting user', error);
+                    setShowDeleteConfirmation(false);
+                }
+            }));
+    
+            // Update list after deletion
+            setUsers((prevUsers) => prevUsers.filter((user) => !selectedUsers.some(selectedUser => selectedUser._id === user._id)));
+    
+            // Clear selected users and close modals
+            setSelectedUsers([]);
+            closeAllModals();
+        } catch (error) {
+            console.error('Error deleting users:', error);
+        }
     };
 
     const confirmAuthorization = () => {
@@ -162,11 +198,12 @@ const AdminDashboard = () => {
       
 
     const closeAllModals = () => {
-        // Close the modal
+        // Close all modals
         setShowConfirmation(false);
         setShowDeclineConfirmation(false);
         setShowDeleteConfirmation(false);
         setShowEditConfirmation(false);
+        setShowDeleteMultipleConfirmation(false);
     };
 
 return (
@@ -301,19 +338,54 @@ return (
             </CustomModal>
         )}
 
+        {showDeleteMultipleConfirmation && (
+            <CustomModal
+                title="Delete Selected Users"
+                isOpen={showDeleteMultipleConfirmation}
+                toggle={closeAllModals}
+                onCancel={closeAllModals}
+                {...(selectedUsers.length > 0 ? 
+                    { onDelete: handleDeleteSelectedUsers, 
+                        deleteText: "Delete Users" 
+                    } : {}
+                )}
+            >
+                {selectedUsers.length > 0 && (
+                    <p>
+                        Are you sure you want to delete the selected users? {' '}
+                        <strong>
+                            <ul>
+                                {selectedUsers.map((user, i) => (
+                                    <li key={i}>{`${user.first_name} ${user.last_name}`}</li>
+                                ))}
+                            </ul>
+                        </strong>
+                    </p>
+                )}
+                {selectedUsers.length === 0 && (
+                    <p>
+                        There are no selected users to delete.
+                    </p>
+                )}
+            </CustomModal>
+        )}
+
 
         <div className="table-container" 
             style={{ overflow: 'auto', maxHeight: '1000px', borderRadius: '15px' }}
         >
             <h2>All Users</h2>
             <div className='row col-md-10'>
-                <div>
+                <div className='col-md-8'>
                     <input className="user-searchbar"
                         type="text"
                         placeholder="Search by name/email"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
+                </div>
+                <div className='col-md-4'>
+                    <button className='delete-button' onClick={() => {setShowDeleteMultipleConfirmation(true)}}>Delete Selected Users</button>
                 </div>
             </div> 
             
@@ -322,13 +394,33 @@ return (
             <table className="user-table">
                 <thead>
                     <tr>
+                        <th>
+                            <label className="checkbox-label">
+                                <input
+                                    type="checkbox"
+                                    checked={selectedUsers.length === filteredUsers.length}
+                                    onChange={() => {
+                                        // Toggle all users' selection
+                                        if (selectedUsers.length === filteredUsers.length - 1) {
+                                            setSelectedUsers([]);
+                                        } else {
+                                            // Exclude the logged-in user from selection
+                                            const allUserIdsExceptLoggedIn = filteredUsers
+                                                .filter(user => user._id !== loggedInUserId);
+                                            
+                                            setSelectedUsers(allUserIdsExceptLoggedIn);
+                                        }
+                                    }}
+                                />
+                            </label>
+                        </th>
                         <th>First Name</th>
                         <th>Last Name</th>
-                        <th>Email</th>
-                        <th className='th-sortable' onClick={sortUsersByRole}>
+                        <th className='email-column'>Email</th>
+                        <th className='th-clickable' onClick={sortUsersByRole}>
                             Role {roleSortOrder === 'asc' ? '▲' : '▼'}
                         </th>
-                        <th className='th-sortable' onClick={sortUsersByLastLoggedIn}>
+                        <th className='th-clickable' onClick={sortUsersByLastLoggedIn}>
                             Last Login {lastLoggedInSortOrder === 'asc' ? '▲' : '▼'}
                         </th>
                         <th>Edit / Delete</th>
@@ -337,9 +429,20 @@ return (
                 <tbody>
                     {filteredUsers.map((user) => (
                     <tr key={user._id}>
+                        <td>
+                            {loggedInUserId !== user._id && (
+                                <label className="checkbox-label">
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedUsers.includes(user)}
+                                        onChange={() => handleUserSelection(user)}
+                                    />
+                                </label>
+                            )}
+                        </td>
                         <td>{user.first_name}</td>
                         <td>{user.last_name}</td>
-                        <td>{user.email}</td>
+                        <td className='email-column'>{user.email}</td>
                         <td>{userRoleType[user.role_id]}</td>
                         <td>
                             {user.last_logged_in
@@ -347,7 +450,7 @@ return (
                                 : 'Never'}
                             </td>
                         <td>
-                            {getLoggedInUserId() !== user._id && (
+                            {loggedInUserId !== user._id && (
                                 <div>
                                     <IconContext.Provider value={{color: 'white'}}>
                                         <button 
