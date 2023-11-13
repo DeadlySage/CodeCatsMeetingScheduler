@@ -212,6 +212,7 @@ export default function Calendar() {
             <Tippy
                 content={<EventTooltipContent title={title} startDate={startDate} endDate={endDate} notes={notes} />}
                 theme="forest"
+                zIndex={10}
             >
                 <div>
                     <i
