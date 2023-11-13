@@ -9,7 +9,6 @@ import 'bootstrap-daterangepicker/daterangepicker.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './Calendar.css';
-import { Tooltip } from 'bootstrap';
 import axios from 'axios'
 import { getLoggedInUser, isUserAdmin } from '../AuthService';
 import {UserRole, MeetingStatus, ClassType} from "./Constants";
@@ -25,6 +24,8 @@ import {
 import Select from 'react-select';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import CustomModal from './CustomModal';
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
 
 export default function Calendar() {
 
@@ -40,7 +41,7 @@ export default function Calendar() {
         endDate.setMinutes(endDate.getMinutes() + 30);
         return endDate;
     });
-    const [url, setUrl] = useState('');
+    const [link, setLink] = useState('');
     const [notes, setNotes] = useState('');
     const [type_id, setType_id] = useState();
     const [status, setStatus] = useState('');
@@ -57,10 +58,11 @@ export default function Calendar() {
         instructor: '',
         title: '',
         attendees: '',
-        url: '',
+        link: '',
     
     };
     const [validationMessages, setValidationMessages] = useState(initialValidationMessages);
+    var tooltip = null;
 
     const mapMeetingsToEvents = (meetings) => {
         return meetings.map(meeting => ({
@@ -68,7 +70,7 @@ export default function Calendar() {
             title: meeting.title || 'Untitled Meeting',
             start: meeting.start,
             end: meeting.end,
-            url: meeting.url,
+            link: meeting.link,
             notes: meeting.notes,
             status: meeting.status,
             type_id: meeting.type_id,
@@ -98,8 +100,8 @@ export default function Calendar() {
 
                 setMeetings(mapMeetingsToEvents(relevantMeetings));
 
-                // Preselect the logged-in user in the attendees list if it's empty
-                if (selectedAttendees.length === 0) {
+                // Preselect the logged-in student user in the attendees list if it's empty
+                if (selectedAttendees.length === 0 && fetchedUser && fetchedUser.role_id === 1) {
                     setSelectedAttendees([
                         {
                             value: fetchedUser._id,
@@ -170,7 +172,7 @@ export default function Calendar() {
         const style = {
             backgroundColor,
             borderRadius: '3px',
-            //border: '1px solid #000',
+            border: '0.25px solid #aeaeae',
             color: textColor,
             padding: '4px 2px',
             display: 'block',
@@ -181,20 +183,49 @@ export default function Calendar() {
 
         const className = eventInfo.event.extendedProps.class_name;
         const title = className ? `${className} - ${eventInfo.event.title}` : eventInfo.event.title;
+        const startDate = new Intl.DateTimeFormat('en-US', {
+            year: 'numeric', month: 'numeric', day: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        }).format(eventInfo.event.start);
+    
+        const endDate = new Intl.DateTimeFormat('en-US', {
+            year: 'numeric', month: 'numeric', day: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        }).format(eventInfo.event.end);
+    
+        const notes = eventInfo.event.extendedProps.notes || "No notes provided";
+
+        const EventTooltipContent = ({ title, startDate, endDate, notes }) => {
+            return (
+                <div>
+                    <h3 style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {title}
+                    </h3>
+                    <div>Start: {startDate}</div>
+                    <div>End: {endDate}</div>
+                    <div>Notes: {notes}</div>
+                </div>
+            );
+        };
 
         return (
-            <div>
-                <i
-                    style={style}
-                >
-                    {title}
-                    {eventInfo.event.extendedProps.type_id === 2
-                        ? <span> (Blocked)</span>
-                        : (eventInfo.event.extendedProps.status === 'Pending' && <span> (Pending)</span>)}
-                    {eventInfo.event.extendedProps.type_id !== 2 &&
-                        (eventInfo.event.extendedProps.status === 'Approved' && <span> (Approved)</span>)}
-                </i>
-            </div>
+            <Tippy
+                content={<EventTooltipContent title={title} startDate={startDate} endDate={endDate} notes={notes} />}
+                theme="forest"
+            >
+                <div>
+                    <i
+                        style={style}
+                    >
+                        {title}
+                        {eventInfo.event.extendedProps.type_id === 2
+                            ? <span> (Blocked)</span>
+                            : (eventInfo.event.extendedProps.status === 'Pending' && <span> (Pending)</span>)}
+                        {eventInfo.event.extendedProps.type_id !== 2 &&
+                            (eventInfo.event.extendedProps.status === 'Approved' && <span> (Approved)</span>)}
+                    </i>
+                </div>
+            </Tippy>
         );
     }
 
@@ -214,7 +245,7 @@ export default function Calendar() {
         setTitle(clickInfo.event.title);
         setStart(clickInfo.event.start);
         setEnd(clickInfo.event.end);
-        setUrl(clickInfo.event.url);
+        setLink(clickInfo.event.extendedProps.link);
         setNotes(clickInfo.event.extendedProps.notes);
         setStatus(clickInfo.event.extendedProps.status);
         
@@ -244,10 +275,6 @@ export default function Calendar() {
 
         setSelectedAttendees(selectedAttendeesData);
         setModal(true);
-
-        if (tooltips[clickInfo.event.id]) {
-            tooltips[clickInfo.event.id].dispose();
-        }
     }
 
     function handleEvents(meetings) {
@@ -277,7 +304,7 @@ export default function Calendar() {
             state.clickInfo.event.mutate({
                 standardProps: { title }
             });
-            state.clickInfo.event.setProp('url', url);
+            state.clickInfo.event.setExtendedProp('link', link);
             state.clickInfo.event.setExtendedProp('notes', notes);
 
             const updatedAttendees = selectedAttendees.map(selectedAttendee => selectedAttendee.value);
@@ -289,7 +316,7 @@ export default function Calendar() {
                     title: title,
                     start: start,
                     end: end,
-                    url: url,
+                    link: link,
                     notes: notes,
                     attendees: updatedAttendees, 
                     status: newStatus
@@ -302,10 +329,6 @@ export default function Calendar() {
                     .catch(error => {
                         console.error('Error updating meeting:', error);
                     });
-
-                if (tooltips[state.clickInfo.event.id]) {
-                    tooltips[state.clickInfo.event.id].dispose();
-                }
 
                 handleClose();
             } 
@@ -338,7 +361,7 @@ export default function Calendar() {
                     class_name: selectedClass.value,
                     start: state.selectInfo?.startStr || start.toISOString(),
                     end: state.selectInfo?.endStr || end.toISOString(),
-                    url: url,
+                    link: link,
                     instructor_id: selectedInstructor.value,
                     status: meetingStatus,
                     notes: notes,
@@ -376,8 +399,8 @@ export default function Calendar() {
             validationErrors.attendees = 'Please select at least one attendee.';
         }
     
-        if (!url) {
-            validationErrors.url = 'Please enter a meeting URL.';
+        if (!link) {
+            validationErrors.link = 'Please enter a meeting URL.';
         }
     
         // Update state with validation errors
@@ -491,7 +514,7 @@ export default function Calendar() {
         });
         setState({});
         setModal(false);
-        setUrl('');
+        setLink('');
         setNotes('');
         setType_id({});
         setSelectedClass('');
@@ -568,7 +591,7 @@ export default function Calendar() {
                                     year: 'numeric'
                                 }}
                                 listDaySideFormat={false}
-                                editable={true}
+                                editable={false}
                                 selectable={true}
                                 selectMirror={true}
                                 dayMaxEvents={true}
@@ -580,7 +603,6 @@ export default function Calendar() {
                                 eventDrop={handleEventDrop}
                                 eventResize={handleEventResize}
                                 
-
                                 //dateClick={handleDateClick}
                                 eventAdd={(e) => {
                                     console.log('eventAdd', e);
@@ -592,40 +614,6 @@ export default function Calendar() {
                                     console.log('eventRemove', e);
                                 }}
 
-                                eventMouseEnter={function (info) {
-                                    const className = info.event.extendedProps.class_name;
-                                    const title = className ? `${className} - ${info.event.title}` : info.event.title;
-                                    const startDate = new Intl.DateTimeFormat('en-US', {
-                                        year: 'numeric', month: 'numeric', day: 'numeric',
-                                        hour: '2-digit', minute: '2-digit'
-                                    }).format(info.event.start);
-
-                                    const endDate = new Intl.DateTimeFormat('en-US', {
-                                        year: 'numeric', month: 'numeric', day: 'numeric',
-                                        hour: '2-digit', minute: '2-digit'
-                                    }).format(info.event.end);
-
-                                    const notes = info.event.extendedProps.notes ? info.event.extendedProps.notes : "No notes provided";
-
-                                    var tooltip = new Tooltip(info.el, {
-                                        title: `<div>
-                                                    <h3 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${title}</h3>
-                                                    <div>Start: ${startDate}</div>
-                                                    <div>End: ${endDate}</div>
-                                                    <div>Notes: ${notes}</div>
-                                                </div>`,
-                                        placement: 'top',
-                                        trigger: 'hover',
-                                        container: 'body',
-                                        html: true
-                                    });
-                                    tooltips[info.event.id] = tooltip;
-                                }}
-                                eventMouseLeave={function (info) {
-                                    if (tooltips[info.event.id]) {
-                                        tooltips[info.event.id].dispose();
-                                    }
-                                }}
                             />
                         </Col>
                     </Row>
@@ -760,17 +748,17 @@ export default function Calendar() {
                             </FormGroup>
                         </Col>
                     </Row>
-
+               
                     <FormGroup>
-                        <Label for='url'>Meeting URL*</Label>
+                        <Label for='link'>Meeting URL*</Label>
                         <Input
                             type='text'
-                            name='url'
+                            name='link'
                             placeholder='Enter Meeting URL'
-                            value={url}
-                            onChange={(e) => setUrl(e.target.value)}
+                            value={link}
+                            onChange={(e) => setLink(e.target.value)}
                         />
-                        <div className="validation-message">{validationMessages.url}</div>
+                        <div className="validation-message">{validationMessages.link}</div>
                     </FormGroup>
 
                     <FormGroup>

@@ -209,3 +209,9 @@ button:hover {
   --bs-tooltip-max-width: 400px !important;
   --bs-tooltip-font-size: 1rem !important;
 }
+
+.tippy-box[data-theme~='forest'] {
+  background-color: #2c3e50; /* your custom styling */
+  color: white; /* your custom styling */
+  /* add more custom styles if needed */
+}
