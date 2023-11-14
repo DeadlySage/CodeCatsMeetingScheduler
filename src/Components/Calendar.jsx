@@ -120,6 +120,14 @@ export default function Calendar() {
                     ]);
                 }
 
+                // Preselect the logged-in instructor
+                if (!selectedInstructor && user && (user.role_id === UserRole.instructor)) {
+                    setSelectedInstructor({
+                        value: user._id,
+                        label: `${user.first_name} ${user.last_name}`,
+                    });
+        }
+
             } catch (error) {
                 console.error('Error fetching user or meetings:', error);
             }
@@ -777,7 +785,7 @@ export default function Calendar() {
                                     }))
                                  ]}
                             onChange={handleInstructorSelect}
-                            isDisabled={!!state.clickInfo}
+                            isDisabled={!!state.clickInfo || user && (user.role_id === UserRole.instructor)}
                          />  
                         <div className="validation-message">{validationMessages.instructor}</div>
                     </FormGroup>
@@ -801,7 +809,6 @@ export default function Calendar() {
                              placeholder='Select Attendees'
                              value={selectedAttendees}
                              options={[
-                                 { value: '', label: 'Select a student' },
                                   ...students.map((student) => ({
                                          value: student._id,
                                          label: `${student.first_name} ${student.last_name}`,
