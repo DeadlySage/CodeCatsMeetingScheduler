@@ -11,7 +11,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import './Calendar.css';
 import axios from 'axios'
 import { getLoggedInUser, isUserAdmin } from '../AuthService';
-import {UserRole, MeetingStatus, ClassType} from "./Constants";
+import {UserRole, MeetingStatus, ClassType, MeetingType} from "./Constants";
 import {
     Row,
     Col,
@@ -31,6 +31,7 @@ export default function Calendar() {
 
     const [weekendsVisible, setWeekendsVisible] = useState(true);
     const [modal, setModal] = useState(false);
+    const [blockModal, setBlockModal] = useState(false);
     const [confirmModal, setConfirmModal] = useState(false);
     const calendarRef = useRef(null);
     const tooltips = {};
@@ -79,6 +80,14 @@ export default function Calendar() {
             attendees: meeting.attendees
         }));
     }
+
+    const [isLoggedInUserStudent, setIsLoggedInUserStudent] = useState(true);
+
+    useEffect(async () => {
+        let currentLoggedInUser = await getLoggedInUser();
+        setIsLoggedInUserStudent(currentLoggedInUser.role_id === UserRole.student);
+    }, []);
+
     useEffect(() => {
         async function fetchUserAndMeetings() {
             try {
@@ -233,13 +242,23 @@ export default function Calendar() {
     const handleCloseModal = () => {
         handleClose();
         setModal(false);
+        setBlockModal(false);
     };
 
     function handleEventClick(clickInfo) {
         if (clickInfo.event.extendedProps.type_id === 2) {
             clickInfo.jsEvent.preventDefault();
+            setState({ clickInfo, state: 'update' });
+
+            setTitle(clickInfo.event.title);
+            setStart(clickInfo.event.start);
+            setEnd(clickInfo.event.end);
+            setNotes(clickInfo.event.extendedProps.notes);
+            setBlockModal(true);
+
             return;
         }
+
         clickInfo.jsEvent.preventDefault();
         setState({ clickInfo, state: 'update' });
 
@@ -297,7 +316,6 @@ export default function Calendar() {
     }
 
     function handleEdit(newStatus) {
-        console.log(newStatus);
         try {
             const meetingID = state.clickInfo.event.id;
             state.clickInfo.event.setStart(start);
@@ -335,6 +353,35 @@ export default function Calendar() {
             } 
         } catch (error) {
             console.error('Error updating meeting:', error);
+        }
+    }
+
+    function handleBlockEdit() {
+        try {
+            const meetingId = state.clickInfo.event.id;
+            state.clickInfo.event.setStart(start);
+            state.clickInfo.event.setEnd(end);
+            state.clickInfo.event.setExtendedProp('notes', notes);
+
+            const updatePayload = {
+                start: start,
+                end: end,
+                notes: notes,
+            };
+
+            axios.patch(`/api/meetings/${meetingId}`, updatePayload)
+                .then(response => {
+                    console.log('Blocked time updated successfully', response);
+                })
+                .catch(error => {
+                    console.error('Error updating blocked time:', error);
+                }
+            );
+
+            handleClose();
+
+        } catch(error) {
+            console.error('Error updating blocked time: ', error);
         }
     }
 
@@ -377,6 +424,27 @@ export default function Calendar() {
             }
         } catch (error) {
             console.error('Error creating meeting:', error);
+        }
+    }
+
+    async function handleBlockSubmit() {
+        try {
+            const loggedInUser = await getLoggedInUser();
+            await axios.post('/api/meetings', {
+                title: 'Blocked Time',
+                start: state.selectInfo?.startStr || start.toISOString(),
+                end: state.selectInfo?.endStr || end.toISOString(),
+                instructor_id: loggedInUser._id,
+                status: MeetingStatus.approved,
+                type_id: MeetingType.block,
+                notes: notes
+            })
+
+            console.log('Blocked time created successfully');
+            handleClose();
+
+        } catch (error) {
+            console.error('Error creating blocked time: ', error)
         }
     }
     
@@ -497,7 +565,11 @@ export default function Calendar() {
             newEnd.setHours(time.getHours());
             newEnd.setMinutes(time.getMinutes());
             newEnd.setSeconds(0);
-            return newEnd;
+            if (newEnd <= start) {
+                return start;
+            } else {
+                return newEnd;
+            }
         });
     };
 
@@ -511,6 +583,7 @@ export default function Calendar() {
         });
         setState({});
         setModal(false);
+        setBlockModal(false);
         setLink('');
         setNotes('');
         setType_id({});
@@ -563,6 +636,24 @@ export default function Calendar() {
                             </div>
                         </div>
                     </div>
+                    {!isLoggedInUserStudent && (
+                        <div className="row" style={{ marginBottom: 20 }}>
+                            <div className='col'
+                                style={{
+                                    paddingRight: 15,
+                                    width: '100%',
+                                    display: 'flex',
+                                    justifyContent: 'center'
+                                }}
+                            >
+                                <div className='block-time-button'
+                                    onClick={() => setBlockModal(true)}
+                                >
+                                    Blocked Time                 
+                                </div>
+                            </div>
+                        </div>
+                    )}
                     <Row>
                         <Col md={12}>
                             <FullCalendar
@@ -617,7 +708,7 @@ export default function Calendar() {
                 </Container>
 
                 <CustomModal
-                    title={state.state === 'update' ? `${selectedClass.value}: ${title}` : 'New Meeting'}
+                    title={state.state === 'update' ? `${selectedClass ? selectedClass.value : ''}: ${title}` : 'New Meeting'}
                     isOpen={modal}
                     toggle={handleCloseModal}
                     onCancel={handleCloseModal}
@@ -756,6 +847,84 @@ export default function Calendar() {
                             onChange={(e) => setLink(e.target.value)}
                         />
                     </FormGroup>
+
+                    <FormGroup>
+                        <Label for='notes'>Notes</Label>
+                        <Input
+                            type='text'
+                            name='notes'
+                            placeholder='Enter Notes'
+                            value={notes}
+                            onChange={(e) => setNotes(e.target.value)}
+                        />
+                    </FormGroup>
+
+
+                </CustomModal>
+
+                <CustomModal
+                    title={state.state === 'update' ? 'Update Block' : 'New Block'}
+                    isOpen={blockModal}
+                    toggle={handleCloseModal}
+                    onCancel={handleCloseModal}
+                    onSubmit={() => (state.clickInfo ? handleBlockEdit() : handleBlockSubmit())}
+                    submitText={state.clickInfo ? 'Update' : 'Save'}
+                    onDelete={state.clickInfo && handleDelete}
+                    deleteText='Delete'
+                >
+                    <Row>
+                        <Col>
+                            <Label for='date' style={{ display: 'flex', alignItems: 'center' }}>Date <p style={{color: 'red'}}>*</p></Label>
+                        </Col>
+                        <Col>
+                            <Label for='startTime' style={{ display: 'flex', alignItems: 'center' }}>Start <p style={{color: 'red'}}>*</p></Label>
+                        </Col>
+                        <Col>
+                            <Label for='endTime' style={{ display: 'flex', alignItems: 'center' }}>End <p style={{color: 'red'}}>*</p></Label>
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col>
+                            <FormGroup>
+                                <DatePicker
+                                    selected={start}
+                                    onChange={handleDateChange}
+                                    dateFormat='M/dd/yyyy'
+                                    className='form-control'
+                                    disabled={status === MeetingStatus.approved}
+                                />
+                            </FormGroup>
+                        </Col>
+                        <Col>
+                            <FormGroup>
+                                <DatePicker
+                                    selected={start}
+                                    onChange={handleStartTimeChange}
+                                    showTimeSelect
+                                    showTimeSelectOnly
+                                    timeIntervals={15}
+                                    dateFormat='h:mm aa'
+                                    className='form-control'
+                                    disabled={status === MeetingStatus.approved}
+                                />
+                            </FormGroup>
+                        </Col>
+                        <Col>
+                            <FormGroup>
+                                <DatePicker
+                                    selected={end}
+                                    onChange={handleEndTimeChange}
+                                    showTimeSelect
+                                    showTimeSelectOnly
+                                    timeIntervals={15}
+                                    dateFormat='h:mm aa'
+                                    className='form-control'
+                                    disabled={status === MeetingStatus.approved}
+                                />
+                            </FormGroup>
+                        </Col>
+                    </Row>
 
                     <FormGroup>
                         <Label for='notes'>Notes</Label>

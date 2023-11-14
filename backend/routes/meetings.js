@@ -100,7 +100,7 @@ router.patch('/:id', async (req, res) => {
             meeting.attendees.push(req.body.newAttendee);
         }
         if (req.body.type_id != null) {
-            meeting.typeId = req.body.typeId;
+            meeting.type_id = req.body.typeId;
         }
         if (req.body.title != null) {
             meeting.title = req.body.title;

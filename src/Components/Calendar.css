@@ -59,6 +59,7 @@ span.fc-icon-chevron-right {
     text-decoration: none;
 }
 
+.block-time-button,
 .new-meeting-button {
     border: none;
     background-color: var(--success-button-color);
@@ -74,8 +75,16 @@ span.fc-icon-chevron-right {
     transition: background-color 0.15s;
 }
 
+.block-time-button {
+    background-color: var(--danger-button-color);
+}
+
 .new-meeting-button:hover {
     background-color: var(--success-button-hover-color);
+}
+
+.block-time-button:hover {
+    background-color: var(--danger-button-hover-color);
 }
 
 .fc-view-harness,
