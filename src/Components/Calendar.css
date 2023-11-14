@@ -75,21 +75,20 @@ span.fc-icon-chevron-right {
     transition: background-color 0.15s;
 }
 
-.block-time-button {
-    background-color: var(--danger-button-color);
-}
-
 .new-meeting-button:hover {
     background-color: var(--success-button-hover-color);
 }
 
+.block-time-button {
+    background-color: var(--cancel-button-color);
+}
+
 .block-time-button:hover {
-    background-color: var(--danger-button-hover-color);
+    background-color: var(--cancel-button-hover-color);
 }
 
 .fc-view-harness,
 .fc-view-harness-active {
-    /* min-width: 300px !important; */
     min-height: 500px !important;
 }
 
@@ -104,12 +103,6 @@ span.fc-icon-chevron-right {
 
 .fc-popover {
     z-index: 10 !important;
-}
-
-@media (max-width: 450px) {
-    .new-meeting-button {
-        width: 100%;
-    }
 }
 
 @media (max-width: 1000px) {

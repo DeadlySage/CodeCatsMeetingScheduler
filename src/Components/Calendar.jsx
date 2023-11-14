@@ -42,6 +42,7 @@ export default function Calendar() {
         endDate.setMinutes(endDate.getMinutes() + 30);
         return endDate;
     });
+    const [showOverlapBanner, setShowOverlapBanner] = useState(false);
     const [link, setLink] = useState('');
     const [notes, setNotes] = useState('');
     const [type_id, setType_id] = useState();
@@ -318,13 +319,13 @@ export default function Calendar() {
     function handleEdit(newStatus) {
         try {
             const meetingID = state.clickInfo.event.id;
-            state.clickInfo.event.setStart(start);
-            state.clickInfo.event.setEnd(end);
-            state.clickInfo.event.mutate({
-                standardProps: { title }
-            });
-            state.clickInfo.event.setExtendedProp('link', link);
-            state.clickInfo.event.setExtendedProp('notes', notes);
+            // state.clickInfo.event.setStart(start);
+            // state.clickInfo.event.setEnd(end);
+            // state.clickInfo.event.mutate({
+            //     standardProps: { title }
+            // });
+            // state.clickInfo.event.setExtendedProp('link', link);
+            // state.clickInfo.event.setExtendedProp('notes', notes);
 
             const updatedAttendees = selectedAttendees.map(selectedAttendee => selectedAttendee.value);
             
@@ -342,14 +343,27 @@ export default function Calendar() {
                 };
 
                 axios.patch(`/api/meetings/${meetingID}`, updatePayload)
-                    .then(response => {
-                        console.log('Meeting updated successfully', response);
-                    })
-                    .catch(error => {
-                        console.error('Error updating meeting:', error);
-                    });
+                    .then((response) => {
+                        if (response.status === 200) {
+                            console.log('Meeting updated successfully');
 
-                handleClose();
+                            state.clickInfo.event.setStart(start);
+                            state.clickInfo.event.setEnd(end);
+                            state.clickInfo.event.mutate({standardProps: { title }});
+                            state.clickInfo.event.setExtendedProp('link', link);
+                            state.clickInfo.event.setExtendedProp('notes', notes);
+
+                            handleClose();
+                        }
+                    })
+                    .catch((error) => {
+                        if (error.response.status === 300) {
+                            console.log('Overlaps pre-existing meeting');
+                            setShowOverlapBanner(true);
+                        } else {
+                            console.error('Error updating meeting:', error);
+                        }
+                    });
             } 
         } catch (error) {
             console.error('Error updating meeting:', error);
@@ -370,15 +384,20 @@ export default function Calendar() {
             };
 
             axios.patch(`/api/meetings/${meetingId}`, updatePayload)
-                .then(response => {
-                    console.log('Blocked time updated successfully', response);
+                .then((response) => {
+                    if (response.status === 200) {
+                        console.log('Blocked time updated successfully');
+                        handleClose();
+                    }
                 })
-                .catch(error => {
-                    console.error('Error updating blocked time:', error);
-                }
-            );
-
-            handleClose();
+                .catch((error) => {
+                    if (error.response.status === 300) {
+                        console.log('Overlaps pre-existing meeting');
+                        setShowOverlapBanner(true);
+                    } else {
+                        console.error('Error updating blocked time:', error);
+                    }
+                });
 
         } catch(error) {
             console.error('Error updating blocked time: ', error);
@@ -398,56 +417,67 @@ export default function Calendar() {
     }
 
     async function handleSubmit() {
-        try {
-            const isValid = validateMeeting();
+        const isValid = validateMeeting();
 
-            if (isValid) {
-                const meetingStatus = await getMeetingStatus(user);
-    
-                await axios.post("/api/meetings", {
-                    title: title,
-                    class_name: selectedClass.value,
-                    start: state.selectInfo?.startStr || start.toISOString(),
-                    end: state.selectInfo?.endStr || end.toISOString(),
-                    link: link,
-                    instructor_id: selectedInstructor.value,
-                    status: meetingStatus,
-                    notes: notes,
-                    type_id: 1,
-                    attendees: selectedAttendees.map(selectedAttendee => selectedAttendee.value),
-                });
-    
-                console.log('Meeting status:', meetingStatus);
-                console.log('Meeting created successfully');
-    
-                handleClose();
-            }
-        } catch (error) {
-            console.error('Error creating meeting:', error);
+        if (isValid) {
+            const meetingStatus = await getMeetingStatus(user);
+
+            await axios.post("/api/meetings", {
+                title: title,
+                class_name: selectedClass.value,
+                start: state.selectInfo?.startStr || start.toISOString(),
+                end: state.selectInfo?.endStr || end.toISOString(),
+                link: link,
+                instructor_id: selectedInstructor.value,
+                status: meetingStatus,
+                notes: notes,
+                type_id: 1,
+                attendees: selectedAttendees.map(selectedAttendee => selectedAttendee.value),
+            })
+            .then((response) => {
+                if (response.status === 200) {
+                    console.log('Meeting created successfully');
+                    handleClose();
+                }
+            })
+            .catch((error) => {
+                if (error.response.status === 300) {
+                    console.log('Overlaps pre-existing meeting');
+                    setShowOverlapBanner(true);
+                } else {
+                    console.log(error);
+                }
+            });
         }
     }
 
     async function handleBlockSubmit() {
-        try {
             const loggedInUser = await getLoggedInUser();
-            await axios.post('/api/meetings', {
-                title: 'Blocked Time',
-                start: state.selectInfo?.startStr || start.toISOString(),
-                end: state.selectInfo?.endStr || end.toISOString(),
-                instructor_id: loggedInUser._id,
-                status: MeetingStatus.approved,
-                type_id: MeetingType.block,
-                notes: notes
-            })
 
-            console.log('Blocked time created successfully');
-            handleClose();
-
-        } catch (error) {
-            console.error('Error creating blocked time: ', error)
-        }
+        await axios.post('/api/meetings', {
+            title: 'Blocked Time',
+            start: state.selectInfo?.startStr || start.toISOString(),
+            end: state.selectInfo?.endStr || end.toISOString(),
+            instructor_id: loggedInUser._id,
+            status: MeetingStatus.approved,
+            type_id: MeetingType.block,
+            notes: notes
+        })
+        .then((response) => {
+            if (response.status === 200) {
+                console.log('Blocked time created successfully');
+                handleClose();
+            }
+        })
+        .catch((error) => {
+            if (error.response.status === 300) {
+                console.log('Overlaps pre-existing meeting');
+                setShowOverlapBanner(true);
+            } else {
+                console.log(error);
+            }
+        });
     }
-    
 
     function validateMeeting() {
         const validationErrors = {};
@@ -474,7 +504,6 @@ export default function Calendar() {
         // Return true if there are no validation errors
         return Object.keys(validationErrors).length === 0; 
     }
-
 
     async function getMeetingStatus(user) {
         try {
@@ -508,7 +537,6 @@ export default function Calendar() {
             return false; 
         }
     }
-    
 
     function handleDelete() {
         const meetingID = state.clickInfo.event.id;
@@ -584,6 +612,7 @@ export default function Calendar() {
         setState({});
         setModal(false);
         setBlockModal(false);
+        setShowOverlapBanner(false);
         setLink('');
         setNotes('');
         setType_id({});
@@ -859,7 +888,14 @@ export default function Calendar() {
                         />
                     </FormGroup>
 
-
+                    {showOverlapBanner && (
+                        <div className="alert alert-danger fade show text-align-left">
+                            Selected time slot is unavailable
+                            <button type="button" className="close close-button" data-dismiss="alert" aria-label="Close" onClick={() => setShowOverlapBanner(false)}>
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    )}
                 </CustomModal>
 
                 <CustomModal
@@ -937,7 +973,14 @@ export default function Calendar() {
                         />
                     </FormGroup>
 
-
+                    {showOverlapBanner && (
+                        <div className="alert alert-danger fade show text-align-left">
+                            You already have a meeting at that time
+                            <button type="button" className="close close-button" data-dismiss="alert" aria-label="Close" onClick={() => setShowOverlapBanner(false)}>
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    )}
                 </CustomModal>
 
                 <CustomModal

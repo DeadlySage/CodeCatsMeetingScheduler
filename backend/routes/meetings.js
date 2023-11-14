@@ -5,9 +5,36 @@ const Meeting = require('../models/meeting');
 // CREATE a new meeting
 router.post('/', async (req, res) => {
     try {
-        const meeting = new Meeting(req.body); 
-        await meeting.save();
-        res.status(201).json(meeting);
+        const newMeeting = new Meeting(req.body);
+
+        // Check for overlapping meetings
+        const overlappingMeetings = await Meeting.find({
+            instructor_id: newMeeting.instructor_id,
+            status: 'Approved',
+            $or: [
+                {
+                    start: { $lt: newMeeting.end },
+                    end: { $gt: newMeeting.start }
+                },
+                {
+                    start: { $gte: newMeeting.start },
+                    end: { $lte: newMeeting.end }
+                },
+                {
+                    start: { $lte: newMeeting.start },
+                    end: { $gte: newMeeting.end }
+                }
+            ]
+        });
+
+        // If there are overlapping meetings, return status 300
+        if (overlappingMeetings.length > 0) {
+            return res.status(300).json({ message: 'Overlapping meetings detected' });
+        }
+
+        // If no overlaps, save the new meeting
+        await newMeeting.save();
+        res.status(200).json(newMeeting);
 
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -74,7 +101,6 @@ router.patch('/:id', async (req, res) => {
         if (!meeting) {
             return res.status(404).json({ error: 'Meeting not found' });
         }
-
         if (req.body.instructorId != null) {
             meeting.instructor_id = req.body.instructorId;
         }
@@ -106,6 +132,31 @@ router.patch('/:id', async (req, res) => {
             meeting.title = req.body.title;
         }
         try {
+            // Check for overlapping meetings
+            const overlappingMeetings = await Meeting.find({
+                instructor_id: meeting.instructor_id,
+                status: 'Approved',
+                $or: [
+                    {
+                        start: { $lt: meeting.end },
+                        end: { $gt: meeting.start }
+                    },
+                    {
+                        start: { $gte: meeting.start },
+                        end: { $lte: meeting.end }
+                    },
+                    {
+                        start: { $lte: meeting.start },
+                        end: { $gte: meeting.end }
+                    }
+                ]
+            });
+
+            // If there are overlapping meetings, return status 300
+            if (overlappingMeetings.length > 0) {
+                return res.status(300).json({ message: 'Overlapping meetings detected' });
+            }
+
             const updatedMeeting = await meeting.save();
             res.json(updatedMeeting);
         } catch (err) {
