@@ -10,7 +10,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './Calendar.css';
 import axios from 'axios'
-import { getLoggedInUser, isUserAdmin } from '../AuthService';
+import { getLoggedInUser} from '../AuthService';
 import {UserRole, MeetingStatus, ClassType, MeetingType} from "./Constants";
 import {
     Row,
@@ -102,9 +102,12 @@ export default function Calendar() {
 
                 if (fetchedUser) {
                     if (fetchedUser.role_id === 1) {
-                        relevantMeetings = allMeetings.filter(meeting => meeting.attendees.includes(fetchedUser._id));
+                        relevantMeetings = allMeetings.filter(
+                            meeting => meeting.attendees.includes(fetchedUser._id));
                     } else if (fetchedUser.role_id === 2 || fetchedUser.role_id === 3) {
-                        relevantMeetings = allMeetings.filter(meeting => meeting.instructor_id && meeting.instructor_id.toString() === fetchedUser._id.toString());
+                        relevantMeetings = allMeetings.filter(
+                            meeting => meeting.instructor_id && 
+                            meeting.instructor_id.toString() === fetchedUser._id.toString());
                     }
                 }
 
@@ -119,15 +122,14 @@ export default function Calendar() {
                         },
                     ]);
                 }
-
-                // Preselect the logged-in instructor
-                if (!selectedInstructor && user && (user.role_id === UserRole.instructor)) {
-                    setSelectedInstructor({
-                        value: user._id,
-                        label: `${user.first_name} ${user.last_name}`,
-                    });
-        }
-
+                // Preselect if logged-in user is instructor/admin
+                else if(!selectedInstructor && fetchedUser && 
+                    (fetchedUser.role_id === UserRole.instructor || fetchedUser.role_id === UserRole.admin))
+                        setSelectedInstructor({
+                            value: fetchedUser._id,
+                            label: `${fetchedUser.first_name} ${fetchedUser.last_name}`,
+                        });
+     
             } catch (error) {
                 console.error('Error fetching user or meetings:', error);
             }
@@ -135,6 +137,8 @@ export default function Calendar() {
 
         fetchUserAndMeetings();
     }, [selectedAttendees]);
+
+   
 
     function handleDateSelect(selectInfo) {
         if (
@@ -625,6 +629,7 @@ export default function Calendar() {
         setNotes('');
         setType_id({});
         setSelectedClass('');
+        setSelectedInstructor(null);
         setSelectedAttendees([]);
         setStatus('');
         setValidationMessages(initialValidationMessages);
@@ -637,7 +642,7 @@ export default function Calendar() {
                 const studentData = [];
 
                 for (const user of response.data) {
-                    // Only adds approved Instructors & Admins
+                    // Only adds approved Instructors & Admins to instructorData
                     if (user.role_id !== UserRole.student && user.status_id == 2) {
                         instructorData.push(user);
                     } else {
@@ -772,24 +777,26 @@ export default function Calendar() {
                         />
                         <div className="validation-message">{validationMessages.class}</div>
                     </FormGroup>
-
+                    
+                    {user && ![UserRole.instructor, UserRole.admin].includes(user.role_id) && (
                     <FormGroup>
                         <Label for='instructor' style={{ display: 'flex', alignItems: 'center' }}>Instructor <p style={{color: 'red'}}>*</p></Label>
                         <Select
                             placeholder='Select Instructor'
                             value={selectedInstructor}
                             options={[
-                                 ...instructors.map((instructor) => ({ 
+                                 ...instructors.map((instructor) => ({  
                                         value: instructor._id,
                                         label: `${instructor.first_name} ${instructor.last_name}`,
                                     }))
                                  ]}
                             onChange={handleInstructorSelect}
-                            isDisabled={!!state.clickInfo || user && (user.role_id === UserRole.instructor)}
+                            isDisabled={!!state.clickInfo}
                          />  
                         <div className="validation-message">{validationMessages.instructor}</div>
                     </FormGroup>
-
+                    )}
+                    
                     <FormGroup>
                         <Label for='title' style={{ display: 'flex', alignItems: 'center' }}>Team Name & Subject <p style={{color: 'red'}}>*</p></Label>
                         <Input
