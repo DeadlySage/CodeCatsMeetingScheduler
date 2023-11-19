@@ -8,7 +8,7 @@ const Meeting = require('../models/meeting');
 const expect = chai.expect;
 chai.use(chaiHttp);
 
-describe('Non Student Meeting API', () => {
+describe('Calendar Meeting API Calls', () => {
     let connectStub;
     let deleteManyStub;
     let meetingFindStub;
@@ -131,6 +131,33 @@ describe('Non Student Meeting API', () => {
             expect(res.body).to.be.an('array');
             expect(res.body[0]).to.have.property('title');
             expect(res.body[0].title).to.equal('Blocked Time')
+        });
+
+        it('should get all meetings that match userId', async () => {
+
+            meetingFindStub.returns([{
+                title: 'UserId Meeting',
+                start: "2023-10-19T08:00:00.000Z",
+                end: "2023-10-19T08:30:00.000Z",
+                instructor_id: '6451c0cd09b4910545248bd7',
+                status: 'Approved',
+                type_id: 2,
+                notes: 'Existing',
+            }]);
+
+            const res = await chai
+                .request(app)
+                .get('/api/meetings')
+                .query({ userId: '6451c0cd09b4910545248bd7' });
+
+            sinon.assert.calledOnce(deleteManyStub);
+            sinon.assert.notCalled(meetingFindByIdStub);
+            sinon.assert.calledOnce(meetingFindStub);
+            expect(res).to.have.status(200);
+            expect(res.body).to.be.an('array');
+            expect(res.body.length).to.equal(1);
+            expect(res.body[0]).to.have.property('title');
+            expect(res.body[0].title).to.equal('UserId Meeting')
         });
 
         it('should get all meetings that match meetingId', async () => {
