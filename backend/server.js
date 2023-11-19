@@ -26,11 +26,13 @@ app.use(bodyParser.json());
 
 async function connect() {
     try {
-        await mongoose.connect(process.env.MONGODB_URI, {
-            useUnifiedTopology: true,
-            useNewUrlParser: true
-        });
-        console.log("Connected to MongoDB");
+        if (process.env.NODE_ENV !== 'test') {
+            await mongoose.connect(process.env.MONGODB_URI, {
+                useUnifiedTopology: true,
+                useNewUrlParser: true,
+            });
+            console.log("Connected to MongoDB");
+        }
     } catch (error) {
         console.error(error);
     }
@@ -45,7 +47,11 @@ const meetingRouter = require('./routes/meetings');
 app.use('/api/meetings', meetingRouter);
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+app.listen(PORT, () => {
+    if (process.env.NODE_ENV !== 'test') {
+        console.log(`Listening on port ${PORT}`)
+    }
+});
 
 //Login Route
 app.get('/api/login', async (req, res) => {
@@ -93,3 +99,5 @@ app.get('/*', (req, res) => {
         }
     });
 })
+
+module.exports = [app, connect];
