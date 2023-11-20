@@ -154,7 +154,9 @@ router.patch('/:id', async (req, res) => {
 
             // If there are overlapping meetings, return status 300
             if (overlappingMeetings.length > 0) {
-                return res.status(300).json({ message: 'Overlapping meetings detected' });
+                if (overlappingMeetings.length !== 1 || !overlappingMeetings[0]._id.equals(meeting._id)) {
+                    return res.status(300).json({ message: 'Overlapping meetings detected' });
+                }
             }
 
             const updatedMeeting = await meeting.save();
