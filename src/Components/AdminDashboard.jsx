@@ -152,10 +152,6 @@ const AdminDashboard = () => {
                             console.log('Patch Successful');
                             return { ...user, status_id: 2 };
                         }
-                        else{
-                            console.error('Error approving user:', response.data);
-                        }
-                        return user;
                     });
                     setUsers(updatedUsers);
                 })
