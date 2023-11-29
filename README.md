@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <a href="https://github.com/DeadlySage/CodeCatsMeetingScheduler"><img src="https://github.com/DeadlySage/CodeCatsMeetingScheduler/blob/main/public/project%20logo%20small%20border.png" alt="MeetingScheduler" width="250"></a>
+  <a href="https://github.com/DeadlySage/CodeCatsMeetingScheduler"><img src="https://github.com/DeadlySage/CodeCatsMeetingScheduler/blob/main/public/project%20logo.png" alt="MeetingScheduler" width="250"></a>
   <br>
   Meeting Scheduler
   <br>
