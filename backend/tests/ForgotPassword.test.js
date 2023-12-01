@@ -33,7 +33,7 @@ describe('Forgot Password API Calls', () => {
         sinon.restore();
     });
 
-    describe('GET /api/users/', () => {
+    describe('GET /api/users', () => {
         it('does not find a nonexsting account', async () => {
 
             const wrongEmail = 'wrongEmail@csus.edu';
@@ -42,11 +42,11 @@ describe('Forgot Password API Calls', () => {
 
             const res = await chai
                 .request(app)
-                .get(`/api/users/`)
+                .get('/api/users')
                 .query({ email: wrongEmail });
 
             expect(res).to.have.status(200);
-            expect(res.data).to.be.undefined;
+            expect(res.body.length).to.equal(0);
 
             sinon.assert.calledOnce(userFindOneStub);
         });
@@ -64,12 +64,11 @@ describe('Forgot Password API Calls', () => {
 
             const res = await chai
                 .request(app)
-                .get(`/api/users/`)
+                .get('/api/users/')
                 .query({ email: email });
 
-            console.log(res.data);
             expect(res).to.have.status(200);
-            expect(res.data).to.not.be.undefined;
+            expect(res.body.length).to.not.equal(0);
 
             sinon.assert.calledOnce(userFindOneStub);
         });
