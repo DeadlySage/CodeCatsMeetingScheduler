@@ -6,13 +6,14 @@
   <br>
 </h1>
 
-![](https://github.com/DeadlySage/CodeCatsMeetingScheduler/blob/main/public/demo.gif)
+![Demo_application](https://github.com/DeadlySage/CodeCatsMeetingScheduler/assets/80496757/0cfeb2c4-5d25-48c3-bbe6-8c1e3ef35d22)
 
 <h4 align="center">A appointment management web application built using <a href="https://react.dev/" target="_blank">React</a>.</h4>
 
 <p align="center">
   <a href= "#synopsis"><img src="https://img.shields.io/badge/Synopsis--ac67d1?style=for-the-badge&labelColor=2C3E50"></a> 
   <a href= "#features"><img src="https://img.shields.io/badge/Features--ac67d1?style=for-the-badge&labelColor=2C3E50"></a>
+  <a href= "#preview"><img src="https://img.shields.io/badge/Preview--ac67d1?style=for-the-badge&labelColor=2C3E50"></a>
   <a href= "#testing"><img src="https://img.shields.io/badge/Testing--ac67d1?style=for-the-badge&labelColor=2C3E50"></a>
   <a href= "#deployment"><img src="https://img.shields.io/badge/Deployment--ac67d1?style=for-the-badge&labelColor=2C3E50"></a>
   <a href= "#how-to-use"><img src="https://img.shields.io/badge/How%20To%20Use--ac67d1?style=for-the-badge&labelColor=2C3E50"></a>
@@ -50,9 +51,65 @@ Current methods of exchanging emails are inefficient and relies on the instructo
 * Cross platform
   - Windows, macOS and Linux ready.
 
-# Testing
+# Preview
+![Demo_Calendar](https://github.com/DeadlySage/CodeCatsMeetingScheduler/assets/80496757/1b8be754-0b9c-40c2-a806-b0b7bdf3efb1)
+<h4 align="center">Multiview calendar support (Month/week/day/list) to enable ease of viewing for both students and teachers.</h4>
+&nbsp;
 
-Testing is mainly done visually as the project is currently only working on the front end aspect. We used [Uizard](https://uizard.io/) for our prototyping / wireframe work when first designing the web application. So we use the clickable prototypes and use it as the acceptance criteria. 
+![Demo_Create_meeting](https://github.com/DeadlySage/CodeCatsMeetingScheduler/assets/80496757/9f7fabe0-2fec-4d21-8e3f-8a755a4efa77)
+<h4 align="center">Students and techers are able to create meetings.</h4>
+&nbsp;
+
+![Demo_Blocking_Meetings](https://github.com/DeadlySage/CodeCatsMeetingScheduler/assets/80496757/ea53ad77-7550-43aa-99c7-0f5f5c6edc4d)
+<h4 align="center">Teachers are able to block-off certain times and days to prevent students from requesting meetings.</h4>
+&nbsp;
+
+![Demo_Admin_Dashboard](https://github.com/DeadlySage/CodeCatsMeetingScheduler/assets/80496757/62d9737d-170e-44e2-9ce3-3040f5882771)
+<h4 align="center">Admin accounts are able to access the admin dashboard which allows them to delete students and view their accounts.</h4>
+&nbsp;
+
+<p align="center">
+  <img src="https://github.com/DeadlySage/CodeCatsMeetingScheduler/assets/80496757/9a31edd6-6ddc-4839-aac6-3202501b51cf" alt="animated" />
+</p>
+<h4 align="center">Aplication is optimized to work on both desktop and mobile devices, enabling ease of use regardless of the device.</h4>
+&nbsp;
+
+# Testing
+To perform testing simply follow these instructions:
+
+System Requirements: </br>
+Operating System: Windows 10/11 </br>
+Node Version: 18.17.1 </br>
+Npm Version:  9.6.7
+
+```bash
+# Install jest
+$ npm i -save-dev jest
+
+# Install super test
+$ npm i -save-dev supertest
+
+# Install mocha chai
+$ npm i -save-dev mocha chai
+
+# Install sinon
+$ npm i -save-dev sinon
+
+# Install chai-http
+$ npm i -save-dev chai-http
+
+# run all test
+$ npm test
+
+```
+
+we use automated testing with Selenium IDE for sanity checks whenever a new build is pushed and the new updated build is live, to do this kind of testing simply download [Selenium IDE](https://www.selenium.dev/selenium-ide/) the testing files are available for download from [here](https://drive.google.com/file/d/1f1_Xsk0m1540XJTTXR8OsOXFdvImjvG7/view?usp=sharing)
+
+Web Browser Environment Requirements: </br>
+Microsoft Edge Version 119.0.2151.72 </br>
+Chromium Version 119.0.6045.159 </br>
+Operating System: Windows 10/11
+
 
 # Deployment
 
@@ -119,6 +176,8 @@ This web application uses the following open source packages / services / langua
 - [![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/)
 - [![Visual Studio](https://img.shields.io/badge/Visual%20Studio-5C2D91.svg?style=for-the-badge&logo=visual-studio&logoColor=white)](https://code.visualstudio.com/)
 - [![Jira](https://img.shields.io/badge/jira-%230A0FFF.svg?style=for-the-badge&logo=jira&logoColor=white)](https://www.atlassian.com/software/jira)
+- ![Jest](https://img.shields.io/badge/-jest-%23C21325?style=for-the-badge&logo=jest&logoColor=white)
+- ![Selenium](https://img.shields.io/badge/-selenium-%43B02A?style=for-the-badge&logo=selenium&logoColor=white)
 
 # Contributors
 
@@ -130,4 +189,3 @@ This web application uses the following open source packages / services / langua
 [![](https://img.shields.io/badge/Nick%20Bailey-DEV-cyan?style=for-the-badge&labelColor=2C3E50)](https://github.com/bigboibailey)
 [![](https://img.shields.io/badge/Jonathan%20Bui-DEV-cyan?style=for-the-badge&labelColor=2C3E50)](https://github.com/iubs)
 [![](https://img.shields.io/badge/Michael%20Lawler-DEV-cyan?style=for-the-badge&labelColor=2C3E50)](https://github.com/lawz4)
-[![](https://img.shields.io/badge/Albert%20Forbes-DEV-cyan?style=for-the-badge&labelColor=2C3E50)](https://github.com/Albies42)
