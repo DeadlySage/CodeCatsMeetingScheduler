@@ -46,7 +46,13 @@ app.use("/api/users", usersRouter);
 const meetingRouter = require('./routes/meetings');
 app.use('/api/meetings', meetingRouter);
 
-const PORT = process.env.PORT || 3000;
+let PORT;
+if (process.env.NODE_ENV !== 'test') {
+    PORT = process.env.PORT || 3000;
+} else {
+    // Generates a random port number between 4000-50,000 for testing 
+    PORT = Math.floor(Math.random() * (50000 - 4000 + 1)) + 4000;
+}
 app.listen(PORT, () => {
     if (process.env.NODE_ENV !== 'test') {
         console.log(`Listening on port ${PORT}`)

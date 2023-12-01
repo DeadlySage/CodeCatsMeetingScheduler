@@ -162,11 +162,9 @@ describe('Admin Page User API Calls', () => {
 
             userFindByIdStub.returns(newMockUser);
 
-            console.log('Before delete request');
             const res = await chai
                 .request(app)
                 .delete(`/api/users/${newMockUser._id}`);
-            console.log('After delete request');
 
             sinon.assert.calledOnce(userDeleteStub);
             sinon.assert.calledWithExactly(userDeleteStub);

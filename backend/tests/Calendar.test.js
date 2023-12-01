@@ -252,7 +252,10 @@ describe('Calendar Meeting API Calls', () => {
         });
 
         it('should not update the meeting if it overlaps with another', async () => {
-            meetingFindStub.returns([{
+            meetingFindStub.returns(['', '']);
+
+            meetingFindByIdStub.returns([{
+                _id: 'test',
                 title: 'Original Title',
                 start: "2023-10-19T08:00:00.000Z",
                 end: "2023-10-19T08:30:00.000Z",
@@ -261,18 +264,6 @@ describe('Calendar Meeting API Calls', () => {
                 type_id: 2,
                 notes: 'Original notes',
             }]);
-
-            const mockExistingMeeting = new Meeting({
-                title: 'Original Title',
-                start: "2023-10-19T08:00:00.000Z",
-                end: "2023-10-19T08:30:00.000Z",
-                instructor_id: '6551c0cd08b4900545248bc7',
-                status: 'Approved',
-                type_id: 2,
-                notes: 'Original notes',
-            });
-
-            meetingFindByIdStub.returns(mockExistingMeeting);
     
             const updatedMeeting = {
                 title: 'Updated Title',
